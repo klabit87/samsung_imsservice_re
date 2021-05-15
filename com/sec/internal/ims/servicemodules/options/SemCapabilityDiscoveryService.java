@@ -1,7 +1,7 @@
 package com.sec.internal.ims.servicemodules.options;
 
+import android.os.IBinder;
 import android.os.RemoteException;
-import android.util.Log;
 import com.samsung.android.ims.options.SemCapabilities;
 import com.samsung.android.ims.options.SemCapabilityServiceEventListener;
 import com.samsung.android.ims.options.SemImsCapabilityService;
@@ -13,24 +13,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SemCapabilityDiscoveryService extends SemImsCapabilityService.Stub {
-    private Map<Integer, Map<SemCapabilityServiceEventListener, CapabilityServiceEventCallBack>> mCapServiceEventCallbacks = new ConcurrentHashMap();
+    private Map<String, CapabilityServiceEventCallBack> mCapServiceEventCallbacks = new ConcurrentHashMap();
     private CapabilityDiscoveryService mCapabilityService = null;
-    private Map<SemCapabilityServiceEventListener, Integer> mQueuedCapabilityListener = new HashMap();
+    private Map<String, CapabilityServiceEventCallBack> mQueuedCapabilityListener = new HashMap();
 
     public void setServiceModule(CapabilityDiscoveryService capabilityService) {
         this.mCapabilityService = capabilityService;
         if (!this.mQueuedCapabilityListener.isEmpty()) {
-            try {
-                for (Map.Entry<SemCapabilityServiceEventListener, Integer> entry : this.mQueuedCapabilityListener.entrySet()) {
-                    registerListener(entry.getKey(), entry.getValue().intValue());
-                }
-                this.mQueuedCapabilityListener.clear();
-            } catch (RemoteException e) {
-                Log.d("SemCapabilityDiscoveryService", "registerListener failed. RemoteException: " + e);
+            for (CapabilityServiceEventCallBack callback : this.mQueuedCapabilityListener.values()) {
+                String token = callback.mToken;
+                int phoneId = callback.mPhoneId;
+                this.mCapServiceEventCallbacks.put(token, callback);
+                this.mCapabilityService.registerListenerWithToken(callback, token, phoneId);
             }
+            this.mQueuedCapabilityListener.clear();
         }
     }
 
@@ -71,29 +71,43 @@ public class SemCapabilityDiscoveryService extends SemImsCapabilityService.Stub 
         return null;
     }
 
-    public void registerListener(SemCapabilityServiceEventListener listener, int phoneId) throws RemoteException {
-        if (this.mCapabilityService == null) {
-            this.mQueuedCapabilityListener.put(listener, Integer.valueOf(phoneId));
-        } else if (!this.mCapServiceEventCallbacks.containsKey(Integer.valueOf(phoneId)) || !this.mCapServiceEventCallbacks.get(Integer.valueOf(phoneId)).containsKey(listener)) {
-            CapabilityServiceEventCallBack capServiceEventCallback = new CapabilityServiceEventCallBack(listener);
-            if (!this.mCapServiceEventCallbacks.containsKey(Integer.valueOf(phoneId))) {
-                this.mCapServiceEventCallbacks.put(Integer.valueOf(phoneId), new ConcurrentHashMap());
+    public String registerListener(SemCapabilityServiceEventListener listener, int phoneId) throws RemoteException {
+        String token;
+        CapabilityServiceEventCallBack capServiceEventCallback = new CapabilityServiceEventCallBack(listener, phoneId);
+        CapabilityDiscoveryService capabilityDiscoveryService = this.mCapabilityService;
+        if (capabilityDiscoveryService != null) {
+            token = capabilityDiscoveryService.registerListener(capServiceEventCallback, phoneId);
+            if (token != null) {
+                capServiceEventCallback.mToken = token;
+                this.mCapServiceEventCallbacks.put(token, capServiceEventCallback);
+            } else {
+                capServiceEventCallback.reset();
+                return token;
             }
-            this.mCapServiceEventCallbacks.get(Integer.valueOf(phoneId)).put(listener, capServiceEventCallback);
-            this.mCapabilityService.registerListener(capServiceEventCallback, phoneId);
         } else {
-            Log.d("SemCapabilityDiscoveryService", "registerListener : listener has already registered");
+            token = CapabilityDiscoveryService.getRegisterToken(capServiceEventCallback);
+            if (token != null) {
+                capServiceEventCallback.mToken = token;
+                this.mQueuedCapabilityListener.put(token, capServiceEventCallback);
+            }
         }
+        return token;
     }
 
-    public void unregisterListener(SemCapabilityServiceEventListener listener, int phoneId) throws RemoteException {
-        if (this.mCapabilityService != null) {
-            if (this.mCapServiceEventCallbacks.containsKey(Integer.valueOf(phoneId)) && this.mCapServiceEventCallbacks.get(Integer.valueOf(phoneId)).containsKey(listener)) {
-                this.mCapabilityService.unregisterListener((CapabilityServiceEventCallBack) this.mCapServiceEventCallbacks.get(Integer.valueOf(phoneId)).get(listener), phoneId);
-                this.mCapServiceEventCallbacks.get(Integer.valueOf(phoneId)).remove(listener);
+    public void unregisterListener(String token, int phoneId) throws RemoteException {
+        CapabilityServiceEventCallBack callback;
+        if (token != null) {
+            CapabilityDiscoveryService capabilityDiscoveryService = this.mCapabilityService;
+            if (capabilityDiscoveryService != null) {
+                capabilityDiscoveryService.unregisterListener(token, phoneId);
+                CapabilityServiceEventCallBack callback2 = this.mCapServiceEventCallbacks.remove(token);
+                if (callback2 != null) {
+                    callback2.reset();
+                }
             }
-        } else if (!this.mQueuedCapabilityListener.isEmpty()) {
-            this.mQueuedCapabilityListener.remove(listener);
+            if (!this.mQueuedCapabilityListener.isEmpty() && (callback = this.mQueuedCapabilityListener.remove(token)) != null) {
+                callback.reset();
+            }
         }
     }
 
@@ -129,11 +143,18 @@ public class SemCapabilityDiscoveryService extends SemImsCapabilityService.Stub 
         return (SemCapabilities[]) semCapList.toArray(new SemCapabilities[semCapList.size()]);
     }
 
-    private class CapabilityServiceEventCallBack extends ICapabilityServiceEventListener.Stub {
+    private class CapabilityServiceEventCallBack extends ICapabilityServiceEventListener.Stub implements IBinder.DeathRecipient {
         SemCapabilityServiceEventListener mListener;
+        int mPhoneId;
+        String mToken = null;
 
-        public CapabilityServiceEventCallBack(SemCapabilityServiceEventListener listener) {
+        public CapabilityServiceEventCallBack(SemCapabilityServiceEventListener listener, int phoneId) {
             this.mListener = listener;
+            this.mPhoneId = phoneId;
+            try {
+                listener.asBinder().linkToDeath(this, 0);
+            } catch (RemoteException e) {
+            }
         }
 
         public void onOwnCapabilitiesChanged() {
@@ -171,6 +192,21 @@ public class SemCapabilityDiscoveryService extends SemImsCapabilityService.Stub 
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+
+        public void binderDied() {
+            try {
+                SemCapabilityDiscoveryService.this.unregisterListener(this.mToken, this.mPhoneId);
+            } catch (RemoteException e) {
+            }
+        }
+
+        /* access modifiers changed from: protected */
+        public void reset() {
+            try {
+                this.mListener.asBinder().unlinkToDeath(this, 0);
+            } catch (NoSuchElementException e) {
             }
         }
     }

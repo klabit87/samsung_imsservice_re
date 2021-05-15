@@ -11,7 +11,6 @@ public enum ImSessionRejectReason {
     BUSY_HERE(NSDSNamespaces.NSDSHttpResponseCode.BUSY_HERE, -1, "Busy Here"),
     FORBIDDEN(403, 127, "Service not authorised"),
     CHATBOT_PROFILE_RETRIEVAL_FAIL(400, -1, "Bad request"),
-    NOT_ACCEPTABLE_HERE(488, -1, "Not Acceptable Here"),
     TOO_MANY_PARTICIPANTS,
     ISFOCUS_ALREADY_ASSIGNED,
     ANONYMITY_NOT_ALLOWED,

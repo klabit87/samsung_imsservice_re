@@ -15,7 +15,6 @@ import com.sec.internal.ims.util.ChatbotUriUtil;
 import com.sec.internal.interfaces.ims.servicemodules.options.ICapabilityDiscoveryModule;
 import com.sec.internal.log.IMSLog;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -61,7 +60,7 @@ public class SecUPStrategy extends DefaultUPMnoStrategy {
         }
         String str = TAG;
         int i = this.mPhoneId;
-        IMSLog.i(str, i, "forceRefreshCapability: uris " + IMSLog.numberChecker((Collection<ImsUri>) uris));
+        IMSLog.i(str, i, "forceRefreshCapability: uris " + IMSLog.checker(uris));
         ArrayList arrayList = new ArrayList(uris);
         if (remoteOnline) {
             capDiscModule.getCapabilities(arrayList, CapabilityRefreshType.ONLY_IF_NOT_FRESH, (long) (Capabilities.FEATURE_FT_HTTP | Capabilities.FEATURE_CHAT_SIMPLE_IM), this.mPhoneId);

@@ -38,6 +38,8 @@ public class WorkflowInterop extends WorkflowUpBase {
     protected boolean mIsMobileConfigCompleted = false;
     protected boolean mIsMobileConnected = false;
     protected boolean mIsMobileRequested = false;
+    protected boolean mIsWifiConnected = false;
+    protected int mMsisdnTryCount = 0;
     protected int mNewVersion = 0;
     protected int mOldVersion = 0;
 
@@ -72,10 +74,12 @@ public class WorkflowInterop extends WorkflowUpBase {
             r11.mNewVersion = r0
             r11.mIsMobileRequested = r0
             r11.mIsMobileConnected = r0
+            r11.mIsWifiConnected = r0
             r11.mIsMobileConfigCompleted = r0
             r11.mHttpResponse = r0
             r11.mAuthTryCount = r0
             r11.mAuthHiddenTryCount = r0
+            r11.mMsisdnTryCount = r0
             r11.m511ErrCount = r0
             r11.m503ErrCount = r0
             android.content.Context r0 = r11.mContext
@@ -221,8 +225,10 @@ public class WorkflowInterop extends WorkflowUpBase {
         this.mNetwork = null;
         this.mIsMobileRequested = false;
         this.mIsMobileConnected = false;
+        this.mIsWifiConnected = checkWifiConnection(this.mConnectivityManager);
         this.mAuthTryCount = 0;
         this.mAuthHiddenTryCount = 0;
+        this.mMsisdnTryCount = 0;
     }
 
     /* access modifiers changed from: protected */
@@ -435,7 +441,7 @@ public class WorkflowInterop extends WorkflowUpBase {
                         WorkflowInterop.this.mSharedInfo.addHttpParam("terminal_sw_version", WorkflowInterop.this.mParamHandler.getModelInfoFromBuildVersion(ConfigUtil.getModelName(WorkflowInterop.this.mPhoneId), ConfigConstants.PVALUE.TERMINAL_SW_VERSION, 8, true));
                         WorkflowInterop.this.mSharedInfo.addHttpParam(ConfigConstants.PNAME.CLIENT_VENDOR, ConfigConstants.PVALUE.CLIENT_VENDOR);
                         SharedInfo sharedInfo2 = WorkflowInterop.this.mSharedInfo;
-                        sharedInfo2.addHttpParam(ConfigConstants.PNAME.CLIENT_VERSION, ConfigConstants.PVALUE.CLIENT_VERSION_NAME + WorkflowInterop.this.mClientVersion);
+                        sharedInfo2.addHttpParam(ConfigConstants.PNAME.CLIENT_VERSION, WorkflowInterop.this.mClientPlatform + WorkflowInterop.this.mClientVersion);
                         WorkflowInterop.this.mSharedInfo.addHttpParam("rcs_version", "7.0");
                         WorkflowInterop.this.mSharedInfo.addHttpParam(ConfigConstants.PNAME.RCS_PROFILE, "UP_2.0-b1");
                         WorkflowInterop.this.mSharedInfo.addHttpParam(ConfigConstants.PNAME.PROVISIONING_VERSION, ConfigConstants.PVALUE.PROVISIONING_VERSION_4_0);

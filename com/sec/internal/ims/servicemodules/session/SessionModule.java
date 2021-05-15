@@ -961,9 +961,7 @@ public class SessionModule extends ServiceModuleBase implements ISessionModule, 
         String rcsProfile = ConfigUtil.getRcsProfileWithFeature(this.mContext, phoneId, profile);
         String str = LOG_TAG;
         Log.d(str, "rcsProfile = " + rcsProfile);
-        if (ImsRegistry.getServiceModuleManager().getImModule() != null) {
-            this.mConfig = ImsRegistry.getServiceModuleManager().getImModule().getImConfig();
-        }
+        this.mConfig = ImsRegistry.getServiceModuleManager().getImModule().getImConfig();
     }
 
     static /* synthetic */ Boolean lambda$updateConfig$0(ImsProfile p) {
@@ -1303,7 +1301,7 @@ public class SessionModule extends ServiceModuleBase implements ISessionModule, 
         return false;
     }
 
-    private synchronized void updateFeatures(int phoneId) {
+    private void updateFeatures(int phoneId) {
         Log.d(LOG_TAG, "updateFeatures: phoneId = " + phoneId);
         boolean z = true;
         if (!(DmConfigHelper.getImsSwitchValue(this.mContext, DeviceConfigManager.RCS, phoneId) == 1)) {
@@ -1315,10 +1313,8 @@ public class SessionModule extends ServiceModuleBase implements ISessionModule, 
         log("updateFeatures: mCallComposerTimerIdle=" + this.mCallComposerTimerIdle[phoneId]);
         int val = RcsConfigurationHelper.readIntParam(this.mContext, ImsUtil.getPathWithPhoneId(ConfigConstants.ConfigTable.SERVICES_COMPOSER_AUTH, phoneId), 0).intValue();
         boolean[] zArr = this.mComposerAuth;
-        if (val != 1) {
-            if (val != 3) {
-                z = false;
-            }
+        if (!(val == 1 || val == 3)) {
+            z = false;
         }
         zArr[phoneId] = z;
         log("updateFeatures: Composer enable :" + this.mComposerAuth[phoneId]);

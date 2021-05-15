@@ -658,7 +658,7 @@ public class FtHttpOutgoingMessage extends FtMessage {
                 FtHttpOutgoingMessage.this.mContentType = MIMEContentType.FT_HTTP;
                 FtHttpOutgoingMessage.this.mFileExpire = null;
                 String access$900 = FtHttpOutgoingMessage.LOG_TAG;
-                Log.d(access$900, "EVENT_UPLOAD_COMPLETED Result = " + result);
+                Log.i(access$900, "EVENT_UPLOAD_COMPLETED Result = " + result);
                 try {
                     FtHttpFileInfo fileInfo = FtHttpXmlParser.parse(FtHttpOutgoingMessage.this.mBody);
                     if (fileInfo != null) {

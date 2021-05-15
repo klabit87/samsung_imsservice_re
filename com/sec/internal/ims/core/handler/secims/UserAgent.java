@@ -1731,7 +1731,7 @@ public class UserAgent extends StateMachine implements IUserAgent {
         }
 
         public void onDeregistered(int handle, SipError error, int retryAfter) {
-            Log.i("UserAgent[" + UserAgent.this.mPhoneId + "]", "onDeregistered: handle " + handle + " error " + error + " retryAfter " + retryAfter);
+            Log.d("UserAgent[" + UserAgent.this.mPhoneId + "]", "onDeregistered: handle " + handle + " error " + error + " retryAfter " + retryAfter);
             if (handle == UserAgent.this.mHandle) {
                 SipError unused = UserAgent.this.mError = error;
                 int unused2 = UserAgent.this.mRetryAfter = retryAfter;

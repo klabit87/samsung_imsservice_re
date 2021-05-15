@@ -276,57 +276,57 @@ public class VolteServiceModule extends VolteServiceModuleInternal implements IV
 
     public void onRegistered(ImsRegistration regiInfo) {
         if (regiInfo != null && regiInfo.getImsProfile() != null) {
-            ImsProfile profile = regiInfo.getImsProfile();
-            int phoneId = regiInfo.getPhoneId();
-            IMSLog.c(LogClass.VOLTE_REGISTERED, "" + phoneId);
-            ImsRegistration oldRegiInfo = getImsRegistration(phoneId);
-            this.mLastRegiErrorCode[phoneId] = SipErrorBase.OK.getCode();
+            IMSLog.c(LogClass.VOLTE_REGISTERED, "" + regiInfo.getPhoneId());
+            ImsRegistration oldRegiInfo = getImsRegistration(regiInfo.getPhoneId());
+            this.mLastRegiErrorCode[regiInfo.getPhoneId()] = SipErrorBase.OK.getCode();
             super.onRegistered(regiInfo);
-            Mno mno = Mno.fromName(profile.getMnoName());
-            if (profile.hasEmergencySupport()) {
+            Mno mno = Mno.fromName(regiInfo.getImsProfile().getMnoName());
+            if (regiInfo.getImsProfile().hasEmergencySupport()) {
                 SimpleEventLog simpleEventLog = this.mEventLog;
-                simpleEventLog.add("Emergency Registered Feature " + this.mEnabledFeatures[phoneId]);
+                simpleEventLog.add("Emergency Registered Feature " + this.mEnabledFeatures[regiInfo.getPhoneId()]);
                 if (mno == Mno.KDDI) {
-                    startEpdnDisconnectTimer(phoneId, 300000);
+                    startEpdnDisconnectTimer(regiInfo.getPhoneId(), 300000);
                     return;
                 }
                 return;
             }
+            int phoneId = regiInfo.getPhoneId();
             if (this.mWfcEpdgMgr.isEpdgServiceConnected()) {
                 boolean allowReleaseWfcBeforeHO = ImsRegistry.getBoolean(phoneId, GlobalSettingsConstants.Call.ALLOW_RELEASE_WFC_BEFORE_HO, false);
                 SimpleEventLog simpleEventLog2 = this.mEventLog;
                 simpleEventLog2.logAndAdd(mno + " is allow release call " + allowReleaseWfcBeforeHO);
                 this.mWfcEpdgMgr.getEpdgMgr().setReleaseCallBeforeHO(phoneId, allowReleaseWfcBeforeHO);
             }
-            if (!(this.mRegMan == null || !this.mRegMan.isVoWiFiSupported(phoneId) || oldRegiInfo == null || oldRegiInfo.getEpdgStatus() == regiInfo.getEpdgStatus())) {
-                ImsRegistration oldEmergencyRegiInfo = getImsRegistration(phoneId, true);
-                if (mno == Mno.ATT && oldEmergencyRegiInfo != null && regiInfo.getEpdgStatus() != oldEmergencyRegiInfo.getEpdgStatus() && !hasEmergencyCall(phoneId)) {
-                    this.mRegMan.stopEmergencyRegistration(phoneId);
+            if (!(!this.mRegMan.isVoWiFiSupported(phoneId) || oldRegiInfo == null || oldRegiInfo.getEpdgStatus() == regiInfo.getEpdgStatus())) {
+                ImsRegistration oldEmergencyRegiInfo = getImsRegistration(regiInfo.getPhoneId(), true);
+                if (!(mno != Mno.ATT || this.mRegMan == null || oldEmergencyRegiInfo == null || regiInfo.getEpdgStatus() == oldEmergencyRegiInfo.getEpdgStatus() || hasEmergencyCall(phoneId))) {
+                    this.mRegMan.stopEmergencyRegistration(regiInfo.getPhoneId());
                 }
                 this.mImsCallSessionManager.handleEpdgHandover(phoneId, regiInfo, mno);
             }
-            terminateMoWfcWhenWfcSettingOff(phoneId);
+            terminateMoWfcWhenWfcSettingOff(regiInfo.getPhoneId());
             String str = LOG_TAG;
             StringBuilder sb = new StringBuilder();
             sb.append("Registered to VOLTE service. ");
             sb.append(IMSLog.checker(regiInfo + ""));
             sb.append(" TTYMode ");
-            sb.append(this.mTtyMode[phoneId]);
+            sb.append(this.mTtyMode[regiInfo.getPhoneId()]);
             Log.i(str, sb.toString());
             SimpleEventLog simpleEventLog3 = this.mEventLog;
-            simpleEventLog3.logAndAdd("Registered Feature " + this.mEnabledFeatures[phoneId] + " with handle " + regiInfo.getHandle());
-            if (!(profile.getTtyType() == 1 || profile.getTtyType() == 3)) {
-                this.mVolteSvcIntf.setTtyMode(phoneId, 0, this.mTtyMode[phoneId]);
+            simpleEventLog3.logAndAdd("Registered Feature " + this.mEnabledFeatures[regiInfo.getPhoneId()] + " with handle " + regiInfo.getHandle());
+            if (!(regiInfo.getImsProfile() == null || regiInfo.getImsProfile().getTtyType() == 1 || regiInfo.getImsProfile().getTtyType() == 3)) {
+                this.mVolteSvcIntf.setTtyMode(regiInfo.getPhoneId(), 0, this.mTtyMode[regiInfo.getPhoneId()]);
             }
-            if (isCmcPrimaryType(profile.getCmcType())) {
-                this.mCmcMediaController.connectToSve(phoneId);
+            if (isCmcPrimaryType(regiInfo.getImsProfile().getCmcType())) {
+                this.mCmcMediaController.connectToSve(regiInfo.getPhoneId());
             }
             if (regiInfo.hasService("mmtel")) {
                 this.mMmtelAcquiredEver = true;
-                this.mProhibited[phoneId] = false;
-            } else {
+                this.mProhibited[regiInfo.getPhoneId()] = false;
+            }
+            if (!regiInfo.hasService("mmtel")) {
                 Log.i(LOG_TAG, "Registration Without MMTEL has DialogList notify empty dialog");
-                clearDialogList(phoneId, regiInfo.getHandle());
+                clearDialogList(regiInfo.getPhoneId(), regiInfo.getHandle());
             }
             this.mImsCallSessionManager.onRegistered(regiInfo);
             this.mCmcServiceModule.onRegistered(regiInfo);
@@ -594,15 +594,43 @@ public class VolteServiceModule extends VolteServiceModuleInternal implements IV
         this.mVolteNotifier.unregisterCmcRecordingListener(phoneId, listener);
     }
 
+    public void setTtyMode(int mode) {
+        setTtyMode(this.mDefaultPhoneId, mode);
+    }
+
     public void setUiTTYMode(int phoneId, int mode, Message onComplete) {
         String str = LOG_TAG;
-        Log.i(str, "setUiTTYMode: phoneId = " + phoneId + ", mode = " + mode + ", do nothing");
+        Log.i(str, "setUiTTYMode: phoneId = " + phoneId + ", mode = " + mode);
+        setTtyMode(phoneId, mode);
         if (onComplete != null && onComplete.replyTo != null) {
             try {
                 onComplete.replyTo.send(onComplete);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void setTtyMode(int phoneId, int mode) {
+        int prevMode = this.mTtyMode[phoneId];
+        this.mTtyMode[phoneId] = mode;
+        SimpleEventLog simpleEventLog = this.mEventLog;
+        simpleEventLog.logAndAdd("setTtyMode: " + prevMode + " -> " + this.mTtyMode[phoneId]);
+        this.mRegMan.setTtyMode(phoneId, this.mTtyMode[phoneId]);
+        if (prevMode == this.mTtyMode[phoneId]) {
+            Log.e(LOG_TAG, "setTtyMode: not updating sessions");
+            return;
+        }
+        ImsRegistration regiInfo = getImsRegistration(phoneId);
+        if (regiInfo == null) {
+            Log.e(LOG_TAG, "when non-registered status, do not pass TTY Mode");
+        } else if (regiInfo.getImsProfile().getTtyType() == 1 || regiInfo.getImsProfile().getTtyType() == 3) {
+            Log.e(LOG_TAG, "setTtyMode: do not call setTtyMode() for non IMS TTY operator");
+            this.mTtyMode[phoneId] = prevMode;
+        } else {
+            IMSLog.c(LogClass.VOLTE_CHANGE_TTYMODE, phoneId + "," + this.mTtyMode[phoneId]);
+            this.mVolteSvcIntf.setTtyMode(phoneId, 0, this.mTtyMode[phoneId]);
+            this.mImsCallSessionManager.setTtyMode(phoneId, mode);
         }
     }
 
@@ -1044,9 +1072,7 @@ public class VolteServiceModule extends VolteServiceModuleInternal implements IV
         }
         if (this.mReleaseWfcBeforeHO[phoneId] && getSessionCount(phoneId) == 0) {
             Log.i(LOG_TAG, "All calls are release before HO, trigger HO to EPDG");
-            if (this.mWfcEpdgMgr.isEpdgServiceConnected()) {
-                this.mWfcEpdgMgr.getEpdgMgr().triggerHOAfterReleaseCall(phoneId);
-            }
+            this.mWfcEpdgMgr.getEpdgMgr().triggerHOAfterReleaseCall(phoneId);
             this.mReleaseWfcBeforeHO[phoneId] = false;
         }
         ImsRegistration regiInfo = getImsRegistration(phoneId);
@@ -1161,7 +1187,7 @@ public class VolteServiceModule extends VolteServiceModuleInternal implements IV
                     onCallStatusChange(msg.arg1, msg.arg2);
                     return;
                 case 6:
-                    if (!DeviceUtil.getGcfMode()) {
+                    if (!DeviceUtil.getGcfMode().booleanValue()) {
                         int i = msg.arg1;
                         if (msg.arg2 != 1) {
                             z = false;

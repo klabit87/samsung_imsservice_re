@@ -1,19 +1,19 @@
 package com.samsung.android.cmcnsd.network;
 
 public class NsdNetworkCallback {
-    public void onAvailable(NsdNetworkCapabilities nsdNetworkCapabilities) {
+    public void onAvailable(NsdNetworkCapabilities capabilities) {
     }
 
-    public void onConnected(NsdNetwork nsdNetwork) {
+    public void onConnected(NsdNetwork network) {
     }
 
-    public void onDisconnected(NsdNetwork nsdNetwork) {
+    public void onDisconnected(NsdNetwork network) {
     }
 
-    public void onNetworkMessageReceived(NsdNetworkMessage nsdNetworkMessage) {
+    public void onNetworkMessageReceived(NsdNetworkMessage message) {
     }
 
     public String toString() {
-        return "clazz=" + NsdNetworkCallback.class.getSimpleName() + "@" + hashCode();
+        return "clazz=" + getClass().getSimpleName() + "@" + hashCode();
     }
 }

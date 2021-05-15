@@ -59,9 +59,7 @@ public class RegistrationGovernorEur extends RegistrationGovernorBase {
             updateEutranValues();
         }
         this.mAECModule = ImsRegistry.getAECModule();
-        if (this.mMno != Mno.EDF) {
-            this.mHandlePcscfOnAlternativeCall = true;
-        }
+        this.mHandlePcscfOnAlternativeCall = true;
     }
 
     public void onRegistrationError(SipError error, int retryAfter, boolean unsolicit) {

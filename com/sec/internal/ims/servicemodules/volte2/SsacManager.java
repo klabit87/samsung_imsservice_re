@@ -168,7 +168,7 @@ public class SsacManager extends Handler {
                 if (factor >= 0) {
                     this.mFactor[phoneId] = factor;
                     this.mTime[phoneId] = time;
-                } else if ((mno == Mno.RAKUTEN_JAPAN || mno == Mno.KDDI || DeviceUtil.getGcfMode()) && hasMessages(1, Integer.valueOf(phoneId)) && factor == -1) {
+                } else if ((mno == Mno.RAKUTEN_JAPAN || mno == Mno.KDDI || DeviceUtil.getGcfMode().booleanValue()) && hasMessages(1, Integer.valueOf(phoneId)) && factor == -1) {
                     Log.i(SsacManager.LOG_TAG, this.mCallTypeName + "[" + phoneId + "]: Ignored updateSSACInfo : f[" + factor + "], t[" + time + "]");
                     return;
                 } else {
@@ -197,7 +197,7 @@ public class SsacManager extends Handler {
                 if (reg != null) {
                     mno = Mno.fromName(reg.getImsProfile().getMnoName());
                 }
-                if (mno == Mno.KDDI || DeviceUtil.getGcfMode() || mno == Mno.RAKUTEN_JAPAN) {
+                if (mno == Mno.KDDI || DeviceUtil.getGcfMode().booleanValue() || mno == Mno.RAKUTEN_JAPAN) {
                     this.mFactor[phoneId] = 100;
                     this.mTime[phoneId] = 0;
                 }

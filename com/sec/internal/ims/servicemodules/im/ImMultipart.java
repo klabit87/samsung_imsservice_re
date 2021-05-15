@@ -105,9 +105,9 @@ public class ImMultipart {
                             this.mContentType = "text/plain";
                         }
                     }
-                    int index3 = part.indexOf("\n");
-                    if (part.length() > index3 + 1) {
-                        this.mBody = part.substring(index3 + 1);
+                    int idx = part.indexOf("\n");
+                    if (part.length() > idx + 1) {
+                        this.mBody = part.substring(idx + 1);
                         this.mContentType = "text/plain";
                     }
                 }

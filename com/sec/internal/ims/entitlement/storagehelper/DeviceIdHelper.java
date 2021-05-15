@@ -23,29 +23,20 @@ public class DeviceIdHelper {
         return sp.getString(slotId + ":" + "device_id", (String) null);
     }
 
-    public static void makeDeviceId(Context context, int slotId) {
-        String deviceId = generateDeviceId(context, slotId);
-        String str = LOG_TAG;
-        IMSLog.s(str, slotId, "makeDeviceId: " + deviceId);
-        saveDeviceId(context, slotId, deviceId);
-    }
-
     public static String getDeviceId(Context context, int slotId) {
         String deviceUid = null;
+        IMSLog.i(LOG_TAG, "getDeviceId");
         SharedPreferences sp = NSDSSharedPrefHelper.getSharedPref(context, NSDSNamespaces.NSDSSharedPref.NAME_SHARED_PREF, 0);
         if (sp != null) {
             deviceUid = sp.getString(slotId + ":" + "device_id", (String) null);
         }
-        if (deviceUid == null) {
-            IMSLog.e(LOG_TAG, slotId, "getDeviceId is null");
-            deviceUid = generateDeviceId(context, slotId);
-            saveDeviceId(context, slotId, deviceUid);
-        }
         if (deviceUid != null) {
-            String str = LOG_TAG;
-            IMSLog.s(str, slotId, "getDeviceId: " + deviceUid);
+            return deviceUid;
         }
-        return deviceUid;
+        IMSLog.e(LOG_TAG, "getDeviceId is null");
+        String deviceUid2 = generateDeviceId(context, slotId);
+        saveDeviceId(context, slotId, deviceUid2);
+        return deviceUid2;
     }
 
     public static String getEncodedDeviceId(String deviceUid) {
@@ -55,7 +46,7 @@ public class DeviceIdHelper {
     private static void saveDeviceId(Context context, int slotId, String deviceId) {
         SharedPreferences sp = NSDSSharedPrefHelper.getSharedPref(context, NSDSNamespaces.NSDSSharedPref.NAME_SHARED_PREF, 0);
         if (sp == null) {
-            IMSLog.e(LOG_TAG, slotId, "saveDeviceId: save is failed");
+            IMSLog.e(LOG_TAG, "getDeviceId save is failed");
             return;
         }
         SharedPreferences.Editor editor = sp.edit();
@@ -92,6 +83,8 @@ public class DeviceIdHelper {
             }
             String imei = manager.getImei(slotId);
             String meid = manager.getMeid(slotId);
+            String str = LOG_TAG;
+            IMSLog.i(str, "imei len =" + imei.length() + "meid len" + meid.length());
             if (!TextUtils.isEmpty(imei)) {
                 return String.format("urn:gsma:imei:%s-%s-%s", new Object[]{imei.substring(0, 8), imei.substring(8, 14), "0"});
             } else if (TextUtils.isEmpty(meid)) {
@@ -100,8 +93,8 @@ public class DeviceIdHelper {
                 return String.format("urn:device-id:meid:%s-%s-%s", new Object[]{meid.substring(0, 8), meid.substring(8, 14), "0"});
             }
         } catch (Exception ex) {
-            String str = LOG_TAG;
-            IMSLog.i(str, "getting deviceId failed:" + ex.getMessage());
+            String str2 = LOG_TAG;
+            IMSLog.i(str2, "getting deviceId failed:" + ex.getMessage());
             return "";
         }
     }

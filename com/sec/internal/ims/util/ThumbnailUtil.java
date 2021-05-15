@@ -18,7 +18,6 @@ import java.util.Locale;
 
 public class ThumbnailUtil {
     private static final int HIGH_QUALITY = 100;
-    private static final long HIGH_QUALITY_FRAME_TIME = 15000000;
     private static final String LOG_TAG = ThumbnailUtil.class.getSimpleName();
     private static final int MAX_BYTE_COUNT = 5120;
     private static final int MAX_BYTE_COUNT_HIGH = 51200;
@@ -157,12 +156,7 @@ public class ThumbnailUtil {
                 retriever.setDataSource(filePath);
                 if (TextUtils.equals(retriever.extractMetadata(17), "yes") || type.startsWith(TMOConstants.CallLogTypes.VIDEO)) {
                     try {
-                        long durationUs = Long.parseLong(retriever.extractMetadata(9)) * 1000;
-                        long timeUs = HIGH_QUALITY_FRAME_TIME;
-                        if (HIGH_QUALITY_FRAME_TIME > durationUs) {
-                            timeUs = durationUs / 2;
-                        }
-                        thumbBitmap = retriever.getFrameAtTime(timeUs);
+                        thumbBitmap = retriever.getFrameAtTime(-1);
                         try {
                             retriever.release();
                         } catch (RuntimeException e) {

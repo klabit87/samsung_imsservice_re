@@ -27,6 +27,7 @@ import com.sec.internal.constants.ims.DiagnosisConstants;
 import com.sec.internal.constants.ims.ImsConstants;
 import com.sec.internal.constants.ims.core.RegistrationConstants;
 import com.sec.internal.constants.ims.os.NetworkEvent;
+import com.sec.internal.constants.ims.settings.GlobalSettingsConstants;
 import com.sec.internal.helper.CollectionUtils;
 import com.sec.internal.helper.ImsSharedPrefHelper;
 import com.sec.internal.helper.SimUtil;
@@ -1048,12 +1049,26 @@ public abstract class RegistrationManager implements IRegistrationManager {
     }
 
     public boolean isVoWiFiSupported(int phoneId) {
-        try {
-            return this.mImsFramework.isServiceAvailable("mmtel", 18, phoneId) || this.mImsFramework.isServiceAvailable("mmtel-video", 18, phoneId);
-        } catch (RemoteException e) {
-            e.printStackTrace();
+        boolean hasMmtelOnWiFi = false;
+        ImsProfile[] profileList = getProfileList(phoneId);
+        int length = profileList.length;
+        int i = 0;
+        while (true) {
+            if (i >= length) {
+                break;
+            }
+            ImsProfile profile = profileList[i];
+            if (profile.hasService("mmtel", 18) || profile.hasService("mmtel-video", 18)) {
+                hasMmtelOnWiFi = true;
+            } else {
+                i++;
+            }
+        }
+        hasMmtelOnWiFi = true;
+        if (!this.mImsFramework.getBoolean(phoneId, GlobalSettingsConstants.Registration.SUPPORT_VOWIFI, false) || !hasMmtelOnWiFi) {
             return false;
         }
+        return true;
     }
 
     public boolean isPdnConnected(ImsProfile profile, int phoneId) {
@@ -1302,10 +1317,10 @@ public abstract class RegistrationManager implements IRegistrationManager {
     /* JADX WARNING: Removed duplicated region for block: B:117:0x0267  */
     /* JADX WARNING: Removed duplicated region for block: B:120:0x0278  */
     /* JADX WARNING: Removed duplicated region for block: B:121:0x0284  */
-    /* JADX WARNING: Removed duplicated region for block: B:138:0x02de  */
-    /* JADX WARNING: Removed duplicated region for block: B:141:0x02f3  */
-    /* JADX WARNING: Removed duplicated region for block: B:142:0x02fa  */
-    /* JADX WARNING: Removed duplicated region for block: B:157:0x0332  */
+    /* JADX WARNING: Removed duplicated region for block: B:129:0x02a8  */
+    /* JADX WARNING: Removed duplicated region for block: B:132:0x02bd  */
+    /* JADX WARNING: Removed duplicated region for block: B:133:0x02c4  */
+    /* JADX WARNING: Removed duplicated region for block: B:148:0x02fc  */
     /* Code decompiled incorrectly, please refer to instructions dump. */
     public java.lang.String buildUserAgentString(com.sec.ims.settings.ImsProfile r19, java.lang.String r20, int r21) {
         /*
@@ -1600,84 +1615,61 @@ public abstract class RegistrationManager implements IRegistrationManager {
             java.lang.String r3 = "ro.product.base_model"
             java.lang.String r3 = android.os.SemSystemProperties.get(r3)
             java.lang.String r0 = r0.replace(r4, r3)
-            goto L_0x02d6
+            goto L_0x02a0
         L_0x0284:
-            com.samsung.android.feature.SemFloatingFeature r3 = com.samsung.android.feature.SemFloatingFeature.getInstance()
-            java.lang.String r8 = "SEC_FLOATING_FEATURE_COMMON_SUPPORT_MHS_DONGLE"
-            java.lang.String r9 = "FALSE"
-            java.lang.String r3 = r3.getString(r8, r9)
-            boolean r3 = java.lang.Boolean.parseBoolean(r3)
-            if (r3 == 0) goto L_0x02ba
-            boolean r3 = r7.isKor()
-            if (r3 == 0) goto L_0x02a0
-            java.lang.String r3 = "NT930QCA"
-            goto L_0x02a2
-        L_0x02a0:
-            java.lang.String r3 = "NP930QCA"
-        L_0x02a2:
-            java.lang.String r8 = "ril.PcModelName"
-            java.lang.String r3 = android.os.SemSystemProperties.get(r8, r3)
-            java.lang.String r0 = r0.replace(r4, r3)
-            com.sec.internal.constants.Mno r3 = com.sec.internal.constants.Mno.KT
-            if (r7 != r3) goto L_0x02d6
-            java.lang.String r3 = "Android_Phone"
-            java.lang.String r4 = "Laptop_PC"
-            java.lang.String r0 = r0.replace(r3, r4)
-            goto L_0x02d6
-        L_0x02ba:
             boolean r3 = com.sec.internal.ims.util.ConfigUtil.isRcsEur((int) r21)
-            if (r3 == 0) goto L_0x02d0
+            if (r3 == 0) goto L_0x029a
             boolean r3 = com.sec.internal.ims.util.ConfigUtil.isRcsOnly(r19)
-            if (r3 == 0) goto L_0x02d0
+            if (r3 == 0) goto L_0x029a
             java.lang.String r3 = com.sec.internal.ims.config.ConfigContract.BUILD.getTerminalModel()
             java.lang.String r0 = r0.replace(r4, r3)
-            goto L_0x02d6
-        L_0x02d0:
+            goto L_0x02a0
+        L_0x029a:
             java.lang.String r3 = android.os.Build.MODEL
             java.lang.String r0 = r0.replace(r4, r3)
-        L_0x02d6:
+        L_0x02a0:
             java.lang.String r3 = "[CLIENT_VERSION]"
             boolean r4 = r0.contains(r3)
-            if (r4 == 0) goto L_0x02ed
+            if (r4 == 0) goto L_0x02b7
             com.sec.internal.interfaces.ims.IImsFramework r4 = r1.mImsFramework
             java.lang.String r8 = "rcs_client_version"
             java.lang.String r9 = "6.0"
             java.lang.String r4 = r4.getString(r2, r8, r9)
             java.lang.String r0 = r0.replace(r3, r4)
-        L_0x02ed:
+        L_0x02b7:
             boolean r3 = com.sec.internal.helper.OmcCode.isSKTOmcCode()
-            if (r3 == 0) goto L_0x02fa
+            if (r3 == 0) goto L_0x02c4
             java.lang.String r3 = "SKT"
             java.lang.String r0 = r0.replace(r5, r3)
-            goto L_0x032c
-        L_0x02fa:
+            goto L_0x02f6
+        L_0x02c4:
             boolean r3 = com.sec.internal.helper.OmcCode.isKTTOmcCode()
-            if (r3 == 0) goto L_0x0307
+            if (r3 == 0) goto L_0x02d1
             java.lang.String r3 = "KT"
             java.lang.String r0 = r0.replace(r5, r3)
-            goto L_0x032c
-        L_0x0307:
+            goto L_0x02f6
+        L_0x02d1:
             boolean r3 = com.sec.internal.helper.OmcCode.isLGTOmcCode()
-            if (r3 == 0) goto L_0x0314
+            if (r3 == 0) goto L_0x02de
             java.lang.String r3 = "LGU"
             java.lang.String r0 = r0.replace(r5, r3)
-            goto L_0x032c
-        L_0x0314:
+            goto L_0x02f6
+        L_0x02de:
             boolean r3 = com.sec.internal.helper.OmcCode.isKorOpenOmcCode()
-            if (r3 != 0) goto L_0x0326
+            if (r3 != 0) goto L_0x02f0
             boolean r3 = r7.isKor()
-            if (r3 == 0) goto L_0x032c
+            if (r3 == 0) goto L_0x02f6
             boolean r3 = r19.getSimMobility()
-            if (r3 == 0) goto L_0x032c
-        L_0x0326:
+            if (r3 == 0) goto L_0x02f6
+        L_0x02f0:
             java.lang.String r3 = "OMD"
             java.lang.String r0 = r0.replace(r5, r3)
-        L_0x032c:
+        L_0x02f6:
             boolean r3 = r7.isKor()
-            if (r3 == 0) goto L_0x0338
+            if (r3 == 0) goto L_0x0302
             java.lang.String r3 = "[UICC_VERSION]"
             java.lang.String r0 = r0.replace(r3, r13)
-        L_0x0338:
+        L_0x0302:
             java.lang.StringBuilder r3 = new java.lang.StringBuilder
             r3.<init>()
             java.lang.String r4 = "buildUserAgentString: isVoLteEnabled="

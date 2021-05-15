@@ -62,7 +62,7 @@ public class ConfigComplete {
 
     private void releasePermanentBlockforJibe(int errorCode, int phoneId, List<IRegisterTask> rtl, Integer version, String rcsAs, int forbiddenCnt) {
         for (IRegisterTask task : rtl) {
-            if (ImsConstants.RCS_AS.JIBE.equals(rcsAs) && ConfigUtil.hasChatbotService(phoneId, this.mRm) && task.getGovernor().isThrottled() && errorCode == 200 && version != null && version.intValue() > 0 && forbiddenCnt < 2) {
+            if ((task.getMno() == Mno.SPRINT || task.getMno() == Mno.TCE || task.getMno() == Mno.CLARO_ARGENTINA || task.getMno() == Mno.CLARO_PARAGUAY || task.getMno() == Mno.PERSONAL_ARGENTINA || task.getMno() == Mno.CLARO_DOMINICAN || (ImsConstants.RCS_AS.JIBE.equals(rcsAs) && ConfigUtil.hasChatbotService(phoneId, this.mRm))) && task.getGovernor().isThrottled() && errorCode == 200 && version != null && version.intValue() > 0 && forbiddenCnt < 2) {
                 IMSLog.i(LOG_TAG, phoneId, "releasePermanentBlock: register is blocked, release");
                 this.mRm.releaseThrottleByAcs(phoneId);
             }

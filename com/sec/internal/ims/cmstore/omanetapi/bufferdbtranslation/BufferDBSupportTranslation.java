@@ -20,7 +20,6 @@ import com.sec.internal.constants.ims.cmstore.data.FlagNames;
 import com.sec.internal.constants.ims.cmstore.data.MessageContextValues;
 import com.sec.internal.constants.ims.servicemodules.im.ChatData;
 import com.sec.internal.constants.ims.servicemodules.im.ImContract;
-import com.sec.internal.helper.FileUtils;
 import com.sec.internal.helper.httpclient.HttpPostBody;
 import com.sec.internal.helper.translate.ContentTypeTranslator;
 import com.sec.internal.ims.cmstore.helper.ATTGlobalVariables;
@@ -55,9 +54,7 @@ import java.util.TimeZone;
 
 public class BufferDBSupportTranslation extends BufferQueryDBTranslation {
     private static final String LOG_TAG = BufferDBSupportTranslation.class.getSimpleName();
-    public static final String MSGAPP_FTCONTENT_URI = "content://im/ft/";
     protected ICloudMessageManagerHelper mCloudMessageManagerHelper;
-    private Context mContext = null;
     private final String mDelimiter = ";";
     private final TelephonyDbHelper mTeleDBHelper;
     protected final SimpleDateFormat sFormatOfName;
@@ -71,7 +68,6 @@ public class BufferDBSupportTranslation extends BufferQueryDBTranslation {
         super(context);
         this.mCloudMessageManagerHelper = iCloudMessageManagerHelper;
         this.mTeleDBHelper = new TelephonyDbHelper(context);
-        this.mContext = context;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
         this.sFormatOfName = simpleDateFormat;
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -306,137 +302,10 @@ public class BufferDBSupportTranslation extends BufferQueryDBTranslation {
         return new HttpPostBody(contentDisposition, contentType, data, "cid:thumbnail", (String) null);
     }
 
-    /* JADX WARNING: Removed duplicated region for block: B:21:0x009b  */
-    /* JADX WARNING: Removed duplicated region for block: B:24:0x00a4  */
-    /* JADX WARNING: Removed duplicated region for block: B:26:0x00bc  */
-    /* Code decompiled incorrectly, please refer to instructions dump. */
-    private java.lang.String getLocalFilePathForFt(android.database.Cursor r22) {
-        /*
-            r21 = this;
-            r1 = r21
-            r2 = r22
-            java.lang.String r0 = "direction"
-            int r0 = r2.getColumnIndexOrThrow(r0)
-            int r0 = r2.getInt(r0)
-            long r3 = (long) r0
-            java.lang.String r0 = "is_filetransfer"
-            int r0 = r2.getColumnIndexOrThrow(r0)
-            int r5 = r2.getInt(r0)
-            java.lang.String r0 = LOG_TAG
-            java.lang.StringBuilder r6 = new java.lang.StringBuilder
-            r6.<init>()
-            java.lang.String r7 = "direction: "
-            r6.append(r7)
-            r6.append(r3)
-            java.lang.String r7 = " isFt: "
-            r6.append(r7)
-            r6.append(r5)
-            java.lang.String r6 = r6.toString()
-            android.util.Log.i(r0, r6)
-            com.sec.internal.constants.ims.servicemodules.im.ImDirection r0 = com.sec.internal.constants.ims.servicemodules.im.ImDirection.OUTGOING
-            int r0 = r0.getId()
-            long r6 = (long) r0
-            int r0 = (r3 > r6 ? 1 : (r3 == r6 ? 0 : -1))
-            if (r0 != 0) goto L_0x00fb
-            r0 = 1
-            if (r5 == r0) goto L_0x0048
-            goto L_0x00fb
-        L_0x0048:
-            java.lang.String r7 = "content://im/ft/"
-            android.net.Uri r7 = android.net.Uri.parse(r7)
-            java.lang.String r8 = "imdn_message_id"
-            int r8 = r2.getColumnIndex(r8)
-            java.lang.String r14 = r2.getString(r8)
-            java.lang.String r15 = "_id"
-            java.lang.String[] r10 = new java.lang.String[]{r15}
-            java.lang.String r16 = "imdn_message_id = ?"
-            java.lang.String[] r12 = new java.lang.String[r0]
-            r0 = 0
-            r12[r0] = r14
-            r17 = -1
-            com.sec.internal.ims.cmstore.helper.TelephonyDbHelper r8 = r1.mTeleDBHelper
-            r13 = 0
-            r9 = r7
-            r11 = r16
-            android.database.Cursor r8 = r8.query(r9, r10, r11, r12, r13)
-            if (r8 == 0) goto L_0x0096
-            boolean r0 = r8.moveToFirst()     // Catch:{ all -> 0x0088 }
-            if (r0 == 0) goto L_0x0096
-            int r0 = r8.getColumnIndexOrThrow(r15)     // Catch:{ all -> 0x0088 }
-            long r19 = r8.getLong(r0)     // Catch:{ all -> 0x0088 }
-            r17 = r19
-            r9 = r7
-            r6 = r17
-            goto L_0x0099
-        L_0x0088:
-            r0 = move-exception
-            r6 = r0
-            if (r8 == 0) goto L_0x0095
-            r8.close()     // Catch:{ all -> 0x0090 }
-            goto L_0x0095
-        L_0x0090:
-            r0 = move-exception
-            r9 = r0
-            r6.addSuppressed(r9)
-        L_0x0095:
-            throw r6
-        L_0x0096:
-            r9 = r7
-            r6 = r17
-        L_0x0099:
-            if (r8 == 0) goto L_0x009e
-            r8.close()
-        L_0x009e:
-            r17 = -1
-            int r8 = (r6 > r17 ? 1 : (r6 == r17 ? 0 : -1))
-            if (r8 != 0) goto L_0x00bc
-            java.lang.String r8 = LOG_TAG
-            java.lang.StringBuilder r11 = new java.lang.StringBuilder
-            r11.<init>()
-            java.lang.String r13 = "Invalid rowId received for imdn id: "
-            r11.append(r13)
-            r11.append(r14)
-            java.lang.String r11 = r11.toString()
-            android.util.Log.e(r8, r11)
-            r0 = 0
-            return r0
-        L_0x00bc:
-            java.lang.String r0 = LOG_TAG
-            java.lang.StringBuilder r8 = new java.lang.StringBuilder
-            r8.<init>()
-            java.lang.String r11 = "row id : "
-            r8.append(r11)
-            r8.append(r6)
-            java.lang.String r11 = " for imdn id:"
-            r8.append(r11)
-            r8.append(r14)
-            java.lang.String r8 = r8.toString()
-            android.util.Log.i(r0, r8)
-            java.lang.String r0 = "content://im/ft_original/"
-            android.net.Uri r0 = android.net.Uri.parse(r0)
-            android.net.Uri r8 = android.content.ContentUris.withAppendedId(r0, r6)
-            java.lang.String r8 = r8.toString()
-            java.lang.String r11 = "file_name"
-            int r11 = r2.getColumnIndex(r11)
-            java.lang.String r11 = r2.getString(r11)
-            android.content.Context r13 = r1.mContext
-            java.lang.String r13 = com.sec.internal.helper.FileUtils.copyFileFromUri(r13, r8, r11)
-            return r13
-        L_0x00fb:
-            r0 = 0
-            return r0
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.sec.internal.ims.cmstore.omanetapi.bufferdbtranslation.BufferDBSupportTranslation.getLocalFilePathForFt(android.database.Cursor):java.lang.String");
-    }
-
     private List<HttpPostBody> getFtMultiBody(Cursor cursor, String filepath) {
-        String localFilePath = getLocalFilePathForFt(cursor);
-        Log.i(LOG_TAG, "getFtMultiBody localFilePath : " + localFilePath + " filePath: " + filepath);
         String thumbfilepath = cursor.getString(cursor.getColumnIndex(ImContract.CsSession.THUMBNAIL_PATH));
         File file = null;
-        if (!TextUtils.isEmpty(localFilePath)) {
-            file = new File(localFilePath);
-        } else if (!TextUtils.isEmpty(filepath)) {
+        if (!TextUtils.isEmpty(filepath)) {
             file = new File(filepath);
         }
         File thumbfile = null;
@@ -453,7 +322,7 @@ public class BufferDBSupportTranslation extends BufferQueryDBTranslation {
             if (part2 != null) {
                 multibody.add(part2);
             }
-            Log.d(LOG_TAG, "Filepath: " + file + " File payload size: " + multibody.size() + " thumbnailpath: " + thumbfilepath + " Thumbnail payload size: " + multibody.size());
+            Log.d(LOG_TAG, "Filepath: " + file + " File payload size: " + multibody.size() + " thumbnailpath: " + file + " Thumbnail payload size: " + multibody.size());
         } else {
             if (file != null && file.exists()) {
                 String contentDisposition = "attachment;filename=\"" + cursor.getString(cursor.getColumnIndex("file_name")) + "\"";
@@ -466,17 +335,11 @@ public class BufferDBSupportTranslation extends BufferQueryDBTranslation {
             }
             Log.d(LOG_TAG, "thumbnail filepath : " + thumbfilepath + " ,body size: " + multibody.size());
         }
-        FileUtils.removeFile(localFilePath);
         return multibody;
     }
 
     /* access modifiers changed from: protected */
     public List<HttpPostBody> getChatSlmMultibody(Cursor cs, String body, BufferQueryDBTranslation.MessageType type, String filepath) {
-        String localFilePath = getLocalFilePathForFt(cs);
-        Log.i(LOG_TAG, "getChatSlmMultibody localFilePath : " + localFilePath + " filePath: " + filepath);
-        if (!TextUtils.isEmpty(localFilePath)) {
-            filepath = localFilePath;
-        }
         List<HttpPostBody> multibody = new ArrayList<>();
         if (!TextUtils.isEmpty(body)) {
             multibody.add(new HttpPostBody("form-data;name=\"attachments\";filename=\"sms.txt\"", "text/plain", body));
@@ -493,7 +356,6 @@ public class BufferDBSupportTranslation extends BufferQueryDBTranslation {
             }
             multibody.add(new HttpPostBody(contentDisposition, contentType, data));
         }
-        FileUtils.removeFile(localFilePath);
         return multibody;
     }
 

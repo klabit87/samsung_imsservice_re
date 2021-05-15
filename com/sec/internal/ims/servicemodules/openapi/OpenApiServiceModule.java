@@ -16,7 +16,6 @@ import com.sec.ims.IImsService;
 import com.sec.ims.ImsRegistration;
 import com.sec.ims.extensions.ContextExt;
 import com.sec.ims.openapi.ISipDialogListener;
-import com.sec.ims.settings.ImsProfile;
 import com.sec.ims.volte2.IImsCallEventListener;
 import com.sec.ims.volte2.IVolteService;
 import com.sec.internal.helper.AsyncResult;
@@ -74,8 +73,7 @@ public class OpenApiServiceModule extends ServiceModuleBase implements IOpenApiS
             return;
         }
         super.onRegistered(regiInfo);
-        ImsProfile imsProfile = regiInfo.getImsProfile();
-        if (imsProfile != null && !imsProfile.hasEmergencySupport()) {
+        if (!regiInfo.getImsProfile().hasEmergencySupport() && regiInfo.getImsProfile() != null) {
             this.mRegistrationId = getRegistrationInfoId(regiInfo);
         }
     }

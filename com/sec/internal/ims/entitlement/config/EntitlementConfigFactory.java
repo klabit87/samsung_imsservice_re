@@ -41,20 +41,18 @@ public class EntitlementConfigFactory {
     }
 
     public EntitlementConfigModuleBase getDeviceConfigModule(ISimManager simManager) {
-        if (simManager == null) {
-            return null;
-        }
         try {
             Mno mno = simManager.getSimMno();
             String str = LOG_TAG;
             IMSLog.i(str, "createMnoStrategy: mno = " + mno);
-            if (sSalesCodeConfigImplMap.get(mno) != null) {
-                return (EntitlementConfigModuleBase) sSalesCodeConfigImplMap.get(mno).getConstructor(new Class[]{Looper.class, Context.class, ISimManager.class}).newInstance(new Object[]{this.mServiceLooper, this.mContext, simManager});
+            if (sSalesCodeConfigImplMap.get(mno) == null) {
+                return null;
             }
+            return (EntitlementConfigModuleBase) sSalesCodeConfigImplMap.get(mno).getConstructor(new Class[]{Looper.class, Context.class, ISimManager.class}).newInstance(new Object[]{this.mServiceLooper, this.mContext, simManager});
         } catch (IllegalAccessException | IllegalArgumentException | IllegalStateException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
             String str2 = LOG_TAG;
             IMSLog.s(str2, "Exception : " + e.getMessage());
+            return null;
         }
-        return null;
     }
 }

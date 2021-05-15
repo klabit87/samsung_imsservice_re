@@ -546,27 +546,14 @@ public class StorageAdapter implements IStorageAdapter {
                 SQLiteDatabase db = getWritableDatabase();
                 for (String table : getTables(db)) {
                     db.execSQL("DROP TABLE IF EXISTS " + table);
-                    db.execSQL("CREATE TABLE IF NOT EXISTS " + table + " ( " + COLUMN1_NAME + " TEXT PRIMARY KEY," + COLUMN2_NAME + " TEXT )");
-                    Calendar rightNow = Calendar.getInstance();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat(TIMESTAMP_FORMAT, Locale.getDefault());
-                    String str = StorageAdapter.LOG_TAG;
-                    int access$000 = StorageAdapter.this.mPhoneId;
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("timestamp:");
-                    sb.append(dateFormat.format(rightNow.getTime()));
-                    IMSLog.i(str, access$000, sb.toString());
-                    ContentValues values = new ContentValues();
-                    values.put(COLUMN1_NAME, PATH_METADATA_TIMESTAMP);
-                    values.put(COLUMN2_NAME, String.valueOf(rightNow.getTimeInMillis()));
-                    db.insertWithOnConflict(this.mTableName, (String) null, values, 5);
                     removedTables.add(table);
                 }
-                String str2 = StorageAdapter.LOG_TAG;
-                Log.i(str2, "forceDeleteAllConfig: removed tables: " + removedTables);
+                String str = StorageAdapter.LOG_TAG;
+                Log.i(str, "forceDeleteAllConfig: removed tables: " + removedTables);
                 return true;
             } catch (SQLiteDiskIOException e) {
-                String str3 = StorageAdapter.LOG_TAG;
-                Log.i(str3, "SQLiteDiskIOException : " + e.toString());
+                String str2 = StorageAdapter.LOG_TAG;
+                Log.i(str2, "SQLiteDiskIOException : " + e.toString());
                 return false;
             } catch (SQLiteException e2) {
                 Log.i(StorageAdapter.LOG_TAG, "SQLiteException!");

@@ -193,12 +193,11 @@ public class RegistrationGovernorOce extends RegistrationGovernorBase {
     }
 
     private String countryInfoLoaded() {
-        LocationInfo geolocation;
         IGeolocationController iGeolocationController = this.mGeolocationCon;
-        if (iGeolocationController == null || !iGeolocationController.isCountryCodeLoaded(this.mPhoneId) || (geolocation = this.mGeolocationCon.getGeolocation()) == null) {
+        if (iGeolocationController == null || !iGeolocationController.isCountryCodeLoaded(this.mPhoneId)) {
             return "";
         }
-        return geolocation.mCountry;
+        return this.mGeolocationCon.getGeolocation().mCountry;
     }
 
     public boolean determineDeRegistration(int foundBestRat, int currentRat) {

@@ -2,7 +2,6 @@ package com.samsung.android.cmcnsd.network;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import java.util.Objects;
 
 public class NsdNetworkCapabilities implements Parcelable {
     public static final int CAPABILITY_FULL = 7;
@@ -11,122 +10,101 @@ public class NsdNetworkCapabilities implements Parcelable {
     public static final int CAPABILITY_MAX = 7;
     public static final int CAPABILITY_OUTGOING_CALL = 0;
     public static final Parcelable.Creator<NsdNetworkCapabilities> CREATOR = new Parcelable.Creator<NsdNetworkCapabilities>() {
-        public NsdNetworkCapabilities createFromParcel(Parcel parcel) {
-            return new NsdNetworkCapabilities(parcel);
+        public NsdNetworkCapabilities createFromParcel(Parcel in) {
+            return new NsdNetworkCapabilities(in);
         }
 
-        public NsdNetworkCapabilities[] newArray(int i) {
-            return new NsdNetworkCapabilities[i];
+        public NsdNetworkCapabilities[] newArray(int size) {
+            return new NsdNetworkCapabilities[size];
         }
     };
     public static final int TRANSPORT_WIFI_AP = 0;
     public static final int TRANSPORT_WIFI_DIRECT = 1;
+    /* access modifiers changed from: private */
     public int mCapabilities;
+    /* access modifiers changed from: private */
     public int mTransport;
 
-    public int describeContents() {
-        return 0;
-    }
-
-    public NsdNetworkCapabilities() {
+    private NsdNetworkCapabilities() {
         this.mTransport = 0;
         this.mCapabilities = 0;
     }
 
-    public NsdNetworkCapabilities(Parcel parcel) {
-        readFromParcel(parcel);
+    private NsdNetworkCapabilities(Parcel in) {
+        readFromParcel(in);
     }
 
     public int getTransport() {
         return this.mTransport;
     }
 
-    public boolean hasTransport(int i) {
-        return ((1 << i) & this.mTransport) != 0;
+    public boolean hasTransport(int transport) {
+        return (this.mTransport & (1 << transport)) != 0;
     }
 
     public int getCapabilities() {
         return this.mCapabilities;
     }
 
-    public boolean hasCapability(int i) {
-        return ((1 << i) & this.mCapabilities) != 0;
+    public boolean hasCapability(int capability) {
+        return (this.mCapabilities & (1 << capability)) != 0;
     }
 
-    public boolean hasCapabilities(NsdNetworkCapabilities nsdNetworkCapabilities) {
-        if (!(nsdNetworkCapabilities == null || (this.mTransport & nsdNetworkCapabilities.getTransport()) == 0)) {
-            if ((nsdNetworkCapabilities.getCapabilities() & this.mCapabilities) != 0) {
-                return true;
-            }
-        }
-        return false;
+    public boolean hasCapabilities(NsdNetworkCapabilities capabilities) {
+        return ((this.mTransport & capabilities.getTransport()) == 0 || (this.mCapabilities & capabilities.getCapabilities()) == 0) ? false : true;
     }
 
-    public boolean combine(NsdNetworkCapabilities nsdNetworkCapabilities) {
-        if (nsdNetworkCapabilities == null) {
-            return false;
-        }
+    public boolean combine(NsdNetworkCapabilities capabilities) {
         int i = this.mCapabilities;
-        int i2 = nsdNetworkCapabilities.mCapabilities;
+        int i2 = capabilities.mCapabilities;
         if ((i ^ i2) == 0) {
             return false;
         }
-        this.mCapabilities = i2 | i;
+        this.mCapabilities = i | i2;
         return true;
-    }
-
-    public boolean equals(Object obj) {
-        if (!(obj instanceof NsdNetworkCapabilities)) {
-            return false;
-        }
-        NsdNetworkCapabilities nsdNetworkCapabilities = (NsdNetworkCapabilities) obj;
-        if (this.mTransport == nsdNetworkCapabilities.mTransport && this.mCapabilities == nsdNetworkCapabilities.mCapabilities) {
-            return true;
-        }
-        return false;
-    }
-
-    public int hashCode() {
-        return Objects.hash(new Object[]{Integer.valueOf(this.mTransport), Integer.valueOf(this.mCapabilities)});
     }
 
     public String toString() {
         return "[transport=" + this.mTransport + " capabilities=" + this.mCapabilities + "]";
     }
 
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(this.mTransport);
-        parcel.writeInt(this.mCapabilities);
+    public int describeContents() {
+        return 0;
     }
 
-    private void readFromParcel(Parcel parcel) {
-        this.mTransport = parcel.readInt();
-        this.mCapabilities = parcel.readInt();
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.mTransport);
+        dest.writeInt(this.mCapabilities);
+    }
+
+    private void readFromParcel(Parcel in) {
+        this.mTransport = in.readInt();
+        this.mCapabilities = in.readInt();
     }
 
     public static class Builder {
-        public final NsdNetworkCapabilities mNsdNetworkCapabilities = new NsdNetworkCapabilities();
+        private final NsdNetworkCapabilities mNsdNetworkCapabilities = new NsdNetworkCapabilities();
 
-        public Builder addTransport(int i) {
+        public Builder addTransport(int transport) {
             NsdNetworkCapabilities nsdNetworkCapabilities = this.mNsdNetworkCapabilities;
-            int unused = nsdNetworkCapabilities.mTransport = (1 << i) | nsdNetworkCapabilities.mTransport;
+            int unused = nsdNetworkCapabilities.mTransport = nsdNetworkCapabilities.mTransport | (1 << transport);
             return this;
         }
 
-        public Builder addCapability(int i) {
+        public Builder addCapability(int capability) {
             NsdNetworkCapabilities nsdNetworkCapabilities = this.mNsdNetworkCapabilities;
-            int unused = nsdNetworkCapabilities.mCapabilities = (1 << i) | nsdNetworkCapabilities.mCapabilities;
+            int unused = nsdNetworkCapabilities.mCapabilities = nsdNetworkCapabilities.mCapabilities | (1 << capability);
             return this;
         }
 
-        public Builder setCapabilities(int i) {
-            int unused = this.mNsdNetworkCapabilities.mCapabilities = i;
+        public Builder setCapabilities(int capabilities) {
+            int unused = this.mNsdNetworkCapabilities.mCapabilities = capabilities;
             return this;
         }
 
-        public Builder combineCapabilities(int i) {
+        public Builder combineCapabilities(int capabilities) {
             NsdNetworkCapabilities nsdNetworkCapabilities = this.mNsdNetworkCapabilities;
-            int unused = nsdNetworkCapabilities.mCapabilities = i | nsdNetworkCapabilities.mCapabilities;
+            int unused = nsdNetworkCapabilities.mCapabilities = nsdNetworkCapabilities.mCapabilities | capabilities;
             return this;
         }
 

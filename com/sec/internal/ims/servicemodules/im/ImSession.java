@@ -1117,7 +1117,7 @@ public class ImSession extends StateMachine {
         List<MessageBase> orderedPendingMessages = new ArrayList<>();
         for (MessageBase m : this.mGetter.getAllPendingMessages(this.mChatId)) {
             String ownImsi = m.getOwnIMSI();
-            logi("IMSI of SIM sent this message = " + IMSLog.numberChecker(ownImsi) + ", IMSI of current SIM = " + IMSLog.numberChecker(this.mOwnImsi));
+            logi("IMSI of SIM sent this message = " + IMSLog.checker(ownImsi) + ", IMSI of current SIM = " + IMSLog.checker(this.mOwnImsi));
             if (TextUtils.isEmpty(ownImsi)) {
                 logi("current status of this message = " + m.getStatus());
                 if (m.getStatus() == ImConstants.Status.SENDING || m.getStatus() == ImConstants.Status.TO_SEND) {
@@ -1789,7 +1789,7 @@ public class ImSession extends StateMachine {
 
     /* access modifiers changed from: protected */
     public String toStringForDump() {
-        return "ImSession [ChatId=" + this.mChatData.getChatId() + ", ConvId=" + this.mChatData.getConversationId() + ", ContId=" + this.mChatData.getContributionId() + ", ChatType=" + this.mChatData.getChatType() + ", Participants=" + IMSLog.checker(this.mParticipants) + ", Status=" + this.mChatData.getState() + ", ClosedReason=" + this.mClosedReason + "]";
+        return "ImSession [conversationId=" + this.mChatData.getConversationId() + ", chatType=" + this.mChatData.getChatType() + ", mParticipants=" + IMSLog.checker(this.mParticipants) + ", status=" + this.mChatData.getState() + ", mClosedReason=" + this.mClosedReason + "]";
     }
 
     public int hashCode() {

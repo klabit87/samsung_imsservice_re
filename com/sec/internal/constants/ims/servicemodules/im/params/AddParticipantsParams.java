@@ -3,7 +3,6 @@ package com.sec.internal.constants.ims.servicemodules.im.params;
 import android.os.Message;
 import com.sec.ims.util.ImsUri;
 import com.sec.internal.log.IMSLog;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +21,6 @@ public class AddParticipantsParams {
     }
 
     public String toString() {
-        return "AddParticipantsParams [mRawHandle=" + this.mRawHandle + ", mReceivers=" + IMSLog.numberChecker((Collection<ImsUri>) this.mReceivers) + ", mCallback=" + this.mCallback + ", mSubject=" + IMSLog.checker(this.mSubject) + ", mReqKey=" + this.mReqKey + "]";
+        return "AddParticipantsParams [mRawHandle=" + this.mRawHandle + ", mReceivers=" + IMSLog.checker(this.mReceivers) + ", mCallback=" + this.mCallback + ", mSubject=" + IMSLog.checker(this.mSubject) + ", mReqKey=" + this.mReqKey + "]";
     }
 }

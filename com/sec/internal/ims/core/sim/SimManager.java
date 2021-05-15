@@ -518,7 +518,7 @@ public class SimManager extends Handler implements ISimManager {
             return !DeviceUtil.includedSimByTSS(this.mSimMnoName);
         } else {
             String operator = getSimOperator();
-            if (!isLabSimCard() && !operator.equals("45001") && !DeviceUtil.getGcfMode()) {
+            if (!isLabSimCard() && !operator.equals("45001") && !DeviceUtil.getGcfMode().booleanValue()) {
                 return CollectionUtils.isNullOrEmpty((Collection<?>) getNetworkNames());
             }
             Log.i(LOG_TAG, "isOutboundSim, GCF mode, LabSim card/ Test Bed SIM inserted.");
@@ -917,7 +917,7 @@ public class SimManager extends Handler implements ISimManager {
                 }
                 this.mImsiFromImpi = "";
                 boolean isGlobalGcEnabled = false;
-                if (DeviceUtil.getGcfMode()) {
+                if (DeviceUtil.getGcfMode().booleanValue()) {
                     setSimMno(Mno.GCF, true);
                     String str2 = gid22;
                 } else {
@@ -1685,6 +1685,10 @@ public class SimManager extends Handler implements ISimManager {
 
     public String getSimMnoName() {
         return this.mSimMnoName;
+    }
+
+    public String getSimEmergencyDomain() {
+        return SimManagerUtils.getSimEmergencyDomain(this.mMnoInfo);
     }
 
     public void dump() {

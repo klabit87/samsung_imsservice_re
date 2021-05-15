@@ -21,6 +21,7 @@ import java.util.TreeMap;
 public class SharedInfo {
     private final String LOG_TAG = SharedInfo.class.getSimpleName();
     private HashMap<String, String> mAKAParams = new HashMap<>();
+    private String mClientPlatform = "";
     private String mClientVersion = "";
     private Map<String, List<String>> mHttpHeader = new TreeMap(String.CASE_INSENSITIVE_ORDER);
     private Map<String, String> mHttpParam = new HashMap();
@@ -43,10 +44,11 @@ public class SharedInfo {
     private String mUserMsisdn = "";
     private String mXml = null;
 
-    public SharedInfo(Context context, ISimManager sm, String rcsProfile, String rcsVersion, String clientVersion) {
+    public SharedInfo(Context context, ISimManager sm, String rcsProfile, String rcsVersion, String clientPlatform, String clientVersion) {
         this.mSm = sm;
         this.mRcsProfile = rcsProfile;
         this.mRcsVersion = rcsVersion;
+        this.mClientPlatform = clientPlatform;
         this.mClientVersion = clientVersion;
         String str = this.LOG_TAG;
         Log.i(str, "rcsProfile: " + rcsProfile + " rcsVersion: " + rcsVersion + " clientVersion: " + clientVersion);
@@ -318,7 +320,7 @@ public class SharedInfo {
         params.put("rcs_version", this.mRcsVersion);
         params.put(ConfigConstants.PNAME.RCS_PROFILE, this.mRcsProfile);
         params.put(ConfigConstants.PNAME.CLIENT_VENDOR, ConfigConstants.PVALUE.CLIENT_VENDOR);
-        params.put(ConfigConstants.PNAME.CLIENT_VERSION, ConfigConstants.PVALUE.CLIENT_VERSION_NAME + this.mClientVersion);
+        params.put(ConfigConstants.PNAME.CLIENT_VERSION, this.mClientPlatform + this.mClientVersion);
         return params;
     }
 

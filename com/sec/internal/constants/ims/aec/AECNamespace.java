@@ -183,13 +183,8 @@ public class AECNamespace {
         public static final String NOTIF_SENDER_ID = "notif_senderid";
         public static final String PS_DATA_OFF = "ps_data_off";
         public static final String PS_DATA_ROAMING = "ps_data_roaming";
-        public static final String SERVER_VENDOR = "server_vendor";
         public static final String VOLTE_AUTO_ON = "volte_auto_on";
         public static final String VOWIFI_AUTO_ON = "vowifi_auto_on";
-    }
-
-    public static class ServerVendor {
-        public static final String NOKIA = "nokia";
     }
 
     public static final class ServiceId {

@@ -78,25 +78,27 @@ public class NetworkStatsOnPortHandler extends Handler {
 
     private void stop() {
         Log.i(LOG_TAG, "NetworkStatsOnPort Stop");
-        if (!this.mReportingNetworkStatsOnPort) {
+        if (this.mMno == Mno.ROGERS || this.mMno == Mno.VTR) {
+            Log.i(LOG_TAG, "skip stopNetworkStatsOnPorts. (vendor req)");
+        } else if (!this.mReportingNetworkStatsOnPort) {
             Log.i(LOG_TAG, "stopNetworkStatsOnPorts - startNetworkStatsOnPorts not called, ignore");
-            return;
-        }
-        try {
-            if (this.mLocalVideoRtp != 0) {
-                if (this.mRemoteVideoRtp != 0) {
-                    Log.i(LOG_TAG, "stopNetworkStatsOnPorts: LocalVideoRtpPort(" + this.mLocalVideoRtp + ") RemoteVideoRtpPort(" + this.mRemoteVideoRtp + ")");
-                    stopNetworkStatsOnPorts(this.mIface, this.mLocalVideoRtp, this.mRemoteVideoRtp);
+        } else {
+            try {
+                if (this.mLocalVideoRtp != 0) {
+                    if (this.mRemoteVideoRtp != 0) {
+                        Log.i(LOG_TAG, "stopNetworkStatsOnPorts: LocalVideoRtpPort(" + this.mLocalVideoRtp + ") RemoteVideoRtpPort(" + this.mRemoteVideoRtp + ")");
+                        stopNetworkStatsOnPorts(this.mIface, this.mLocalVideoRtp, this.mRemoteVideoRtp);
+                    }
                 }
+                if (!(this.mLocalVideoRtcp == 0 || this.mRemoteVideoRtcp == 0)) {
+                    Log.i(LOG_TAG, "stopNetworkStatsOnPorts: LocalVideoRtcpPort(" + this.mLocalVideoRtcp + ") RemoteVideoRtcpPort(" + this.mRemoteVideoRtcp + ")");
+                    stopNetworkStatsOnPorts(this.mIface, this.mLocalVideoRtcp, this.mRemoteVideoRtcp);
+                }
+                this.mReportingNetworkStatsOnPort = false;
+                setVideoPort(0, 0, 0, 0);
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
             }
-            if (!(this.mLocalVideoRtcp == 0 || this.mRemoteVideoRtcp == 0)) {
-                Log.i(LOG_TAG, "stopNetworkStatsOnPorts: LocalVideoRtcpPort(" + this.mLocalVideoRtcp + ") RemoteVideoRtcpPort(" + this.mRemoteVideoRtcp + ")");
-                stopNetworkStatsOnPorts(this.mIface, this.mLocalVideoRtcp, this.mRemoteVideoRtcp);
-            }
-            this.mReportingNetworkStatsOnPort = false;
-            setVideoPort(0, 0, 0, 0);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
         }
     }
 

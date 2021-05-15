@@ -184,7 +184,6 @@ public class HttpStore {
     }
 
     private void initHttpHeaders() {
-        Locale currentLocale = Locale.getDefault();
         HashMap hashMap = new HashMap();
         this.mHttpHeader = hashMap;
         hashMap.put(HttpController.HEADER_HOST, Collections.singletonList(getHostName()));
@@ -192,9 +191,8 @@ public class HttpStore {
         this.mHttpHeader.put("Connection", Collections.singletonList("Keep-Alive"));
         this.mHttpHeader.put("Accept", Collections.singletonList("application/vnd.gsma.eap-relay.v1.0+json".concat(", ").concat(AECNamespace.HTTP_CONTENT_TYPE.XML)));
         this.mHttpHeader.put(HttpController.HEADER_CACHE_CONTROL, Collections.singletonList("max-age=0"));
-        if (currentLocale != null) {
-            this.mHttpHeader.put("Accept-Language", Collections.singletonList(currentLocale.getLanguage().concat("-").concat(currentLocale.getCountry())));
-        }
+        Locale currentLocale = Locale.getDefault();
+        this.mHttpHeader.put("Accept-Language", Collections.singletonList(currentLocale.getLanguage().concat("-").concat(currentLocale.getCountry())));
     }
 
     private List<String> extractCookie(List<String> setCookie) {

@@ -40,7 +40,7 @@ public class TelephonyAdapterPrimaryDeviceSec extends TelephonyAdapterPrimaryDev
                     IMSLog.c(LogClass.TAPDS_RECE_NRCR, this.mPhoneId + ",NRCR:" + SMS_CONFIGURATION_REQUEST + ", RcsUserSetting:" + isRcsUserSettingAgreed);
                     if (isRcsUserSettingAgreed) {
                         IMSLog.i(LOG_TAG, this.mPhoneId, "force configuration request");
-                        this.mModuleHandler.sendMessage(obtainMessage(4, Integer.valueOf(this.mPhoneId)));
+                        this.mModuleHandler.sendEmptyMessage(4);
                         return;
                     }
                     IMSLog.i(LOG_TAG, this.mPhoneId, "User didn't try RCS service yet");
@@ -277,9 +277,7 @@ public class TelephonyAdapterPrimaryDeviceSec extends TelephonyAdapterPrimaryDev
                 if (ImsConstants.SystemSettings.getRcsUserSetting(TelephonyAdapterPrimaryDeviceSec.this.mContext, -1, TelephonyAdapterPrimaryDeviceSec.this.mPhoneId) != -1) {
                     IMSLog.i(TelephonyAdapterPrimaryDeviceSec.LOG_TAG, TelephonyAdapterPrimaryDeviceSec.this.mPhoneId, "sendVerificationCode: NIRSMS0001 received, force configuration request");
                     IMSLog.c(LogClass.TAPDS_RECE_NIRSMS, TelephonyAdapterPrimaryDeviceSec.this.mPhoneId + ",NRCR:" + value);
-                    Handler handler = TelephonyAdapterPrimaryDeviceSec.this.mModuleHandler;
-                    TelephonyAdapterPrimaryDeviceSec telephonyAdapterPrimaryDeviceSec = TelephonyAdapterPrimaryDeviceSec.this;
-                    handler.sendMessage(telephonyAdapterPrimaryDeviceSec.obtainMessage(4, Integer.valueOf(telephonyAdapterPrimaryDeviceSec.mPhoneId)));
+                    TelephonyAdapterPrimaryDeviceSec.this.mModuleHandler.sendEmptyMessage(4);
                     return;
                 }
                 IMSLog.i(TelephonyAdapterPrimaryDeviceSec.LOG_TAG, TelephonyAdapterPrimaryDeviceSec.this.mPhoneId, "sendVerificationCode: NIRSMS0001 received, but User didn't try RCS service yet");

@@ -113,8 +113,8 @@ public class ImsFramework implements IImsFramework {
         return this.mImsFramework.getContext();
     }
 
-    public void registerImsRegistrationListener(IImsRegistrationListener listener, boolean broadcast, int phoneId) {
-        this.mImsFramework.registerImsRegistrationListener(listener, broadcast, phoneId);
+    public String registerImsRegistrationListener(IImsRegistrationListener listener, boolean broadcast, int phoneId) {
+        return this.mImsFramework.registerImsRegistrationListener(listener, broadcast, phoneId);
     }
 
     public String getString(int phoneId, String projection, String defVal) {

@@ -494,16 +494,12 @@ public class ImPersister {
         return ret.get(0);
     }
 
-    public ChatData querySessionByConversationId(String imsi, String cid, boolean isGroupChat) {
+    public ChatData querySessionByConversationId(String cid, boolean isGroupChat) {
         String str = LOG_TAG;
         IMSLog.s(str, "querySessionByConversationId cid=" + cid);
         StringBuilder sb = new StringBuilder();
         sb.append("conversation_id = '");
         sb.append(cid);
-        sb.append("' AND ");
-        sb.append("sim_imsi");
-        sb.append("='");
-        sb.append(imsi);
         sb.append("' AND ");
         sb.append("is_group_chat");
         sb.append(" = ");
@@ -1074,6 +1070,11 @@ public class ImPersister {
     /* Debug info: failed to restart local var, previous not found, register: 18 */
     /*  JADX ERROR: NullPointerException in pass: CodeShrinkVisitor
         java.lang.NullPointerException
+        	at jadx.core.dex.instructions.args.InsnArg.wrapInstruction(InsnArg.java:118)
+        	at jadx.core.dex.visitors.shrink.CodeShrinkVisitor.inline(CodeShrinkVisitor.java:146)
+        	at jadx.core.dex.visitors.shrink.CodeShrinkVisitor.shrinkBlock(CodeShrinkVisitor.java:71)
+        	at jadx.core.dex.visitors.shrink.CodeShrinkVisitor.shrinkMethod(CodeShrinkVisitor.java:43)
+        	at jadx.core.dex.visitors.shrink.CodeShrinkVisitor.visit(CodeShrinkVisitor.java:35)
         */
     public java.util.List<android.os.Bundle> queryLastSentMessages(java.util.List<java.lang.String> r19) {
         /*

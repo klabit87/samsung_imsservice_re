@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ImdnHandler {
-    private static final String LOG_TAG = ImdnHandler.class.getSimpleName();
+    private static final String LOG_TAG = ImSessionProcessor.class.getSimpleName();
     private ImCache mCache;
     private Context mContext;
     private FtProcessor mFtProcessor;
@@ -58,7 +58,7 @@ public class ImdnHandler {
             Log.e(LOG_TAG, "readMessage: Session not found in the cache.");
             return;
         }
-        String str = "sendDisplayedNotification: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", imdnIds=";
+        String str = "sendDisplayedNotification: conversationId=" + session.getConversationId() + ", imdnIds=";
         List<MessageBase> messesages = this.mCache.getMessages(list);
         for (MessageBase m : messesages) {
             str = str + m.getImdnId() + ", ";
@@ -143,7 +143,7 @@ public class ImdnHandler {
             return;
         }
         ImDump imDump = this.mImModule.getImDump();
-        imDump.addEventLogs("onImdnNotificationReceived: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", imdnId=" + imdnNotificationEvent.mImdnId + ", status=" + imdnNotificationEvent.mStatus);
+        imDump.addEventLogs("onImdnNotificationReceived: conversationId=" + session.getConversationId() + ", imdnId=" + imdnNotificationEvent.mImdnId + ", status=" + imdnNotificationEvent.mStatus);
         int phoneId = this.mImModule.getPhoneIdByIMSI(session.getOwnImsi());
         boolean isGroupChat = session.isGroupChat();
         for (MessageBase m : getMessagesForReceivedImdn(!session.isGroupChat() && RcsPolicyManager.getRcsStrategy(phoneId).boolSetting(RcsPolicySettings.RcsPolicy.USE_AGGREGATION_DISPLAYED_IMDN), imdnNotificationEvent.mStatus, session.getChatId(), msg)) {

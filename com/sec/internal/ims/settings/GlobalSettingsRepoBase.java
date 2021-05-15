@@ -148,14 +148,12 @@ public class GlobalSettingsRepoBase extends GlobalSettingsRepo {
             load();
         }
         Map<String, Object> cv = new HashMap<>(readSettings(ImsSharedPrefHelper.GLOBAL_SETTINGS, projection));
-        if (getGlobalGcEnabled()) {
-            for (Map.Entry<String, Object> entry : readSettings(ImsSharedPrefHelper.GLOBAL_GC_SETTINGS, projection).entrySet()) {
-                if (entry.getValue() != null) {
-                    if (TextUtils.equals(entry.getKey(), GlobalSettingsConstants.Registration.BLOCK_REGI_ON_INVALID_ISIM) || TextUtils.equals(entry.getKey(), GlobalSettingsConstants.Registration.VOICE_DOMAIN_PREF_EUTRAN)) {
-                        Log.i(this.LOG_TAG, "query: Don't override block_regi_on_invalid_isim and voice_domain_pref_eutran value");
-                    } else {
-                        cv.put(entry.getKey(), entry.getValue());
-                    }
+        for (Map.Entry<String, Object> entry : readSettings(ImsSharedPrefHelper.GLOBAL_GC_SETTINGS, projection).entrySet()) {
+            if (entry.getValue() != null) {
+                if (TextUtils.equals(entry.getKey(), GlobalSettingsConstants.Registration.BLOCK_REGI_ON_INVALID_ISIM) || TextUtils.equals(entry.getKey(), GlobalSettingsConstants.Registration.VOICE_DOMAIN_PREF_EUTRAN)) {
+                    Log.i(this.LOG_TAG, "query: Don't override block_regi_on_invalid_isim and voice_domain_pref_eutran value");
+                } else {
+                    cv.put(entry.getKey(), entry.getValue());
                 }
             }
         }
@@ -311,8 +309,8 @@ public class GlobalSettingsRepoBase extends GlobalSettingsRepo {
 
     /* access modifiers changed from: protected */
     /* JADX WARNING: Removed duplicated region for block: B:103:? A[RETURN, SYNTHETIC] */
-    /* JADX WARNING: Removed duplicated region for block: B:84:0x026d A[SYNTHETIC, Splitter:B:84:0x026d] */
-    /* JADX WARNING: Removed duplicated region for block: B:89:0x027a A[SYNTHETIC, Splitter:B:89:0x027a] */
+    /* JADX WARNING: Removed duplicated region for block: B:84:0x0271 A[SYNTHETIC, Splitter:B:84:0x0271] */
+    /* JADX WARNING: Removed duplicated region for block: B:89:0x027e A[SYNTHETIC, Splitter:B:89:0x027e] */
     /* Code decompiled incorrectly, please refer to instructions dump. */
     public void loadGlobalSettingsFromJson(boolean r27, java.lang.String r28, java.lang.String r29, int r30, android.content.ContentValues r31) {
         /*
@@ -335,10 +333,10 @@ public class GlobalSettingsRepoBase extends GlobalSettingsRepo {
             r8.append(r4)
             java.lang.String r8 = r8.toString()
             com.sec.internal.log.IMSLog.d(r0, r7, r8)
-            if (r3 == 0) goto L_0x0285
+            if (r3 == 0) goto L_0x0289
             boolean r0 = r28.isEmpty()
             if (r0 == 0) goto L_0x0036
-            goto L_0x0285
+            goto L_0x0289
         L_0x0036:
             com.sec.internal.constants.Mno r7 = com.sec.internal.constants.Mno.fromName(r28)
             r0 = 3
@@ -347,24 +345,24 @@ public class GlobalSettingsRepoBase extends GlobalSettingsRepo {
             r0.loadMobilityGlobalSettings()
         L_0x0042:
             r8 = 0
-            android.content.Context r0 = r1.mContext     // Catch:{ IOException -> 0x0266 }
-            android.content.res.Resources r0 = r0.getResources()     // Catch:{ IOException -> 0x0266 }
+            android.content.Context r0 = r1.mContext     // Catch:{ IOException -> 0x026a }
+            android.content.res.Resources r0 = r0.getResources()     // Catch:{ IOException -> 0x026a }
             r9 = 2131034112(0x7f050000, float:1.7678732E38)
-            java.io.InputStream r0 = r0.openRawResource(r9)     // Catch:{ IOException -> 0x0266 }
+            java.io.InputStream r0 = r0.openRawResource(r9)     // Catch:{ IOException -> 0x026a }
             r8 = r0
-            com.google.gson.JsonParser r0 = new com.google.gson.JsonParser     // Catch:{ IOException -> 0x025f, all -> 0x025a }
-            r0.<init>()     // Catch:{ IOException -> 0x025f, all -> 0x025a }
+            com.google.gson.JsonParser r0 = new com.google.gson.JsonParser     // Catch:{ IOException -> 0x0263, all -> 0x025e }
+            r0.<init>()     // Catch:{ IOException -> 0x0263, all -> 0x025e }
             r9 = r0
-            com.google.gson.stream.JsonReader r0 = new com.google.gson.stream.JsonReader     // Catch:{ IOException -> 0x025f, all -> 0x025a }
-            java.io.BufferedReader r10 = new java.io.BufferedReader     // Catch:{ IOException -> 0x025f, all -> 0x025a }
-            java.io.InputStreamReader r11 = new java.io.InputStreamReader     // Catch:{ IOException -> 0x025f, all -> 0x025a }
-            r11.<init>(r8)     // Catch:{ IOException -> 0x025f, all -> 0x025a }
-            r10.<init>(r11)     // Catch:{ IOException -> 0x025f, all -> 0x025a }
-            r0.<init>(r10)     // Catch:{ IOException -> 0x025f, all -> 0x025a }
+            com.google.gson.stream.JsonReader r0 = new com.google.gson.stream.JsonReader     // Catch:{ IOException -> 0x0263, all -> 0x025e }
+            java.io.BufferedReader r10 = new java.io.BufferedReader     // Catch:{ IOException -> 0x0263, all -> 0x025e }
+            java.io.InputStreamReader r11 = new java.io.InputStreamReader     // Catch:{ IOException -> 0x0263, all -> 0x025e }
+            r11.<init>(r8)     // Catch:{ IOException -> 0x0263, all -> 0x025e }
+            r10.<init>(r11)     // Catch:{ IOException -> 0x0263, all -> 0x025e }
+            r0.<init>(r10)     // Catch:{ IOException -> 0x0263, all -> 0x025e }
             r10 = r0
-            com.google.gson.JsonElement r0 = r9.parse(r10)     // Catch:{ IOException -> 0x025f, all -> 0x025a }
+            com.google.gson.JsonElement r0 = r9.parse(r10)     // Catch:{ IOException -> 0x0263, all -> 0x025e }
             r11 = r0
-            r10.close()     // Catch:{ IOException -> 0x025f, all -> 0x025a }
+            r10.close()     // Catch:{ IOException -> 0x0263, all -> 0x025e }
             if (r8 == 0) goto L_0x007b
             r8.close()     // Catch:{ IOException -> 0x0074 }
         L_0x0073:
@@ -572,7 +570,8 @@ public class GlobalSettingsRepoBase extends GlobalSettingsRepo {
             r9.putInt(r8, r5)
             java.lang.String r8 = "hassim"
             r9.putBoolean(r8, r2)
-            boolean r8 = com.sec.internal.helper.os.DeviceUtil.getGcfMode()
+            java.lang.Boolean r8 = com.sec.internal.helper.os.DeviceUtil.getGcfMode()
+            boolean r8 = r8.booleanValue()
             java.lang.String r10 = "gcfmode"
             r9.putBoolean(r10, r8)
             java.lang.String r8 = r26.saveBuildInfo()
@@ -581,51 +580,51 @@ public class GlobalSettingsRepoBase extends GlobalSettingsRepo {
             java.lang.String r8 = "imsi"
             java.lang.String r10 = r6.getAsString(r8)
             boolean r11 = android.text.TextUtils.isEmpty(r10)
-            if (r11 != 0) goto L_0x0256
+            if (r11 != 0) goto L_0x025a
             r9.putString(r8, r10)
-        L_0x0256:
+        L_0x025a:
             r9.apply()
             return
-        L_0x025a:
+        L_0x025e:
             r0 = move-exception
             r16 = r8
             r4 = r0
-            goto L_0x0278
-        L_0x025f:
-            r0 = move-exception
-            r16 = r8
-            goto L_0x0267
+            goto L_0x027c
         L_0x0263:
             r0 = move-exception
-            r4 = r0
-            goto L_0x0278
-        L_0x0266:
-            r0 = move-exception
+            r16 = r8
+            goto L_0x026b
         L_0x0267:
+            r0 = move-exception
             r4 = r0
-            r4.printStackTrace()     // Catch:{ all -> 0x0263 }
-            if (r8 == 0) goto L_0x0277
-            r8.close()     // Catch:{ IOException -> 0x0271 }
-            goto L_0x0277
-        L_0x0271:
+            goto L_0x027c
+        L_0x026a:
+            r0 = move-exception
+        L_0x026b:
+            r4 = r0
+            r4.printStackTrace()     // Catch:{ all -> 0x0267 }
+            if (r8 == 0) goto L_0x027b
+            r8.close()     // Catch:{ IOException -> 0x0275 }
+            goto L_0x027b
+        L_0x0275:
             r0 = move-exception
             r9 = r0
             r0 = r9
             r0.printStackTrace()
-        L_0x0277:
+        L_0x027b:
             return
-        L_0x0278:
-            if (r8 == 0) goto L_0x0284
-            r8.close()     // Catch:{ IOException -> 0x027e }
-            goto L_0x0284
-        L_0x027e:
+        L_0x027c:
+            if (r8 == 0) goto L_0x0288
+            r8.close()     // Catch:{ IOException -> 0x0282 }
+            goto L_0x0288
+        L_0x0282:
             r0 = move-exception
             r9 = r0
             r0 = r9
             r0.printStackTrace()
-        L_0x0284:
+        L_0x0288:
             throw r4
-        L_0x0285:
+        L_0x0289:
             java.lang.String r0 = r1.LOG_TAG
             int r4 = r1.mPhoneId
             java.lang.String r7 = "load: globalSettings is not identified."
@@ -679,34 +678,34 @@ public class GlobalSettingsRepoBase extends GlobalSettingsRepo {
     }
 
     /* JADX INFO: finally extract failed */
-    /* JADX WARNING: Code restructure failed: missing block: B:49:0x029e, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:59:0x02e9, code lost:
         r0 = th;
      */
     /* Code decompiled incorrectly, please refer to instructions dump. */
-    public boolean updateMno(android.content.ContentValues r35) {
+    public boolean updateMno(android.content.ContentValues r33) {
         /*
-            r34 = this;
-            r14 = r34
-            r15 = r35
+            r32 = this;
+            r14 = r32
+            r15 = r33
             java.lang.Object r1 = r14.mLock
             monitor-enter(r1)
             java.lang.String r0 = "hassim"
             r13 = 0
-            boolean r0 = com.sec.internal.helper.CollectionUtils.getBooleanValue(r15, r0, r13)     // Catch:{ all -> 0x02a0 }
+            boolean r0 = com.sec.internal.helper.CollectionUtils.getBooleanValue(r15, r0, r13)     // Catch:{ all -> 0x02eb }
             r12 = r0
             java.lang.String r0 = "mnoname"
-            java.lang.String r0 = r15.getAsString(r0)     // Catch:{ all -> 0x02a0 }
+            java.lang.String r0 = r15.getAsString(r0)     // Catch:{ all -> 0x02eb }
             r10 = r0
             java.lang.String r0 = "mvnoname"
             java.lang.String r2 = ""
-            java.lang.String r11 = com.sec.internal.helper.CollectionUtils.getStringValue(r15, r0, r2)     // Catch:{ all -> 0x02a0 }
+            java.lang.String r11 = com.sec.internal.helper.CollectionUtils.getStringValue(r15, r0, r2)     // Catch:{ all -> 0x02eb }
             java.lang.String r0 = "imsSwitchType"
-            int r0 = com.sec.internal.helper.CollectionUtils.getIntValue(r15, r0, r13)     // Catch:{ all -> 0x02a0 }
+            int r0 = com.sec.internal.helper.CollectionUtils.getIntValue(r15, r0, r13)     // Catch:{ all -> 0x02eb }
             r9 = r0
             java.lang.String r0 = "imsi"
-            java.lang.String r0 = r15.getAsString(r0)     // Catch:{ all -> 0x02a0 }
+            java.lang.String r0 = r15.getAsString(r0)     // Catch:{ all -> 0x02eb }
             r8 = r0
-            monitor-exit(r1)     // Catch:{ all -> 0x02a0 }
+            monitor-exit(r1)     // Catch:{ all -> 0x02eb }
             com.sec.internal.helper.SimpleEventLog r0 = r14.mEventLog
             java.lang.StringBuilder r1 = new java.lang.StringBuilder
             r1.<init>()
@@ -722,8 +721,8 @@ public class GlobalSettingsRepoBase extends GlobalSettingsRepo {
             r1.append(r9)
             java.lang.String r1 = r1.toString()
             r0.logAndAdd(r1)
-            r34.logMnoInfo(r35)
-            boolean r7 = r34.getPrevGcEnabled()
+            r32.logMnoInfo(r33)
+            boolean r7 = r32.getPrevGcEnabled()
             java.lang.String r0 = "globalgcenabled"
             boolean r6 = com.sec.internal.helper.CollectionUtils.getBooleanValue(r15, r0, r13)
             if (r7 == r6) goto L_0x0067
@@ -752,8 +751,8 @@ public class GlobalSettingsRepoBase extends GlobalSettingsRepo {
             r4 = 0
             r16 = -1
             r17 = 1
-            int r18 = r34.readRcsDefaultEnabled()
-            r1 = r34
+            int r18 = r32.readRcsDefaultEnabled()
+            r1 = r32
             r19 = r5
             r5 = r16
             r13 = r6
@@ -791,8 +790,8 @@ public class GlobalSettingsRepoBase extends GlobalSettingsRepo {
         L_0x00e3:
             r20 = r1
             r14.mMnoinfo = r15
-            int r4 = r34.readRcsDefaultEnabled()
-            boolean r1 = r34.updateRequires(r35)
+            int r4 = r32.readRcsDefaultEnabled()
+            boolean r1 = r32.updateRequires(r33)
             if (r1 != 0) goto L_0x0153
             com.sec.internal.helper.SimpleEventLog r0 = r14.mEventLog
             java.lang.StringBuilder r1 = new java.lang.StringBuilder
@@ -844,22 +843,14 @@ public class GlobalSettingsRepoBase extends GlobalSettingsRepo {
             java.lang.String r2 = r2.toString()
             r1.logAndAdd(r2)
             java.lang.String r3 = r14.getPreviousMno(r7)
-            int r2 = r34.readVolteDefaultEnabled()
-            java.lang.String r1 = "globalgcenabled"
-            r0 = 0
-            boolean r1 = r7.getBoolean(r1, r0)
-            r34.reset()
-            android.content.SharedPreferences$Editor r15 = r7.edit()
-            java.lang.String r0 = "globalgcenabled"
-            r15.putBoolean(r0, r1)
-            r15.apply()
-            java.lang.String r0 = r14.LOG_TAG
-            r21 = r1
-            int r1 = r14.mPhoneId
-            r22 = r2
+            int r2 = r32.readVolteDefaultEnabled()
+            r32.reset()
+            java.lang.String r1 = r14.LOG_TAG
+            int r0 = r14.mPhoneId
+            r21 = r2
             java.lang.StringBuilder r2 = new java.lang.StringBuilder
             r2.<init>()
-            r23 = r4
+            r22 = r4
             java.lang.String r4 = "updateMno: ["
             r2.append(r4)
             r2.append(r3)
@@ -869,52 +860,93 @@ public class GlobalSettingsRepoBase extends GlobalSettingsRepo {
             java.lang.String r4 = "]"
             r2.append(r4)
             java.lang.String r2 = r2.toString()
-            com.sec.internal.log.IMSLog.d(r0, r1, r2)
+            com.sec.internal.log.IMSLog.d(r1, r0, r2)
             android.content.Context r0 = r14.mContext
             com.sec.internal.constants.ims.ImsConstants$SystemSettings$SettingsItem r1 = com.sec.internal.constants.ims.ImsConstants.SystemSettings.VOLTE_SLOT1
             java.lang.String r1 = r1.getName()
             int r2 = r14.mPhoneId
-            int r24 = com.sec.internal.helper.DmConfigHelper.getImsUserSetting(r0, r1, r2)
+            int r23 = com.sec.internal.helper.DmConfigHelper.getImsUserSetting(r0, r1, r2)
             android.content.Context r0 = r14.mContext
             com.sec.internal.constants.ims.ImsConstants$SystemSettings$SettingsItem r1 = com.sec.internal.constants.ims.ImsConstants.SystemSettings.VILTE_SLOT1
             java.lang.String r1 = r1.getName()
             int r2 = r14.mPhoneId
-            int r25 = com.sec.internal.helper.DmConfigHelper.getImsUserSetting(r0, r1, r2)
-            r1 = r34
-            r4 = r22
+            int r24 = com.sec.internal.helper.DmConfigHelper.getImsUserSetting(r0, r1, r2)
+            r1 = r32
+            r4 = r21
             r2 = r18
-            r22 = r3
-            r3 = r35
-            r27 = r4
-            r26 = r15
-            r15 = r23
+            r21 = r3
+            r3 = r33
+            r25 = r4
+            r15 = r22
             r4 = r10
-            r28 = r5
-            r5 = r22
-            r23 = r6
-            r6 = r24
-            r29 = r7
-            r7 = r25
+            r26 = r5
+            r5 = r21
+            r22 = r6
+            r6 = r23
+            r27 = r7
+            r7 = r24
             r1.updateSystemSettings(r2, r3, r4, r5, r6, r7)
-            java.lang.Object r2 = r14.mLock
-            monitor-enter(r2)
-            r30 = r8
-            r8 = r34
-            r31 = r9
+            java.lang.String r0 = "Bell_CA"
+            boolean r0 = r0.equals(r10)
+            if (r0 != 0) goto L_0x01fb
+            java.lang.String r0 = "Telus_CA"
+            boolean r0 = r0.equals(r10)
+            if (r0 != 0) goto L_0x01fb
+            java.lang.String r0 = "Koodo_CA"
+            boolean r0 = r0.equals(r10)
+            if (r0 == 0) goto L_0x01f9
+            goto L_0x01fb
+        L_0x01f9:
+            r2 = 0
+            goto L_0x0242
+        L_0x01fb:
+            java.lang.StringBuilder r0 = new java.lang.StringBuilder
+            r0.<init>()
+            r0.append(r10)
+            java.lang.String r1 = "_CONF_UPDATE"
+            r0.append(r1)
+            java.lang.String r0 = r0.toString()
+            android.content.Context r1 = r14.mContext
+            r2 = 0
+            android.content.SharedPreferences r1 = r1.getSharedPreferences(r0, r2)
+            boolean r3 = r1.getBoolean(r10, r2)
+            if (r3 != 0) goto L_0x0242
+            java.lang.String r4 = r14.LOG_TAG
+            java.lang.StringBuilder r5 = new java.lang.StringBuilder
+            r5.<init>()
+            r5.append(r10)
+            java.lang.String r6 = ": volte_domestic_default_enabled - force Reset "
+            r5.append(r6)
+            java.lang.String r5 = r5.toString()
+            android.util.Log.d(r4, r5)
+            android.content.Context r4 = r14.mContext
+            r5 = -1
+            int r6 = r14.mPhoneId
+            com.sec.internal.constants.ims.ImsConstants.SystemSettings.setVoiceCallType(r4, r5, r6)
+            android.content.SharedPreferences$Editor r4 = r1.edit()
+            r5 = 1
+            r4.putBoolean(r10, r5)
+            r4.commit()
+        L_0x0242:
+            java.lang.Object r3 = r14.mLock
+            monitor-enter(r3)
+            r16 = r8
+            r8 = r32
+            r28 = r9
             r9 = r12
-            r32 = r10
-            r33 = r12
-            r12 = r31
-            r16 = r13
-            r0 = 0
-            r13 = r35
-            r8.loadGlobalSettingsFromJson(r9, r10, r11, r12, r13)     // Catch:{ all -> 0x0297 }
-            monitor-exit(r2)     // Catch:{ all -> 0x0297 }
-            int r8 = r34.readRcsDefaultEnabled()
-            int r9 = r34.readVolteDefaultEnabled()
+            r29 = r10
+            r30 = r12
+            r12 = r28
+            r0 = r2
+            r31 = r13
+            r13 = r33
+            r8.loadGlobalSettingsFromJson(r9, r10, r11, r12, r13)     // Catch:{ all -> 0x02e2 }
+            monitor-exit(r3)     // Catch:{ all -> 0x02e2 }
+            int r8 = r32.readRcsDefaultEnabled()
+            int r9 = r32.readVolteDefaultEnabled()
             boolean r1 = r14.mVersionUpdated
-            if (r1 == 0) goto L_0x028e
-            if (r15 == r8) goto L_0x024d
+            if (r1 == 0) goto L_0x02d9
+            if (r15 == r8) goto L_0x0298
             com.sec.internal.helper.SimpleEventLog r1 = r14.mEventLog
             java.lang.StringBuilder r2 = new java.lang.StringBuilder
             r2.<init>()
@@ -933,13 +965,13 @@ public class GlobalSettingsRepoBase extends GlobalSettingsRepo {
             r4 = 0
             r5 = -1
             r6 = 1
-            r1 = r34
+            r1 = r32
             r7 = r8
             r1.setSettingsFromSp(r2, r3, r4, r5, r6, r7)
-        L_0x024d:
-            r10 = r27
+        L_0x0298:
+            r10 = r25
             boolean r1 = r14.needResetVolteAsDefault(r10, r9)
-            if (r1 == 0) goto L_0x0289
+            if (r1 == 0) goto L_0x02d4
             com.sec.internal.helper.SimpleEventLog r1 = r14.mEventLog
             java.lang.StringBuilder r2 = new java.lang.StringBuilder
             r2.<init>()
@@ -955,42 +987,42 @@ public class GlobalSettingsRepoBase extends GlobalSettingsRepo {
             r1.logAndAdd(r2)
             r2 = 1
             r1 = 1
-            if (r9 != r1) goto L_0x027f
+            if (r9 != r1) goto L_0x02ca
             r3 = r0
-            goto L_0x0280
-        L_0x027f:
+            goto L_0x02cb
+        L_0x02ca:
             r3 = 1
-        L_0x0280:
+        L_0x02cb:
             r4 = 0
             r5 = -1
             r6 = 0
             r7 = -1
-            r1 = r34
+            r1 = r32
             r1.setSettingsFromSp(r2, r3, r4, r5, r6, r7)
-        L_0x0289:
+        L_0x02d4:
             r14.mVersionUpdated = r0
-            r3 = r28
-            goto L_0x0295
-        L_0x028e:
-            r10 = r27
-            r3 = r28
-            r14.initRcsUserSetting(r3, r8)
-        L_0x0295:
+            r2 = r26
+            goto L_0x02e0
+        L_0x02d9:
+            r10 = r25
+            r2 = r26
+            r14.initRcsUserSetting(r2, r8)
+        L_0x02e0:
             r0 = 1
             return r0
-        L_0x0297:
+        L_0x02e2:
             r0 = move-exception
-            r10 = r27
-            r3 = r28
-        L_0x029c:
-            monitor-exit(r2)     // Catch:{ all -> 0x029e }
+            r10 = r25
+            r2 = r26
+        L_0x02e7:
+            monitor-exit(r3)     // Catch:{ all -> 0x02e9 }
             throw r0
-        L_0x029e:
+        L_0x02e9:
             r0 = move-exception
-            goto L_0x029c
-        L_0x02a0:
+            goto L_0x02e7
+        L_0x02eb:
             r0 = move-exception
-            monitor-exit(r1)     // Catch:{ all -> 0x02a0 }
+            monitor-exit(r1)     // Catch:{ all -> 0x02eb }
             throw r0
         */
         throw new UnsupportedOperationException("Method not decompiled: com.sec.internal.ims.settings.GlobalSettingsRepoBase.updateMno(android.content.ContentValues):boolean");
@@ -1067,7 +1099,7 @@ public class GlobalSettingsRepoBase extends GlobalSettingsRepo {
         int spValueVideo = DmConfigHelper.getImsUserSetting(this.mContext, ImsConstants.SystemSettings.VILTE_SLOT1.getName(), this.mPhoneId);
         SimpleEventLog simpleEventLog3 = this.mEventLog;
         simpleEventLog3.logAndAdd("simSlot[" + this.mPhoneId + "] videocall_type_" + mno.getName() + ": [" + spValueVideo + "]");
-        if (DeviceUtil.getGcfMode()) {
+        if (DeviceUtil.getGcfMode().booleanValue()) {
             return isNeedToSetViLTE;
         }
         SimpleEventLog simpleEventLog4 = this.mEventLog;

@@ -87,7 +87,7 @@ public class SoftphoneNamespaces {
         public static final String RENOIR = "SAMSUNG-SM-T377A";
         public static final String S2 = "SAMSUNG-SM-T818A";
         public static final String S4 = "SM-T837A";
-        public static final String S7L = "SM-T878U";
+        public static final String VIEW2 = "SM-T927A";
     }
 
     public static final class SoftphoneSettings {
@@ -126,7 +126,7 @@ public class SoftphoneNamespaces {
         public static final String PROD_APP_KEY_RENOIR = "up3fpnsojlca8uggywdwgkyaqgmnsb3h";
         public static final String PROD_APP_KEY_S2 = "ejmp2k1chenktmtoe0cg97rkwg8vlogm";
         public static final String PROD_APP_KEY_S4 = "mjoy9og9bd8bixjhxr1nannwgbalxudu";
-        public static final String PROD_APP_KEY_S7L = "dyp77kwaauqxx6aalgpjjq3ctoq1dzwk";
+        public static final String PROD_APP_KEY_VIEW2 = "nuri2epiz6mhrlidwqomhgxcywlqunzr";
         public static final String PROD_APP_SECRET_A4S = "tuqlgat1pdra8x1mjxdnawt7psgxzsgo";
         public static final String PROD_APP_SECRET_A8 = "hekgi2kbc21bvjpnkorin95iiog6c9ol";
         public static final String PROD_APP_SECRET_CHAGALL = "iu0rqlat1tzdpb2b39txmopketfooofo";
@@ -135,7 +135,7 @@ public class SoftphoneNamespaces {
         public static final String PROD_APP_SECRET_RENOIR = "05wib7o909lwzlgjkvwad6kyr9photnb";
         public static final String PROD_APP_SECRET_S2 = "t9yzb6hlaxkersol9us5lamrf1iiru6a";
         public static final String PROD_APP_SECRET_S4 = "szyqu8oecuoikomhaooihdgbxrcjzfku";
-        public static final String PROD_APP_SECRET_S7L = "tuqlgat1pdra8x1mjxdnawt7psgxzsgo";
+        public static final String PROD_APP_SECRET_VIEW2 = "i6w0p4bjaf56pwuytlvwehrpajpgh4v8";
         public static final String PROD_HOST = "api.att.com";
         public static final String PROVISION_ACCOUNT_PATH = "/softphone/v1/account";
         public static final int REFRESH_TIMER_PERCENTAGE = 900;

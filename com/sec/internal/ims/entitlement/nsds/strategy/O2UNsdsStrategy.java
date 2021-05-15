@@ -10,8 +10,4 @@ public class O2UNsdsStrategy extends DefaultNsdsMnoStrategy {
         this.sMapEntitlementServices.put("vowifi", 1);
         this.sMapEntitlementServices.put("volte", 2);
     }
-
-    public String getEntitlementServerUrl(String imsi, String deviceUid) {
-        return "https://ses.o2.co.uk:443/generic_devices";
-    }
 }

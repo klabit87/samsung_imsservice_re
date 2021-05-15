@@ -272,10 +272,7 @@ public class CmcAccountManager implements ICmcAccountManager {
             IMSLog.i(LOG_TAG, "registerProfile: RegisterTask is already in the slot [" + phoneId + "]");
         } else {
             IMSLog.i(LOG_TAG, "registerProfile(" + phoneId + ")");
-            ImsProfile profile = getProfile(phoneId);
-            if (profile != null) {
-                ImsRegistry.getRegistrationManager().registerProfile(profile, phoneId);
-            }
+            ImsRegistry.getRegistrationManager().registerProfile(getProfile(phoneId), phoneId);
         }
     }
 
@@ -284,7 +281,7 @@ public class CmcAccountManager implements ICmcAccountManager {
         Bundle bundle;
         try {
             PackageManager pm = this.mContext.getPackageManager();
-            if (!(pm == null || (targetInfo = pm.getApplicationInfo("com.samsung.android.mdecservice", 128)) == null || (bundle = targetInfo.metaData) == null)) {
+            if (!(pm == null || (targetInfo = pm.getApplicationInfo(CMC_SERVICE_PACKAGE_NAME, 128)) == null || (bundle = targetInfo.metaData) == null)) {
                 return bundle.getBoolean("d2d_trial", false);
             }
         } catch (PackageManager.NameNotFoundException e) {
@@ -302,9 +299,8 @@ public class CmcAccountManager implements ICmcAccountManager {
         SimpleEventLog simpleEventLog = this.mEventLog;
         simpleEventLog.logAndAdd("onStopCmcRegistration: deregisterProfile: activation[" + isCmcActivated() + "] isSD[" + isSecondaryDevice() + "] sdHasCallForking[" + isSdHasCallForkingService() + "]");
         for (int phoneId = 0; phoneId < this.mPhoneCount; phoneId++) {
-            ImsProfile profile = getProfile(phoneId);
-            if (profile != null) {
-                ImsRegistry.getRegistrationManager().deregisterProfile(profile.getId(), phoneId);
+            if (getProfile(phoneId) != null) {
+                ImsRegistry.getRegistrationManager().deregisterProfile(getProfile(phoneId).getId(), phoneId);
             }
         }
         this.mIsCmcProfileAdded = false;
@@ -381,7 +377,6 @@ public class CmcAccountManager implements ICmcAccountManager {
     public ImsProfile getProfile(int phoneId) {
         ImsProfile profile = this.mProfileMap.get(Integer.valueOf(phoneId));
         if (profile == null) {
-            Log.e(LOG_TAG, "mProfile is null");
             return null;
         }
         Log.i(LOG_TAG, "mProfile = " + profile);
@@ -749,7 +744,7 @@ public class CmcAccountManager implements ICmcAccountManager {
 
     private boolean isCmcServiceInstalled() {
         try {
-            this.mContext.getPackageManager().getApplicationInfo("com.samsung.android.mdecservice", 128);
+            this.mContext.getPackageManager().getApplicationInfo(CMC_SERVICE_PACKAGE_NAME, 128);
             this.mEventLog.logAndAdd("isCmcServiceInstalled: true");
             return true;
         } catch (PackageManager.NameNotFoundException e) {

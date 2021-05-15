@@ -12,6 +12,7 @@ import com.sec.ims.extensions.ContextExt;
 import com.sec.internal.constants.Mno;
 import com.sec.internal.constants.ims.cmstore.CloudMessageProviderContract;
 import com.sec.internal.constants.ims.config.ConfigConstants;
+import com.sec.internal.constants.ims.settings.GlobalSettingsConstants;
 import com.sec.internal.helper.DmConfigHelper;
 import com.sec.internal.helper.SimUtil;
 import com.sec.internal.helper.httpclient.HttpController;
@@ -20,6 +21,7 @@ import com.sec.internal.ims.config.exception.InvalidHeaderException;
 import com.sec.internal.ims.config.exception.NoInitialDataException;
 import com.sec.internal.ims.config.exception.UnknownStatusException;
 import com.sec.internal.ims.config.workflow.WorkflowBase;
+import com.sec.internal.ims.registry.ImsRegistry;
 import com.sec.internal.ims.servicemodules.ss.UtStateMachine;
 import com.sec.internal.ims.settings.DeviceConfigManager;
 import com.sec.internal.ims.util.ConfigUtil;
@@ -595,10 +597,17 @@ public class WorkflowJibe extends WorkflowUpBase {
                         WorkflowJibe.this.mSharedInfo.addHttpParam("terminal_sw_version", WorkflowJibe.this.mParamHandler.getModelInfoFromBuildVersion(ConfigUtil.getModelName(WorkflowJibe.this.mPhoneId), ConfigConstants.PVALUE.TERMINAL_SW_VERSION, 8, true));
                         WorkflowJibe.this.mSharedInfo.addHttpParam(ConfigConstants.PNAME.CLIENT_VENDOR, ConfigConstants.PVALUE.CLIENT_VENDOR);
                         SharedInfo sharedInfo2 = WorkflowJibe.this.mSharedInfo;
-                        sharedInfo2.addHttpParam(ConfigConstants.PNAME.CLIENT_VERSION, ConfigConstants.PVALUE.CLIENT_VERSION_NAME + WorkflowJibe.this.mClientVersion);
+                        sharedInfo2.addHttpParam(ConfigConstants.PNAME.CLIENT_VERSION, WorkflowJibe.this.mClientPlatform + WorkflowJibe.this.mClientVersion);
                         WorkflowJibe.this.mSharedInfo.addHttpParam("rcs_version", WorkflowJibe.this.mRcsVersion);
-                        Log.i(WorkflowJibe.LOG_TAG, "set rcs_profile to UP_T-b1 for A2P");
-                        WorkflowJibe.this.mSharedInfo.addHttpParam(ConfigConstants.PNAME.RCS_PROFILE, "UP_T-b1");
+                        if (WorkflowJibe.this.mMno.isOrange()) {
+                            String rcsProfile = ImsRegistry.getString(WorkflowJibe.this.mPhoneId, GlobalSettingsConstants.RCS.UP_PROFILE, ImsRegistry.getRcsProfileType(WorkflowJibe.this.mPhoneId));
+                            String str2 = WorkflowJibe.LOG_TAG;
+                            Log.i(str2, "rcsProfile read and used for Orange: " + rcsProfile);
+                            WorkflowJibe.this.mSharedInfo.addHttpParam(ConfigConstants.PNAME.RCS_PROFILE, rcsProfile);
+                        } else {
+                            Log.i(WorkflowJibe.LOG_TAG, "set rcs_profile to UP_T-b1 for A2P");
+                            WorkflowJibe.this.mSharedInfo.addHttpParam(ConfigConstants.PNAME.RCS_PROFILE, "UP_T-b1");
+                        }
                         WorkflowJibe.this.mSharedInfo.addHttpParam(ConfigConstants.PNAME.PROVISIONING_VERSION, WorkflowJibe.this.mRcsProvisioningVersion);
                         WorkflowJibe workflowJibe = WorkflowJibe.this;
                         workflowJibe.setRcsState(workflowJibe.convertRcsStateWithSpecificParam());
@@ -608,8 +617,8 @@ public class WorkflowJibe extends WorkflowUpBase {
                             WorkflowJibe.this.mSharedInfo.addHttpParam("vers", "0");
                         }
                         if (WorkflowJibe.this.getOpMode() == WorkflowBase.OpMode.DORMANT) {
-                            String str2 = WorkflowJibe.LOG_TAG;
-                            Log.i(str2, "use backup version in case of dormant, vers: " + WorkflowJibe.this.getVersionBackup());
+                            String str3 = WorkflowJibe.LOG_TAG;
+                            Log.i(str3, "use backup version in case of dormant, vers: " + WorkflowJibe.this.getVersionBackup());
                             WorkflowJibe.this.mSharedInfo.addHttpParam("vers", WorkflowJibe.this.getVersionBackup());
                         }
                     }

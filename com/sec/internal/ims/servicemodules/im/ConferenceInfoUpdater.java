@@ -108,9 +108,7 @@ public class ConferenceInfoUpdater {
                         if (!TextUtils.isEmpty(info.mDispName) && !info.mDispName.equals(participant.getUserAlias())) {
                             participant.setUserAlias(info.mDispName);
                             this.mUpdatedParticipants.add(participant);
-                            if (!this.mImSession.isVoluntaryDeparture()) {
-                                this.mListener.onParticipantAliasUpdated(this.mImSession.getChatId(), participant);
-                            }
+                            this.mListener.onParticipantAliasUpdated(this.mImSession.getChatId(), participant);
                         }
                     }
                 }
@@ -119,18 +117,14 @@ public class ConferenceInfoUpdater {
         if (event.mConferenceInfoType == ImSessionConferenceInfoUpdateEvent.ImConferenceInfoType.FULL) {
             findAbsentParticipant(event);
         }
-        if (!this.mImSession.isVoluntaryDeparture()) {
-            notifyParticipantsInfo();
-        }
+        notifyParticipantsInfo();
         if (isSubjectChanged(this.mImSession.getSubjectData(), event.mSubjectData)) {
             String str3 = LOG_TAG;
             IMSLog.s(str3, "onConferenceInfoUpdated, event.mSubjectData= " + event.mSubjectData + ", mChatData.getSubjectData()= " + this.mImSession.getSubjectData());
             this.mImSession.updateSubjectData(event.mSubjectData);
-            if (!this.mImSession.isVoluntaryDeparture()) {
-                this.mListener.onChatSubjectUpdated(this.mImSession.getChatId(), event.mSubjectData);
-            }
+            this.mListener.onChatSubjectUpdated(this.mImSession.getChatId(), event.mSubjectData);
         }
-        if (event.mIconData != null && !this.mImSession.isVoluntaryDeparture()) {
+        if (event.mIconData != null) {
             onGroupChatIconUpdated(event.mIconData);
         }
     }
@@ -272,7 +266,7 @@ public class ConferenceInfoUpdater {
             }
             if (isAbsent && participant.getStatus() != ImParticipant.Status.INVITED) {
                 ImSession imSession = this.mImSession;
-                imSession.logi("onConferenceInfoUpdated, " + IMSLog.numberChecker(participant.getUri()) + " is absent from updated full list.");
+                imSession.logi("onConferenceInfoUpdated, " + IMSLog.checker(participant.getUri()) + " is absent from updated full list.");
                 this.mLeftParticipants.put(participant, (Object) null);
                 participant.setStatus(ImParticipant.Status.DECLINED);
                 this.mDeletedParticipants.add(participant);

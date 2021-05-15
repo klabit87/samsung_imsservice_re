@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.os.SemSystemProperties;
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import com.sec.ims.IImsDmConfigListener;
@@ -682,8 +683,12 @@ public class RegistrationManagerBase extends RegistrationManagerInternal {
                         task.setDeregiReason(25);
                         IMSLog.i(IRegistrationManager.LOG_TAG, phoneId, "CMC deregister explicitly on WiFi");
                         tryDeregisterInternal(task, false, false);
-                        return;
                     }
+                }
+                if (task.getMno().isKor() && !task.isRcsOnly() && !RegistrationUtils.isCmcProfile(task.getProfile()) && TelephonyManager.getDefault().getSimState() == 1 && task.getState() == RegistrationConstants.RegisterTaskState.REGISTERED) {
+                    task.setDeregiReason(25);
+                    IMSLog.i(IRegistrationManager.LOG_TAG, phoneId, "De-Register is called right away to send SIP explicitly by sim absent event.");
+                    tryDeregisterInternal(task, false, false);
                     return;
                 }
                 return;
@@ -993,18 +998,7 @@ public class RegistrationManagerBase extends RegistrationManagerInternal {
 
     public void stopEmergencyRegistration(int phoneId) {
         Log.i(IRegistrationManager.LOG_TAG, "stopEmergencyRegistration:");
-        ImsProfile profile = null;
-        Iterator it = RegistrationUtils.getPendingRegistrationInternal(phoneId).iterator();
-        while (true) {
-            if (!it.hasNext()) {
-                break;
-            }
-            RegisterTask task = (RegisterTask) it.next();
-            if (task.getProfile().hasEmergencySupport()) {
-                profile = task.mProfile;
-                break;
-            }
-        }
+        ImsProfile profile = getEmergencyProfile(phoneId);
         if (profile != null) {
             Bundle bundle = new Bundle();
             bundle.putInt("id", profile.getId());
@@ -1017,10 +1011,6 @@ public class RegistrationManagerBase extends RegistrationManagerInternal {
         }
         if (SlotBasedConfig.getInstance(phoneId).getIconManager() != null) {
             SlotBasedConfig.getInstance(phoneId).getIconManager().setDuringEmergencyCall(false);
-        }
-        if (profile == null) {
-            Log.i(IRegistrationManager.LOG_TAG, "stopEmergencyRegistration: profile not found.");
-            startSilentEmergency();
         }
     }
 

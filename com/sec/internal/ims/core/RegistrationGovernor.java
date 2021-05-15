@@ -18,7 +18,6 @@ public abstract class RegistrationGovernor implements IRegistrationGovernor {
     public static final int RELEASE_ALWAYS = 0;
     public static final int RELEASE_AUTOCONFIG_UPDATED = 7;
     public static final int RELEASE_CMC_UPDATED = 8;
-    public static final int RELEASE_DETACH_WITH_REATTACH = 10;
     public static final int RELEASE_NETWORK_CHANGED = 6;
     public static final int RELEASE_PDN_DISCONNECTED = 5;
     public static final int RELEASE_PLMN_CHANGED = 9;
@@ -40,7 +39,6 @@ public abstract class RegistrationGovernor implements IRegistrationGovernor {
     protected boolean mIPsecAllow = true;
     protected boolean mIsPermanentPdnFailed = false;
     protected boolean mIsPermanentStopped = false;
-    protected boolean mIsReadyToGetReattach = false;
     protected boolean mIsValid = false;
     protected boolean mMoveToNextPcscfAfterTimerB = false;
     protected boolean mNeedToCheckLocationSetting = true;
@@ -369,9 +367,5 @@ public abstract class RegistrationGovernor implements IRegistrationGovernor {
 
     public boolean isMobilePreferredForRcs() {
         return false;
-    }
-
-    public boolean isReadyToGetReattach() {
-        return this.mIsReadyToGetReattach;
     }
 }

@@ -263,10 +263,11 @@ public class SoftphoneSettingsProvider extends ContentProvider {
         String str3 = LOG_TAG;
         IMSLog.s(str3, "selection: [" + selection + "], selectionArgs: [" + Arrays.toString(selectionArgs) + "], projection: " + Arrays.toString(projection));
         Cursor c = qb.query(db, projection, selection, selectionArgs, (String) null, (String) null, sortOrder);
-        if (c != null) {
-            String str4 = LOG_TAG;
-            IMSLog.s(str4, "found : " + c.getCount());
-        }
+        String str4 = LOG_TAG;
+        StringBuilder sb = new StringBuilder();
+        sb.append("found : ");
+        sb.append(c.getCount());
+        IMSLog.s(str4, sb.toString());
         return c;
     }
 

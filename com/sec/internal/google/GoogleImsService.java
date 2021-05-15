@@ -370,23 +370,25 @@ public class GoogleImsService extends IImsService.Stub implements IGoogleImsServ
 
     public IImsCallSession getPendingCallSession(int serviceId, String callId) throws RemoteException {
         int oir;
+        int i;
         ImsCallSessionImpl imsCallSessionImpl;
         this.mContext.enforceCallingOrSelfPermission(IMS_CALL_PERMISSION, "getPendingCallSession");
         ServiceProfile service = mServiceList.get(Integer.valueOf(serviceId));
         if (!isOpened(serviceId) || this.mVolteServiceModule == null || service == null) {
             String str = callId;
+            ServiceProfile serviceProfile = service;
             throw new RemoteException();
         }
         int phoneId = service.getPhoneId();
         com.sec.ims.volte2.IImsCallSession session = this.mVolteServiceModule.getPendingSession(callId);
         CallConstants.STATE sessionState = CallConstants.STATE.values()[session.getCallStateOrdinal()];
         if (sessionState == CallConstants.STATE.EndingCall || sessionState == CallConstants.STATE.EndedCall) {
+            int i2 = phoneId;
             throw new RemoteException();
         }
         CallProfile cp = session.getCallProfile();
         ImsCallProfile profile = new ImsCallProfile(1, DataTypeConvertor.convertToGoogleCallType(cp.getCallType()), prepareComposerDataBundle(cp.getComposerData()), new ImsStreamMediaProfile());
         ImsRegistration registration = session.getRegistration();
-        Mno mno = null;
         if (registration != null) {
             int currentRat = registration.getCurrentRat();
             if (cp.getRadioTech() != 0) {
@@ -398,17 +400,17 @@ public class GoogleImsService extends IImsService.Stub implements IGoogleImsServ
                 profile.setCallExtra("CallRadioTech", String.valueOf(currentRat));
             }
             session.setEpdgStateNoNotify(currentRat == 18);
-            mno = Mno.fromName(registration.getImsProfile().getMnoName());
         }
         profile.setCallExtra("oi", cp.getDialingNumber());
         profile.mMediaProfile = DataTypeConvertor.convertToGoogleMediaProfile(cp.getMediaProfile());
-        if (mno == Mno.DOCOMO) {
-            oir = getOirExtraFromDialingNumberForDcm(cp.getLetteringText());
+        String number = cp.getDialingNumber();
+        String Pletteting = cp.getLetteringText();
+        if (TextUtils.isEmpty(number)) {
+            number = NSDSNamespaces.NSDSSimAuthType.UNKNOWN;
+        }
+        if (Mno.fromName(registration.getImsProfile().getMnoName()) == Mno.DOCOMO) {
+            oir = getOirExtraFromDialingNumberForDcm(Pletteting);
         } else {
-            String number = cp.getDialingNumber();
-            if (TextUtils.isEmpty(number)) {
-                number = NSDSNamespaces.NSDSSimAuthType.UNKNOWN;
-            }
             oir = getOirExtraFromDialingNumber(number);
         }
         profile.setCallExtraInt("oir", oir);
@@ -433,24 +435,31 @@ public class GoogleImsService extends IImsService.Stub implements IGoogleImsServ
             profile.setCallExtra("com.samsung.telephony.extra.ims.VERSTAT", cp.getVerstat());
             if (cp.getVerstat().equals("TN-Validation-Passed")) {
                 profile.setCallerNumberVerificationStatus(1);
+                i = 0;
             } else if (cp.getVerstat().equals("TN-Validation-Failed")) {
                 profile.setCallerNumberVerificationStatus(2);
+                i = 0;
             } else {
+                i = 0;
                 profile.setCallerNumberVerificationStatus(0);
             }
         } else {
+            i = 0;
             profile.setCallerNumberVerificationStatus(0);
         }
         if (cp.getHDIcon() == 1) {
-            profile.mRestrictCause = 0;
+            profile.mRestrictCause = i;
         } else {
             profile.mRestrictCause = 3;
         }
         this.mCmcImsServiceUtil.getPendingCallSession(phoneId, profile, session);
         if (session.getCmcType() > 0) {
             Log.d(LOG_TAG, "getPendingCallSession, create imsCallSessionImpl for [CMC+D2D volte call]");
+            ServiceProfile serviceProfile2 = service;
+            int i3 = phoneId;
             imsCallSessionImpl = new CmcImsCallSessionImpl(profile, new CmcCallSessionManager(session, this.mVolteServiceModule, getNsdManager(), isEnabledWifiDirectFeature()), (android.telephony.ims.aidl.IImsCallSessionListener) null, this);
         } else {
+            int i4 = phoneId;
             Log.d(LOG_TAG, "getPendingCallSession, create imsCallSessionImpl for [NORMAL volte call]");
             imsCallSessionImpl = new ImsCallSessionImpl(profile, session, (android.telephony.ims.aidl.IImsCallSessionListener) null, this);
         }
@@ -670,12 +679,7 @@ public class GoogleImsService extends IImsService.Stub implements IGoogleImsServ
 
     public void onSmsReady(int phoneId) throws RemoteException {
         this.mContext.enforceCallingOrSelfPermission(IMS_CALL_PERMISSION, "onSmsReady");
-        ImsSmsImpl[] imsSmsImplArr = mSmsImpl;
-        if (imsSmsImplArr[phoneId] == null) {
-            imsSmsImplArr[phoneId] = new ImsSmsImpl(this.mContext, phoneId, this.mSmsListener);
-        } else {
-            imsSmsImplArr[phoneId].setSmsListener(this.mSmsListener);
-        }
+        mSmsImpl[phoneId] = new ImsSmsImpl(this.mContext, phoneId, this.mSmsListener);
         mSmsImpl[phoneId].updateTPMR(phoneId);
     }
 

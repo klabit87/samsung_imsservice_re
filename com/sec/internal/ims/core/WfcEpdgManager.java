@@ -753,10 +753,6 @@ public class WfcEpdgManager extends StateMachine implements ISequentialInitializ
         int phoneId = sm.getSimSlotIndex();
         String str = LOG_TAG;
         Log.i(str, "SIM Absent: phoneId=" + phoneId);
-        if (!isAnySimAvailable() && this.mSimMobilityStatusListener != null) {
-            ImsServiceStub.getInstance().unregisterSimMobilityStatusListenerByPhoneId(this.mSimMobilityStatusListener, -1);
-            this.mSimMobilityStatusListener = null;
-        }
         this.mCurrentSimMobilityState[phoneId] = false;
         return true;
     }

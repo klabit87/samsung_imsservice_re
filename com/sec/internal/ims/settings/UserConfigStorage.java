@@ -116,7 +116,7 @@ public class UserConfigStorage {
                 }
                 insert(values);
                 int i2 = this.mPhoneId;
-                IMSLog.i(LOG_TAG, i2, name + ", " + this.mMnoname + ":" + values.toString());
+                IMSLog.i(LOG_TAG, i2, name + ", " + mnoname + ":" + values.toString());
                 ImsSharedPrefHelper.save(this.mPhoneId, this.mContext, ImsSharedPrefHelper.USER_CONFIG, KEY_LOADED, true);
                 ImsSharedPrefHelper.save(this.mPhoneId, this.mContext, ImsSharedPrefHelper.USER_CONFIG, "mnoname", this.mMnoname);
             } catch (IOException | XmlPullParserException e) {

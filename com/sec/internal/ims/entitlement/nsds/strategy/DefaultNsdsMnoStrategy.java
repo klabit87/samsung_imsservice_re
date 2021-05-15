@@ -69,7 +69,14 @@ public class DefaultNsdsMnoStrategy implements IMnoNsdsStrategy {
         return this.sMapEntitlementServices;
     }
 
-    public String getEntitlementServerUrl(String imsi, String deviceUid) {
+    public final String getEntitlementServerUrl(String imsi, String deviceUid) {
+        if (this.mStrategyType.isOneOf(NsdsStrategyType.O2U)) {
+            String subset = imsi.substring(5, 8);
+            if (subset.equals("995") || subset.equals("997") || subset.equals("259")) {
+                return "https://ses-test.o2.co.uk:443/generic_devices";
+            }
+            return "https://ses.o2.co.uk:443/generic_devices";
+        }
         if (this.mStrategyType.isOneOf(NsdsStrategyType.ATT)) {
             String url = NSDSSharedPrefHelper.getEntitlementServerUrl(this.mContext, deviceUid, "https://sentitlement2.mobile.att.net/WFC");
             if (TextUtils.isEmpty(url) || !url.contains("t-mobile")) {
@@ -106,10 +113,6 @@ public class DefaultNsdsMnoStrategy implements IMnoNsdsStrategy {
     }
 
     public final boolean needCheckEntitlementPollInterval() {
-        return this.mStrategyType.isOneOf(NsdsStrategyType.O2U);
-    }
-
-    public final boolean shouldRecoverStoredEntitlement() {
         return this.mStrategyType.isOneOf(NsdsStrategyType.O2U);
     }
 

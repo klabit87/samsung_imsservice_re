@@ -26,7 +26,6 @@ import com.sec.internal.ims.servicemodules.im.strategy.IMnoStrategy;
 import com.sec.internal.ims.servicemodules.volte2.CallStateMachine;
 import com.sec.internal.ims.settings.RcsPolicySettings;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -587,7 +586,6 @@ public class ResipTranslatorCollection {
         Log.d(LOG_TAG, "translateFwImdnNoti(): notifications = " + notifications);
         int[] result = new int[notifications.size()];
         int i = 0;
-        Arrays.fill(result, -1);
         for (NotificationStatus noti : notifications) {
             int i2 = AnonymousClass2.$SwitchMap$com$sec$internal$constants$ims$servicemodules$im$NotificationStatus[noti.ordinal()];
             if (i2 == 1) {

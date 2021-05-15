@@ -913,7 +913,7 @@ public class ImsCallSession extends IImsCallSession.Stub {
 
     private ImsUri getPreferredImpu(ImsRegistration reg) {
         ImsUri ou = reg.getPreferredImpu().getUri();
-        if ((this.mMno != Mno.ATT && this.mMno != Mno.SMARTFREN) || DeviceUtil.getGcfMode() || reg.getImpuList() == null) {
+        if ((this.mMno != Mno.ATT && this.mMno != Mno.SMARTFREN) || DeviceUtil.getGcfMode().booleanValue() || reg.getImpuList() == null) {
             return ou;
         }
         for (NameAddr addr : reg.getImpuList()) {

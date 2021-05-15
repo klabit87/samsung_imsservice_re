@@ -5,6 +5,7 @@ import android.os.SemSystemProperties;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import com.android.internal.util.ArrayUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
@@ -14,46 +15,66 @@ import com.sec.internal.constants.Mno;
 import com.sec.internal.constants.ims.ImsConstants;
 import com.sec.internal.constants.ims.cmstore.CloudMessageProviderContract;
 import com.sec.internal.constants.ims.config.ConfigConstants;
+import com.sec.internal.constants.ims.os.PhoneConstants;
 import com.sec.internal.helper.OmcCode;
 import com.sec.internal.log.IMSLog;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Iterator;
 
 public class DeviceUtil {
     private static final String LOG_TAG = DeviceUtil.class.getSimpleName();
     private static final String OMC_DATA_FILE = "omc_data.json";
     private static final String OMC_PATH_PRISM = "/prism/etc/";
-    private static final String[][] REPRESENTATIVE_COUNTRY_ISO = {new String[]{"SE", "NO", "DK", "FI", "IS", "GL"}, new String[]{"LU", "BE"}, new String[]{"LV", "LT", "EE"}, new String[]{"RS", "HR", "AL"}};
 
     public static boolean isTablet() {
-        return SemSystemProperties.get("ro.build.characteristics", "").contains("tablet");
+        String deviceType = SemSystemProperties.get("ro.build.characteristics");
+        return deviceType != null && deviceType.contains("tablet");
     }
 
     public static boolean isUSOpenDevice() {
-        return SemSystemProperties.get("ro.simbased.changetype", "").contains("SED");
+        if (SemSystemProperties.get("ro.simbased.changetype", "").contains("SED")) {
+            return true;
+        }
+        return false;
     }
 
     public static boolean isUSMvnoDevice() {
-        return ArrayUtils.contains(new String[]{"TFN", "TFV", "TFA", "TFO", "XAG", "XAR"}, OmcCode.get());
+        String salesCode = OmcCode.get();
+        return TextUtils.equals(salesCode, "TFN") || TextUtils.equals(salesCode, "TFV") || TextUtils.equals(salesCode, "TFA") || TextUtils.equals(salesCode, "TFO") || TextUtils.equals(salesCode, "XAG") || TextUtils.equals(salesCode, "XAR");
     }
 
     public static boolean isOtpAuthorized() {
+        FileInputStream fis = null;
+        byte[] buffer = new byte[1024];
+        int length = 0;
         try {
-            byte[] data = Files.readAllBytes(Paths.get(ImsConstants.SystemPath.EFS, new String[]{".otp_auth"}));
-            if (data == null || !Arrays.equals(data, CloudMessageProviderContract.JsonData.TRUE.getBytes(StandardCharsets.UTF_8))) {
-                return false;
+            FileInputStream fis2 = new FileInputStream("/efs/sec_efs/.otp_auth");
+            length = fis2.read(buffer);
+            try {
+                fis2.close();
+            } catch (IOException e) {
             }
-            return true;
-        } catch (IOException e) {
-            return false;
+        } catch (IOException e2) {
+            if (fis != null) {
+                fis.close();
+            }
+        } catch (Throwable th) {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e3) {
+                }
+            }
+            throw th;
         }
+        if (length > 0) {
+            return CloudMessageProviderContract.JsonData.TRUE.equalsIgnoreCase(new String(buffer).trim());
+        }
+        return false;
     }
 
     public static boolean isUserUnlocked(Context context) {
@@ -69,21 +90,21 @@ public class DeviceUtil {
         return SemSystemProperties.get("ril.modem.board", "").trim();
     }
 
-    public static boolean getGcfMode() {
-        return "1".equals(SemSystemProperties.get(ImsConstants.SystemProperties.GCF_MODE_PROPERTY, "0"));
+    public static Boolean getGcfMode() {
+        return Boolean.valueOf("1".equals(SemSystemProperties.get(ImsConstants.SystemProperties.GCF_MODE_PROPERTY, "0")));
     }
 
-    public static void setGcfMode(boolean mode) {
+    public static void setGcfMode(Boolean mode) {
         String str = "";
-        SemSystemProperties.set(Mno.MOCK_MNO_PROPERTY, mode ? Mno.GCF_OPERATOR_CODE : str);
+        SemSystemProperties.set(Mno.MOCK_MNO_PROPERTY, mode.booleanValue() ? Mno.GCF_OPERATOR_CODE : str);
         String str2 = Mno.MOCK_MNONAME_PROPERTY;
-        if (mode) {
+        if (mode.booleanValue()) {
             str = Mno.GCF_OPERATOR_NAME;
         }
         SemSystemProperties.set(str2, str);
         String str3 = "1";
-        SemSystemProperties.set(ImsConstants.SystemProperties.GCF_MODE_PROPERTY, mode ? str3 : "0");
-        if (!mode) {
+        SemSystemProperties.set(ImsConstants.SystemProperties.GCF_MODE_PROPERTY, mode.booleanValue() ? str3 : "0");
+        if (!mode.booleanValue()) {
             str3 = "0";
         }
         SemSystemProperties.set(ImsConstants.SystemProperties.GCF_MODE_PROPERTY_P_OS, str3);
@@ -102,7 +123,7 @@ public class DeviceUtil {
     }
 
     public static boolean isSupport5G(Context context) {
-        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(TelephonyManager.class);
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(PhoneConstants.PHONE_KEY);
         if (telephonyManager == null || (524288 & telephonyManager.getSupportedRadioAccessFamily()) <= 0) {
             IMSLog.d(LOG_TAG, "Support5G() : false");
             return false;
@@ -120,34 +141,30 @@ public class DeviceUtil {
 
     private static String representativeCountryISO(String countryIso) {
         String repISO = countryIso;
-        String[][] strArr = REPRESENTATIVE_COUNTRY_ISO;
-        int length = strArr.length;
-        int i = 0;
-        while (true) {
-            if (i >= length) {
-                break;
-            }
-            String[] representativeIso = strArr[i];
-            if (ArrayUtils.contains(representativeIso, countryIso)) {
-                repISO = representativeIso[0];
-                break;
-            }
-            i++;
+        String[] NEE = {"SE", "NO", "DK", "FI", "IS", "GL"};
+        String[] LUX = {"LU", "BE"};
+        String[] SEB = {"LV", "LT", "EE"};
+        String[] SEE = {"RS", "HR", "AL"};
+        if (ArrayUtils.contains(NEE, countryIso)) {
+            repISO = NEE[0];
+        } else if (ArrayUtils.contains(LUX, countryIso)) {
+            repISO = LUX[0];
+        } else if (ArrayUtils.contains(SEB, countryIso)) {
+            repISO = SEB[0];
+        } else if (ArrayUtils.contains(SEE, countryIso)) {
+            repISO = SEE[0];
         }
-        IMSLog.i(LOG_TAG, "representativeCountryISO " + countryIso + " ==> " + repISO);
+        String str = LOG_TAG;
+        IMSLog.i(str, "representativeCountryISO = " + repISO);
         return repISO;
     }
 
     public static boolean includedSimByTSS(String mnoname) {
-        return includedSimByTSS(mnoname, "/prism/etc//omc_data.json");
-    }
-
-    public static boolean includedSimByTSS(String mnoname, String omcDataPath) {
         JsonReader reader;
         Throwable th;
         boolean included = false;
         String countryIso = representativeCountryISO(Mno.getCountryFromMnomap(mnoname).getCountryIso());
-        File file = new File(omcDataPath);
+        File file = new File("/prism/etc//omc_data.json");
         if (!file.exists() || file.length() <= 0) {
             IMSLog.e(LOG_TAG, "omc_data.json not found.");
         } else {
@@ -174,14 +191,14 @@ public class DeviceUtil {
                 }
                 reader.close();
             } catch (JsonParseException | IOException e) {
-                String str = LOG_TAG;
-                IMSLog.e(str, "omc_data.json parsing failed by " + e);
+                e.printStackTrace();
+                IMSLog.e(LOG_TAG, "omc_data.json parsing fail.");
             } catch (Throwable th2) {
                 th.addSuppressed(th2);
             }
         }
-        String str2 = LOG_TAG;
-        IMSLog.i(str2, "includedSimByTSS " + included + " in Unified Sales Code (TSS2.0)");
+        String str = LOG_TAG;
+        IMSLog.i(str, "includedSimByTSS " + included + " in Unified Sales Code (TSS2.0)");
         return included;
         throw th;
     }

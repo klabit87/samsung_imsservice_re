@@ -28,7 +28,6 @@ import com.sec.internal.interfaces.ims.servicemodules.options.ICapabilityDiscove
 import com.sec.internal.log.IMSLog;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -313,7 +312,7 @@ public final class TmoStrategy extends DefaultRCSMnoStrategy {
             return;
         }
         String str = TAG;
-        IMSLog.i(str, phoneId, "forceRefreshCapability: uris " + IMSLog.numberChecker((Collection<ImsUri>) uris));
+        IMSLog.i(str, phoneId, "forceRefreshCapability: uris " + IMSLog.checker(uris));
         if (remoteOnline) {
             for (ImsUri uri : uris) {
                 capDiscModule.getCapabilities(uri, (long) (Capabilities.FEATURE_FT_SERVICE | Capabilities.FEATURE_CHAT_CPM), phoneId);
@@ -474,7 +473,7 @@ public final class TmoStrategy extends DefaultRCSMnoStrategy {
             r8.<init>()
             java.lang.String r9 = "isFTViaHttp, uri = "
             r8.append(r9)
-            java.lang.String r9 = com.sec.internal.log.IMSLog.numberChecker((com.sec.ims.util.ImsUri) r4)
+            java.lang.String r9 = com.sec.internal.log.IMSLog.checker(r4)
             r8.append(r9)
             java.lang.String r9 = ", capx = "
             r8.append(r9)

@@ -41,11 +41,11 @@ public class ImDump {
         IMSLog.decreaseIndent(LOG_TAG);
         IMSLog.dump(LOG_TAG, "Active Sessions:");
         for (ImSession session : this.mImCache.getAllImSessions()) {
-            IMSLog.dump(LOG_TAG, session.toString(), false);
+            IMSLog.dump(LOG_TAG, session.toString());
             IMSLog.dump(LOG_TAG, "Pending messages:");
             IMSLog.increaseIndent(LOG_TAG);
             for (MessageBase m : this.mImCache.getAllPendingMessages(session.getChatId())) {
-                IMSLog.dump(LOG_TAG, m.toString(), false);
+                IMSLog.dump(LOG_TAG, m.toString());
             }
             IMSLog.decreaseIndent(LOG_TAG);
         }
@@ -53,15 +53,13 @@ public class ImDump {
         try {
             for (ChatData chat : this.mImCache.getPersister().querySessions((String) null)) {
                 ImSession session2 = this.mImCache.getImSession(chat.getChatId());
-                if (session2 != null) {
-                    IMSLog.dump(LOG_TAG, session2.toStringForDump(), false);
-                    IMSLog.increaseIndent(LOG_TAG);
-                    Iterator<String> it2 = generateMessagesForDump(this.mImCache.getPersister().queryMessagesByChatIdForDump(session2.getChatId(), 50)).iterator();
-                    while (it2.hasNext()) {
-                        IMSLog.dump(LOG_TAG, it2.next(), false);
-                    }
-                    IMSLog.decreaseIndent(LOG_TAG);
+                IMSLog.dump(LOG_TAG, session2 != null ? session2.toStringForDump() : "");
+                IMSLog.increaseIndent(LOG_TAG);
+                Iterator<String> it2 = generateMessagesForDump(this.mImCache.getPersister().queryMessagesByChatIdForDump(session2.getChatId(), 50)).iterator();
+                while (it2.hasNext()) {
+                    IMSLog.dump(LOG_TAG, it2.next(), false);
                 }
+                IMSLog.decreaseIndent(LOG_TAG);
             }
             IMSLog.decreaseIndent(LOG_TAG);
         } catch (SecurityException e) {

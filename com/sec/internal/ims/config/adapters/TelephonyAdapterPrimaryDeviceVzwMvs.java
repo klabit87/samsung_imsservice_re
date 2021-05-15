@@ -84,7 +84,7 @@ public class TelephonyAdapterPrimaryDeviceVzwMvs extends TelephonyAdapterPrimary
             } else if (((String) msg.obj).contains(SMS_CONFIGURATION_REQUEST)) {
                 IMSLog.i(LOG_TAG, this.mPhoneId, "force configuration request");
                 IMSLog.c(LogClass.TAPDVM_RECEIVED_PORTSMS, this.mPhoneId + ",REVPO");
-                this.mModuleHandler.sendMessage(obtainMessage(21, Integer.valueOf(this.mPhoneId)));
+                this.mModuleHandler.sendEmptyMessage(21);
             } else {
                 IMSLog.i(LOG_TAG, this.mPhoneId, "invalid port sms");
             }

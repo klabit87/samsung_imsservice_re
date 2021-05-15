@@ -142,15 +142,15 @@ public final class CircularArray<E> {
                     this.mElements[i3] = null;
                     i3++;
                 }
-                int i4 = i - start;
-                int numOfElements2 = numOfElements - i4;
-                this.mTail = i - i4;
+                int removed = i - start;
+                int numOfElements2 = numOfElements - removed;
+                this.mTail = i - removed;
                 if (numOfElements2 > 0) {
                     int length = this.mElements.length;
                     this.mTail = length;
                     int newTail = length - numOfElements2;
-                    for (int i5 = newTail; i5 < this.mTail; i5++) {
-                        this.mElements[i5] = null;
+                    for (int i4 = newTail; i4 < this.mTail; i4++) {
+                        this.mElements[i4] = null;
                     }
                     this.mTail = newTail;
                     return;

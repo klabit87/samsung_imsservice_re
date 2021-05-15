@@ -49,7 +49,7 @@ public class MnoNsdsStrategyCreator {
         hashMap.put(Mno.TMOUS, TmoNsdsStrategy.class);
         sMnoSpecificStrategyGenerator.put(Mno.ATT, AttNsdsStrategy.class);
         sMnoSpecificStrategyGenerator.put(Mno.TELEFONICA_UK, O2UNsdsStrategy.class);
-        sMnoSpecificStrategyGenerator.put(Mno.TELEFONICA_UK_LAB, O2ULabNsdsStrategy.class);
+        sMnoSpecificStrategyGenerator.put(Mno.TELEFONICA_UK_LAB, O2UNsdsStrategy.class);
         sMnoSpecificStrategyGenerator.put(Mno.GCI, XaaNsdsStrategy.class);
     }
 

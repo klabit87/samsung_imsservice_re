@@ -11,7 +11,6 @@ import java.util.Map;
 
 public class AECStorage {
     private final Context mContext;
-    private boolean mIsPushMsgStatus = false;
     private final int mPhoneId;
     private final Map<String, String> mProviderSettings;
     private final String mSharedPreference;
@@ -87,10 +86,6 @@ public class AECStorage {
     public void setNotifToken(String notifToken) {
         setStringValue(AECNamespace.Path.PUSH_NOTIF_TOKEN, notifToken);
         ExternalStorage.setNotifToken(this.mPhoneId, notifToken);
-    }
-
-    public void setPushMsgStatus(boolean status) {
-        this.mIsPushMsgStatus = status;
     }
 
     public Bundle getStoredConfiguration() {
@@ -186,15 +181,11 @@ public class AECStorage {
             return 0;
         }
         if (entitle == 0) {
-            if (AECNamespace.ServerVendor.NOKIA.equalsIgnoreCase(getServerVendor()) && getEntitlementInitFromApp() && this.mIsPushMsgStatus) {
-                setPushMsgStatus(false);
-                return 0;
-            } else if (prov == 0 || tc == 0 || addr == 0) {
+            if (prov == 0 || tc == 0 || addr == 0) {
                 return 2;
-            } else {
-                if (prov == 3 || tc == 3 || addr == 3) {
-                    return 1;
-                }
+            }
+            if (prov == 3 || tc == 3 || addr == 3) {
+                return 1;
             }
         }
         if (entitle == 1 && ((prov == 1 || prov == 2) && ((tc == 1 || tc == 2) && (addr == 1 || addr == 2)))) {
@@ -321,13 +312,5 @@ public class AECStorage {
             return false;
         }
         return CloudMessageProviderContract.JsonData.TRUE.equalsIgnoreCase(map.get(AECNamespace.ProviderSettings.VOWIFI_AUTO_ON));
-    }
-
-    private String getServerVendor() {
-        Map<String, String> map = this.mProviderSettings;
-        if (map == null) {
-            return "";
-        }
-        return map.getOrDefault(AECNamespace.ProviderSettings.SERVER_VENDOR, "");
     }
 }

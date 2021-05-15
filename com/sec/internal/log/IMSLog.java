@@ -5,7 +5,6 @@ import android.os.SemSystemProperties;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
-import com.sec.ims.util.ImsUri;
 import com.sec.internal.constants.ims.cmstore.CloudMessageProviderContract;
 import com.sec.internal.constants.ims.config.ConfigConstants;
 import com.sec.internal.helper.OmcCode;
@@ -21,7 +20,6 @@ import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
@@ -34,12 +32,13 @@ public class IMSLog {
     private static final String EOL = System.getProperty("line.separator", "\n");
     private static final String INDENT = "  ";
     private static final int MAX_DUMP_LEN = 1024;
-    private static String SALES_CODE;
+    private static String SALES_CODE = null;
     private static final boolean SHIP_BUILD = CloudMessageProviderContract.JsonData.TRUE.equals(SemSystemProperties.get("ro.product_ship", ConfigConstants.VALUE.INFO_COMPLETED));
     private static final String TAG = IMSLog.class.getSimpleName();
     private static EncryptedLogger encryptedLogger = EncryptedLogger.getInstance();
     private static boolean mIsOtpAuthorized = false;
     private static boolean mIsUt = false;
+    private static final int mLengthOfPlaneText = 4;
     private static HashSet<String> mShowSLogInShipBuildSet;
     private static ByteBuffer sByteBuffer = null;
     private static long sDumpStartTime = 0;
@@ -350,10 +349,14 @@ public class IMSLog {
     }
 
     public static String numberChecker(String log) {
-        return numberChecker(log, false);
+        return numberChecker(log, 4, false);
     }
 
-    public static String numberChecker(String log, boolean allowAtUt) {
+    public static String numberChecker(String log, int lengthOfDigit) {
+        return numberChecker(log, lengthOfDigit, false);
+    }
+
+    public static String numberChecker(String log, int lengthOfDigit, boolean allowAtUt) {
         if (log == null) {
             return null;
         }
@@ -361,28 +364,6 @@ public class IMSLog {
             return log;
         }
         return log.replaceAll("\\d(?=\\d{2})", "*");
-    }
-
-    public static String numberChecker(ImsUri uri) {
-        if (uri == null) {
-            return null;
-        }
-        return numberChecker(uri.toString());
-    }
-
-    public static String numberChecker(Collection<ImsUri> uris) {
-        if (uris == null || uris.isEmpty()) {
-            return null;
-        }
-        if (isShipBuild()) {
-            StringBuilder str = new StringBuilder();
-            for (ImsUri uri : uris) {
-                str.append(numberChecker(uri.toString()));
-                str.append(", ");
-            }
-            return str.toString();
-        }
-        return "" + uris;
     }
 
     public static boolean isShipBuild() {

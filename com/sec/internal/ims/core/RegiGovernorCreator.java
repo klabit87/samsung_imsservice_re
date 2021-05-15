@@ -16,7 +16,7 @@ public abstract class RegiGovernorCreator {
     private static final String LOG_TAG = "RegiGvnCreator";
 
     public static IRegistrationGovernor getInstance(Mno mno, RegistrationManagerInternal regMan, ITelephonyManager tm, RegisterTask task, PdnController pdnController, IVolteServiceModule vsm, IConfigModule cm, Context context) {
-        if (!DeviceUtil.getGcfMode()) {
+        if (!DeviceUtil.getGcfMode().booleanValue()) {
             String rcsAs = ConfigUtil.getAcsServerType(context, task.getPhoneId());
             if (task.isRcsOnly() && ImsConstants.RCS_AS.JIBE.equalsIgnoreCase(rcsAs)) {
                 return new RegistrationGovernorRcsJibe(regMan, tm, task, pdnController, vsm, cm, context);
@@ -97,6 +97,9 @@ public abstract class RegiGovernorCreator {
             }
             if (mno2 == Mno.GENERIC_IR92 || mno2 == Mno.ALTICE || mno2 == Mno.GCI) {
                 return new RegistrationGovernorIR92(regMan, telephonyManager, task, pdnController, vsm, cm, context);
+            }
+            if (mno2 == Mno.INTEROP) {
+                return new RegistrationGovernorInterop(regMan, telephonyManager, task, pdnController, vsm, cm, context);
             }
             return new RegistrationGovernorBase(regMan, telephonyManager, task, pdnController, vsm, cm, context);
         }

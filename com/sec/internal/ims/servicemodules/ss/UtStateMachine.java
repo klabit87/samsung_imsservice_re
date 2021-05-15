@@ -1799,130 +1799,259 @@ public class UtStateMachine extends StateMachine {
         return i;
     }
 
-    public String makeUri() {
-        StringBuilder uri = new StringBuilder();
-        if (this.mConfig.nafPort == 443) {
-            uri.append("https://");
-        } else {
-            uri.append("http://");
-        }
-        uri.append(this.mConfig.nafServer);
-        if (this.mConfig.nafPort != 80) {
-            uri.append(":");
-            uri.append(this.mConfig.nafPort);
-        }
-        if (!this.mConfig.xcapRootUri.isEmpty()) {
-            uri.append(this.mConfig.xcapRootUri);
-        }
-        uri.append(UtUrl.REQUEST_USER_URL);
-        uri.append(this.mConfig.impu);
-        uri.append(UtUrl.REQUEST_SERVICE_URL);
-        Mno mno = SimUtil.getSimMno(this.mPhoneId);
-        switch (this.mProfile.type) {
-            case 100:
-                if (mno != Mno.CHT) {
-                    uri.append(UtUrl.DIV_URL);
-                    break;
-                } else {
-                    uri.append(UtUrl.DIV_URL_SS);
-                    break;
-                }
-            case 101:
-                if (mno == Mno.CHT || mno == Mno.SPRINT) {
-                    uri.append(UtUrl.DIV_URL_SS);
-                } else {
-                    uri.append(UtUrl.DIV_URL);
-                }
-                if (this.mFeature.isCFSingleElement) {
-                    uri.append(getCfURL());
-                    break;
-                }
-                break;
-            case 102:
-                if (mno != Mno.CHT) {
-                    uri.append(UtUrl.ICB_URL);
-                    break;
-                } else {
-                    uri.append(UtUrl.ICB_URL_SS);
-                    break;
-                }
-            case 103:
-                if (mno == Mno.CHT) {
-                    uri.append(UtUrl.ICB_URL_SS);
-                } else {
-                    uri.append(UtUrl.ICB_URL);
-                }
-                if (this.mFeature.isCBSingleElement) {
-                    uri.append(getCbURL());
-                    break;
-                }
-                break;
-            case 104:
-                if (mno != Mno.CHT) {
-                    uri.append(UtUrl.OCB_URL);
-                    break;
-                } else {
-                    uri.append(UtUrl.OCB_URL_SS);
-                    break;
-                }
-            case 105:
-                if (mno == Mno.CHT) {
-                    uri.append(UtUrl.OCB_URL_SS);
-                } else {
-                    uri.append(UtUrl.OCB_URL);
-                }
-                if (this.mFeature.isCBSingleElement) {
-                    uri.append(getCbURL());
-                    break;
-                }
-                break;
-            case 106:
-            case 107:
-                if (mno != Mno.CLARO_PUERTO) {
-                    uri.append(UtUrl.OIP_URL_SIMSERVS);
-                    break;
-                } else {
-                    uri.append(UtUrl.OIP_URL);
-                    break;
-                }
-            case 108:
-            case 109:
-                if (mno != Mno.CLARO_PUERTO) {
-                    uri.append(UtUrl.OIR_URL_SIMSERVS);
-                    break;
-                } else {
-                    uri.append(UtUrl.OIR_URL);
-                    break;
-                }
-            case 110:
-            case 111:
-                uri.append(UtUrl.TIP_URL);
-                break;
-            case 112:
-            case 113:
-                uri.append(UtUrl.TIR_URL);
-                break;
-            case 114:
-            case 115:
-                uri.append(UtUrl.CW_URL);
-                break;
-        }
-        int cpIndex = uri.indexOf("cp:");
-        int ssIndex = uri.indexOf("ss:");
-        if (cpIndex > 0 || ssIndex > 0) {
-            if (mno == Mno.CHT && ((this.mProfile.condition == 5 || this.mProfile.condition == 4) && this.mProfile.type == 101)) {
-                uri.append("xmlns(cp=urn:ietf:params:xml:ns:common-policy)");
-            } else {
-                uri.append("?");
-                if (cpIndex > 0) {
-                    uri.append("xmlns(cp=urn:ietf:params:xml:ns:common-policy)");
-                }
-                if (ssIndex > 0 || (mno == Mno.SFR && this.mProfile.type == 101)) {
-                    uri.append(UtUrl.XMLNS_SS_URL);
-                }
+    /* JADX WARNING: Code restructure failed: missing block: B:5:0x0025, code lost:
+        if (r1.isOneOf(com.sec.internal.constants.Mno.SPARK) != false) goto L_0x002e;
+     */
+    /* JADX WARNING: Removed duplicated region for block: B:10:0x0042  */
+    /* JADX WARNING: Removed duplicated region for block: B:13:0x0058  */
+    /* JADX WARNING: Removed duplicated region for block: B:16:0x0085  */
+    /* JADX WARNING: Removed duplicated region for block: B:17:0x008c  */
+    /* JADX WARNING: Removed duplicated region for block: B:18:0x0093  */
+    /* JADX WARNING: Removed duplicated region for block: B:19:0x009a  */
+    /* JADX WARNING: Removed duplicated region for block: B:23:0x00ac  */
+    /* JADX WARNING: Removed duplicated region for block: B:27:0x00be  */
+    /* JADX WARNING: Removed duplicated region for block: B:34:0x00d7  */
+    /* JADX WARNING: Removed duplicated region for block: B:38:0x00e3  */
+    /* JADX WARNING: Removed duplicated region for block: B:45:0x00fc  */
+    /* JADX WARNING: Removed duplicated region for block: B:49:0x0108  */
+    /* JADX WARNING: Removed duplicated region for block: B:58:0x0126  */
+    /* JADX WARNING: Removed duplicated region for block: B:73:0x0160  */
+    /* JADX WARNING: Removed duplicated region for block: B:74:0x0164  */
+    /* Code decompiled incorrectly, please refer to instructions dump. */
+    public java.lang.String makeUri() {
+        /*
+            r9 = this;
+            java.lang.StringBuilder r0 = new java.lang.StringBuilder
+            r0.<init>()
+            int r1 = r9.mPhoneId
+            com.sec.internal.constants.Mno r1 = com.sec.internal.helper.SimUtil.getSimMno(r1)
+            com.sec.internal.ims.servicemodules.ss.UtConfigData r2 = r9.mConfig
+            int r2 = r2.nafPort
+            r3 = 443(0x1bb, float:6.21E-43)
+            if (r2 == r3) goto L_0x002e
+            com.sec.internal.ims.servicemodules.ss.UtFeatureData r2 = r9.mFeature
+            boolean r2 = r2.support_tls
+            if (r2 == 0) goto L_0x0028
+            r2 = 1
+            com.sec.internal.constants.Mno[] r2 = new com.sec.internal.constants.Mno[r2]
+            r3 = 0
+            com.sec.internal.constants.Mno r4 = com.sec.internal.constants.Mno.SPARK
+            r2[r3] = r4
+            boolean r2 = r1.isOneOf(r2)
+            if (r2 == 0) goto L_0x0028
+            goto L_0x002e
+        L_0x0028:
+            java.lang.String r2 = "http://"
+            r0.append(r2)
+            goto L_0x0033
+        L_0x002e:
+            java.lang.String r2 = "https://"
+            r0.append(r2)
+        L_0x0033:
+            com.sec.internal.ims.servicemodules.ss.UtConfigData r2 = r9.mConfig
+            java.lang.String r2 = r2.nafServer
+            r0.append(r2)
+            com.sec.internal.ims.servicemodules.ss.UtConfigData r2 = r9.mConfig
+            int r2 = r2.nafPort
+            r3 = 80
+            if (r2 == r3) goto L_0x004e
+            java.lang.String r2 = ":"
+            r0.append(r2)
+            com.sec.internal.ims.servicemodules.ss.UtConfigData r2 = r9.mConfig
+            int r2 = r2.nafPort
+            r0.append(r2)
+        L_0x004e:
+            com.sec.internal.ims.servicemodules.ss.UtConfigData r2 = r9.mConfig
+            java.lang.String r2 = r2.xcapRootUri
+            boolean r2 = r2.isEmpty()
+            if (r2 != 0) goto L_0x005f
+            com.sec.internal.ims.servicemodules.ss.UtConfigData r2 = r9.mConfig
+            java.lang.String r2 = r2.xcapRootUri
+            r0.append(r2)
+        L_0x005f:
+            java.lang.String r2 = "/simservs.ngn.etsi.org/users/"
+            r0.append(r2)
+            com.sec.internal.ims.servicemodules.ss.UtConfigData r2 = r9.mConfig
+            java.lang.String r2 = r2.impu
+            r0.append(r2)
+            java.lang.String r2 = "/simservs.xml"
+            r0.append(r2)
+            com.sec.internal.ims.servicemodules.ss.UtProfile r2 = r9.mProfile
+            int r2 = r2.type
+            java.lang.String r3 = "/~~/simservs/ss:outgoing-communication-barring"
+            java.lang.String r4 = "/~~/simservs/outgoing-communication-barring"
+            java.lang.String r5 = "/~~/simservs/ss:incoming-communication-barring"
+            java.lang.String r6 = "/~~/simservs/incoming-communication-barring"
+            java.lang.String r7 = "/~~/simservs/ss:communication-diversion"
+            java.lang.String r8 = "/~~/simservs/communication-diversion"
+            switch(r2) {
+                case 100: goto L_0x0126;
+                case 101: goto L_0x0108;
+                case 102: goto L_0x00fc;
+                case 103: goto L_0x00e3;
+                case 104: goto L_0x00d7;
+                case 105: goto L_0x00be;
+                case 106: goto L_0x00ac;
+                case 107: goto L_0x00ac;
+                case 108: goto L_0x009a;
+                case 109: goto L_0x009a;
+                case 110: goto L_0x0093;
+                case 111: goto L_0x0093;
+                case 112: goto L_0x008c;
+                case 113: goto L_0x008c;
+                case 114: goto L_0x0085;
+                case 115: goto L_0x0085;
+                default: goto L_0x0083;
             }
-        }
-        return uri.toString();
+        L_0x0083:
+            goto L_0x0132
+        L_0x0085:
+            java.lang.String r2 = "/~~/simservs/communication-waiting"
+            r0.append(r2)
+            goto L_0x0132
+        L_0x008c:
+            java.lang.String r2 = "/~~/terminating-identity-presentation-restriction"
+            r0.append(r2)
+            goto L_0x0132
+        L_0x0093:
+            java.lang.String r2 = "/~~/terminating-identity-presentation"
+            r0.append(r2)
+            goto L_0x0132
+        L_0x009a:
+            com.sec.internal.constants.Mno r2 = com.sec.internal.constants.Mno.CLARO_PUERTO
+            if (r1 != r2) goto L_0x00a5
+            java.lang.String r2 = "/~~/originating-identity-presentation-restriction"
+            r0.append(r2)
+            goto L_0x0132
+        L_0x00a5:
+            java.lang.String r2 = "/~~/simservs/originating-identity-presentation-restriction"
+            r0.append(r2)
+            goto L_0x0132
+        L_0x00ac:
+            com.sec.internal.constants.Mno r2 = com.sec.internal.constants.Mno.CLARO_PUERTO
+            if (r1 != r2) goto L_0x00b7
+            java.lang.String r2 = "/~~/originating-identity-presentation"
+            r0.append(r2)
+            goto L_0x0132
+        L_0x00b7:
+            java.lang.String r2 = "/~~/simservs/originating-identity-presentation"
+            r0.append(r2)
+            goto L_0x0132
+        L_0x00be:
+            com.sec.internal.constants.Mno r2 = com.sec.internal.constants.Mno.CHT
+            if (r1 != r2) goto L_0x00c6
+            r0.append(r3)
+            goto L_0x00c9
+        L_0x00c6:
+            r0.append(r4)
+        L_0x00c9:
+            com.sec.internal.ims.servicemodules.ss.UtFeatureData r2 = r9.mFeature
+            boolean r2 = r2.isCBSingleElement
+            if (r2 == 0) goto L_0x0132
+            java.lang.String r2 = r9.getCbURL()
+            r0.append(r2)
+            goto L_0x0132
+        L_0x00d7:
+            com.sec.internal.constants.Mno r2 = com.sec.internal.constants.Mno.CHT
+            if (r1 != r2) goto L_0x00df
+            r0.append(r3)
+            goto L_0x0132
+        L_0x00df:
+            r0.append(r4)
+            goto L_0x0132
+        L_0x00e3:
+            com.sec.internal.constants.Mno r2 = com.sec.internal.constants.Mno.CHT
+            if (r1 != r2) goto L_0x00eb
+            r0.append(r5)
+            goto L_0x00ee
+        L_0x00eb:
+            r0.append(r6)
+        L_0x00ee:
+            com.sec.internal.ims.servicemodules.ss.UtFeatureData r2 = r9.mFeature
+            boolean r2 = r2.isCBSingleElement
+            if (r2 == 0) goto L_0x0132
+            java.lang.String r2 = r9.getCbURL()
+            r0.append(r2)
+            goto L_0x0132
+        L_0x00fc:
+            com.sec.internal.constants.Mno r2 = com.sec.internal.constants.Mno.CHT
+            if (r1 != r2) goto L_0x0104
+            r0.append(r5)
+            goto L_0x0132
+        L_0x0104:
+            r0.append(r6)
+            goto L_0x0132
+        L_0x0108:
+            com.sec.internal.constants.Mno r2 = com.sec.internal.constants.Mno.CHT
+            if (r1 == r2) goto L_0x0115
+            com.sec.internal.constants.Mno r2 = com.sec.internal.constants.Mno.SPRINT
+            if (r1 != r2) goto L_0x0111
+            goto L_0x0115
+        L_0x0111:
+            r0.append(r8)
+            goto L_0x0118
+        L_0x0115:
+            r0.append(r7)
+        L_0x0118:
+            com.sec.internal.ims.servicemodules.ss.UtFeatureData r2 = r9.mFeature
+            boolean r2 = r2.isCFSingleElement
+            if (r2 == 0) goto L_0x0132
+            java.lang.String r2 = r9.getCfURL()
+            r0.append(r2)
+            goto L_0x0132
+        L_0x0126:
+            com.sec.internal.constants.Mno r2 = com.sec.internal.constants.Mno.CHT
+            if (r1 != r2) goto L_0x012e
+            r0.append(r7)
+            goto L_0x0132
+        L_0x012e:
+            r0.append(r8)
+        L_0x0132:
+            java.lang.String r2 = "cp:"
+            int r2 = r0.indexOf(r2)
+            java.lang.String r3 = "ss:"
+            int r3 = r0.indexOf(r3)
+            if (r2 > 0) goto L_0x0143
+            if (r3 <= 0) goto L_0x0180
+        L_0x0143:
+            com.sec.internal.constants.Mno r4 = com.sec.internal.constants.Mno.CHT
+            r5 = 101(0x65, float:1.42E-43)
+            java.lang.String r6 = "xmlns(cp=urn:ietf:params:xml:ns:common-policy)"
+            if (r1 != r4) goto L_0x0164
+            com.sec.internal.ims.servicemodules.ss.UtProfile r4 = r9.mProfile
+            int r4 = r4.condition
+            r7 = 5
+            if (r4 == r7) goto L_0x015a
+            com.sec.internal.ims.servicemodules.ss.UtProfile r4 = r9.mProfile
+            int r4 = r4.condition
+            r7 = 4
+            if (r4 != r7) goto L_0x0164
+        L_0x015a:
+            com.sec.internal.ims.servicemodules.ss.UtProfile r4 = r9.mProfile
+            int r4 = r4.type
+            if (r4 != r5) goto L_0x0164
+            r0.append(r6)
+            goto L_0x0180
+        L_0x0164:
+            java.lang.String r4 = "?"
+            r0.append(r4)
+            if (r2 <= 0) goto L_0x016e
+            r0.append(r6)
+        L_0x016e:
+            if (r3 > 0) goto L_0x017a
+            com.sec.internal.constants.Mno r4 = com.sec.internal.constants.Mno.SFR
+            if (r1 != r4) goto L_0x0180
+            com.sec.internal.ims.servicemodules.ss.UtProfile r4 = r9.mProfile
+            int r4 = r4.type
+            if (r4 != r5) goto L_0x0180
+        L_0x017a:
+            java.lang.String r4 = "xmlns(ss=http://uri.etsi.org/ngn/params/xml/simservs/xcap)"
+            r0.append(r4)
+        L_0x0180:
+            java.lang.String r4 = r0.toString()
+            return r4
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.sec.internal.ims.servicemodules.ss.UtStateMachine.makeUri():java.lang.String");
     }
 
     /* access modifiers changed from: protected */

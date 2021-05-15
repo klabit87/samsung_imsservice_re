@@ -27,7 +27,6 @@ import com.sec.internal.interfaces.ims.servicemodules.im.IImModule;
 import com.sec.internal.interfaces.ims.servicemodules.options.ICapabilityDiscoveryModule;
 import com.sec.internal.log.IMSLog;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -315,7 +314,7 @@ public final class AttStrategy extends DefaultRCSMnoStrategy {
         }
         String str = TAG;
         int i = this.mPhoneId;
-        IMSLog.i(str, i, "forceRefreshCapability: uris " + IMSLog.numberChecker((Collection<ImsUri>) uris));
+        IMSLog.i(str, i, "forceRefreshCapability: uris " + IMSLog.checker(uris));
         if (remoteOnline) {
             capDiscModule.getCapabilities(new ArrayList<>(uris), CapabilityRefreshType.ONLY_IF_NOT_FRESH, (long) (Capabilities.FEATURE_FT_SERVICE | Capabilities.FEATURE_CHAT_CPM), phoneId);
         }

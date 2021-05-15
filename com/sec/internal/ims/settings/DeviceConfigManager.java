@@ -1030,7 +1030,7 @@ public class DeviceConfigManager {
             if (isGcfEnabled == null) {
                 IMSLog.d(LOG_TAG, this.mPhoneId, "GCF_CONFIG_ENABLE is null");
             } else {
-                DeviceUtil.setGcfMode(isGcfEnabled.booleanValue());
+                DeviceUtil.setGcfMode(isGcfEnabled);
             }
         }
     }
@@ -1047,7 +1047,7 @@ public class DeviceConfigManager {
     }
 
     public Cursor queryGcfConfig() {
-        Boolean isGcfEnabled = Boolean.valueOf(DeviceUtil.getGcfMode());
+        Boolean isGcfEnabled = DeviceUtil.getGcfMode();
         MatrixCursor c = new MatrixCursor(ImsSettings.ImsServiceSwitchTable.PROJECTION);
         c.addRow(new Object[]{"GCF_CONFIG_ENABLE", String.valueOf(isGcfEnabled)});
         return c;
@@ -1085,16 +1085,14 @@ public class DeviceConfigManager {
     public Cursor queryImsUserSetting(String[] names) {
         MatrixCursor c = new MatrixCursor(ImsSettings.ImsUserSettingTable.PROJECTION);
         String simMno = SimUtil.getSimMno(this.mPhoneId).getName();
-        if (names != null) {
-            for (String name : names) {
-                IMSLog.d(LOG_TAG, this.mPhoneId, "queryImsUserSetting: name " + name);
-                if (ImsConstants.SystemSettings.VOLTE_SLOT1.getName().equalsIgnoreCase(name)) {
-                    c.addRow(new Object[]{name, Integer.valueOf(this.mImsServiceSwitch.getVoiceCallType(simMno))});
-                } else if (ImsConstants.SystemSettings.VILTE_SLOT1.getName().equalsIgnoreCase(name)) {
-                    c.addRow(new Object[]{name, Integer.valueOf(this.mImsServiceSwitch.getVideoCallType(simMno))});
-                } else if (ImsConstants.SystemSettings.RCS_USER_SETTING1.getName().equalsIgnoreCase(name) && SimUtil.getSimMno(this.mPhoneId) != Mno.DEFAULT) {
-                    c.addRow(new Object[]{name, Integer.valueOf(this.mImsServiceSwitch.getRcsUserSetting())});
-                }
+        for (String name : names) {
+            IMSLog.d(LOG_TAG, this.mPhoneId, "queryImsUserSetting: name " + name);
+            if (ImsConstants.SystemSettings.VOLTE_SLOT1.getName().equalsIgnoreCase(name)) {
+                c.addRow(new Object[]{name, Integer.valueOf(this.mImsServiceSwitch.getVoiceCallType(simMno))});
+            } else if (ImsConstants.SystemSettings.VILTE_SLOT1.getName().equalsIgnoreCase(name)) {
+                c.addRow(new Object[]{name, Integer.valueOf(this.mImsServiceSwitch.getVideoCallType(simMno))});
+            } else if (ImsConstants.SystemSettings.RCS_USER_SETTING1.getName().equalsIgnoreCase(name) && SimUtil.getSimMno(this.mPhoneId) != Mno.DEFAULT) {
+                c.addRow(new Object[]{name, Integer.valueOf(this.mImsServiceSwitch.getRcsUserSetting())});
             }
         }
         return c;
@@ -1102,22 +1100,20 @@ public class DeviceConfigManager {
 
     public Cursor queryImsSwitch(String[] names) {
         MatrixCursor c = new MatrixCursor(ImsSettings.ImsServiceSwitchTable.PROJECTION);
-        if (names != null) {
-            for (String name : names) {
-                IMSLog.d(LOG_TAG, this.mPhoneId, "queryImsSwitch: name " + name);
-                if ("volte".equalsIgnoreCase(name)) {
-                    c.addRow(new Object[]{name, Integer.valueOf(this.mImsServiceSwitch.isVoLteEnabled() ? 1 : 0)});
-                } else if (RCS_SWITCH.equalsIgnoreCase(name)) {
-                    c.addRow(new Object[]{name, Integer.valueOf(this.mImsServiceSwitch.isRcsSwitchEnabled() ? 1 : 0)});
-                } else if (RCS.equalsIgnoreCase(name)) {
-                    c.addRow(new Object[]{name, Integer.valueOf(this.mImsServiceSwitch.isRcsEnabled() ? 1 : 0)});
-                } else if (IMS.equalsIgnoreCase(name)) {
-                    c.addRow(new Object[]{name, Integer.valueOf(this.mImsServiceSwitch.isImsEnabled() ? 1 : 0)});
-                } else if (DEFAULTMSGAPPINUSE.equalsIgnoreCase(name)) {
-                    c.addRow(new Object[]{name, Integer.valueOf(this.mImsServiceSwitch.isDefaultMessageAppInUse() ? 1 : 0)});
-                } else {
-                    c.addRow(new Object[]{name, Integer.valueOf(this.mImsServiceSwitch.isEnabled(name) ? 1 : 0)});
-                }
+        for (String name : names) {
+            IMSLog.d(LOG_TAG, this.mPhoneId, "queryImsSwitch: name " + name);
+            if ("volte".equalsIgnoreCase(name)) {
+                c.addRow(new Object[]{name, Integer.valueOf(this.mImsServiceSwitch.isVoLteEnabled() ? 1 : 0)});
+            } else if (RCS_SWITCH.equalsIgnoreCase(name)) {
+                c.addRow(new Object[]{name, Integer.valueOf(this.mImsServiceSwitch.isRcsSwitchEnabled() ? 1 : 0)});
+            } else if (RCS.equalsIgnoreCase(name)) {
+                c.addRow(new Object[]{name, Integer.valueOf(this.mImsServiceSwitch.isRcsEnabled() ? 1 : 0)});
+            } else if (IMS.equalsIgnoreCase(name)) {
+                c.addRow(new Object[]{name, Integer.valueOf(this.mImsServiceSwitch.isImsEnabled() ? 1 : 0)});
+            } else if (DEFAULTMSGAPPINUSE.equalsIgnoreCase(name)) {
+                c.addRow(new Object[]{name, Integer.valueOf(this.mImsServiceSwitch.isDefaultMessageAppInUse() ? 1 : 0)});
+            } else {
+                c.addRow(new Object[]{name, Integer.valueOf(this.mImsServiceSwitch.isEnabled(name) ? 1 : 0)});
             }
         }
         return c;

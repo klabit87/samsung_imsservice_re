@@ -73,7 +73,7 @@ public class base32 {
                     blocklen--;
                 }
             }
-            int padlen = blockLenToPadding(blocklen);
+            int j2 = blockLenToPadding(blocklen);
             t[0] = (byte) ((s[0] >> 3) & 31);
             t[1] = (byte) (((s[0] & 7) << 2) | ((s[1] >> 6) & 3));
             t[2] = (byte) ((s[1] >> 1) & 31);
@@ -82,15 +82,15 @@ public class base32 {
             t[5] = (byte) ((s[3] >> 2) & 31);
             t[6] = (byte) (((s[4] >> 5) & 7) | ((s[3] & 3) << 3));
             t[7] = (byte) (s[4] & 31);
-            for (int j2 = 0; j2 < t.length - padlen; j2++) {
-                char c = this.alphabet.charAt(t[j2]);
+            for (int j3 = 0; j3 < t.length - j2; j3++) {
+                char c = this.alphabet.charAt(t[j3]);
                 if (this.lowercase) {
                     c = Character.toLowerCase(c);
                 }
                 os.write(c);
             }
             if (this.padding != 0) {
-                for (int j3 = t.length - padlen; j3 < t.length; j3++) {
+                for (int j4 = t.length - j2; j4 < t.length; j4++) {
                     os.write(61);
                 }
             }

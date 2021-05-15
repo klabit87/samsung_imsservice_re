@@ -339,7 +339,6 @@ public abstract class WorkflowImpl extends Handler implements IWorkflowImpl {
                 setValidEntitlement(false);
                 if (getEntitlementInitFromApp()) {
                     setReadyToNotifyApp(true);
-                    this.mAECJar.setPushMsgStatus(true);
                 }
                 performEntitlement(app);
                 return;

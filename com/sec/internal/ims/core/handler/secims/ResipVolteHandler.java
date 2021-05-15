@@ -1365,6 +1365,7 @@ public class ResipVolteHandler extends VolteHandler {
     }
 
     private void notifyUssdEvent(Call call, UssdEvent.USSD_STATE state, CallStatus cs) {
+        Mno fromName = Mno.fromName(call.mUa.getImsProfile().getMnoName());
         Log.i(LOG_TAG, "notifyUssdEvent() session: " + call.mSessionId);
         UssdEvent ussdEvent = new UssdEvent();
         ussdEvent.setSessionID(call.mSessionId);

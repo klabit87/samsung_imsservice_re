@@ -148,9 +148,9 @@ public class TelephonyAdapterPrimaryDeviceBase extends Handler implements ITelep
         IMSLog.i(str, i, "sendSmsPushForConfigRequest: isForceConfigRequest: " + isForceConfigRequest);
         IMSLog.c(LogClass.TAPDB_RECE_PUSHSMS, this.mPhoneId + ",RPUSH");
         if (isForceConfigRequest) {
-            this.mModuleHandler.sendMessage(obtainMessage(4, Integer.valueOf(this.mPhoneId)));
+            this.mModuleHandler.sendEmptyMessage(4);
         } else {
-            this.mModuleHandler.sendMessage(obtainMessage(21, Integer.valueOf(this.mPhoneId)));
+            this.mModuleHandler.sendEmptyMessage(21);
         }
     }
 

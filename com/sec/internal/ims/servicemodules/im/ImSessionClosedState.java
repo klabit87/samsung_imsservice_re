@@ -295,7 +295,7 @@ public class ImSessionClosedState extends ImSessionStateBase {
             case 8:
                 if (referredBy != null) {
                     ImSession imSession = this.mImSession;
-                    imSession.logi("receive BYE with 410 reason. referred by = " + IMSLog.numberChecker(referredBy.toString()));
+                    imSession.logi("receive BYE with 410 reason. referred by = " + IMSLog.checker(referredBy.toString()));
                     this.mImSession.setSessionUri((ImsUri) null);
                     return ImSessionClosedReason.KICKED_OUT_BY_LEADER;
                 } else if (this.mImSession.getRcsStrategy(this.mPhoneId).boolSetting(RcsPolicySettings.RcsPolicy.SUPPORT_CHAT_CLOSE_BY_SERVER)) {

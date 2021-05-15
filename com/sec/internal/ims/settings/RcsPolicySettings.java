@@ -35,7 +35,6 @@ public class RcsPolicySettings {
         public static final String ALLOW_LIST_CAPEX = "allow_list_capex";
         public static final String ALLOW_ONLY_OPENGROUPCHAT = "allow_only_opengroupchat";
         public static final String ALWAYS_RCS_ON = "always_rcs_on";
-        public static final String AUTH_BASED_SESSION_CONTROL = "auth_based_session_control";
         public static final String AUTO_ACCEPT_FT_RESUME = "auto_accept_ft_resume";
         public static final String AUTO_ACCEPT_GLS = "auto_accept_gls";
         public static final String AUTO_RESEND_FAILED_FT = "auto_resend_failed_ft";

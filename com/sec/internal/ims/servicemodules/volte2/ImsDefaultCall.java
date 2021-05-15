@@ -303,7 +303,7 @@ public class ImsDefaultCall extends CallState {
     }
 
     private void handleGcfModeError() {
-        if (!DeviceUtil.getGcfMode()) {
+        if (!DeviceUtil.getGcfMode().booleanValue()) {
             return;
         }
         if (this.mCsm.errorCode == 503 || this.mCsm.errorCode == 504) {

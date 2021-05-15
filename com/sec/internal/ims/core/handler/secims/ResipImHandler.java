@@ -786,13 +786,13 @@ public class ResipImHandler extends ImHandler {
             ImdnParams.addDatetime(builder, dateTimeOffset2);
             ImdnParams.addNoti(builder, notiVectorOffset);
             int i17 = notiVectorOffset;
-            int imdnParamsOffset = ImdnParams.endImdnParams(builder);
+            int notiVectorOffset2 = ImdnParams.endImdnParams(builder);
             ImMessageParam.startImMessageParam(builder);
             ImMessageParam.addBody(builder, bodyOffset);
             ImMessageParam.addContentType(builder, contentTypeStrOffset);
-            ImMessageParam.addImdn(builder, imdnParamsOffset);
+            ImMessageParam.addImdn(builder, notiVectorOffset2);
             ImMessageParam.addXmsMessage(builder, xmsMsgOffset);
-            int i18 = imdnParamsOffset;
+            int i18 = notiVectorOffset2;
             ImMessageParam.addExtraFt(builder, msgParams.mExtraFt);
             if (cpimNamespacesOffsetIntegers.size() > 0) {
                 ImMessageParam.addCpimNamespaces(builder, i);
@@ -1858,7 +1858,7 @@ public class ResipImHandler extends ImHandler {
         }
         ImdnParams.addNoti(builder, imdnNotiVectorOffset);
         ImdnParams.addDatetime(builder, dateTimeOffset);
-        int imdnParamsOffset = ImdnParams.endImdnParams(builder);
+        int imdnNotiVectorOffset2 = ImdnParams.endImdnParams(builder);
         FtPayloadParam.startFtPayloadParam(builder);
         int imdnIdOffset5 = imdnIdOffset3;
         FtPayloadParam.addIsPush(builder, sendFtSessionParams.mDirection == ImDirection.OUTGOING);
@@ -1889,10 +1889,10 @@ public class ResipImHandler extends ImHandler {
         } else {
             fileFingerprintOffset = fileFingerprintOffset4;
         }
-        FtPayloadParam.addImdn(builder, imdnParamsOffset);
+        FtPayloadParam.addImdn(builder, imdnNotiVectorOffset2);
         int ftPayloadOffset = FtPayloadParam.endFtPayloadParam(builder);
         RequestStartFtSession.startRequestStartFtSession(builder);
-        int imdnParamsOffset2 = imdnParamsOffset;
+        int imdnParamsOffset = imdnNotiVectorOffset2;
         RequestStartFtSession.addRegistrationHandle(builder, (long) ua2.getHandle());
         RequestStartFtSession.addSessionData(builder, baseSessionDataOffset);
         RequestStartFtSession.addReportData(builder, reportMsgHdrOffset);
@@ -1907,19 +1907,19 @@ public class ResipImHandler extends ImHandler {
         int reliableMessageOffset6 = deviceNameOffset4;
         int dateTimeOffset2 = dateTimeOffset;
         int i9 = rsfsOffset2;
-        int rsfsOffset3 = imdnParamsOffset2;
-        int imdnParamsOffset3 = reliableMessageOffset5;
+        int rsfsOffset3 = imdnParamsOffset;
+        int imdnParamsOffset2 = reliableMessageOffset5;
         int i10 = spamDateOffset;
-        int imdnNotiVectorOffset2 = imdnNotiVectorOffset;
-        int imdnNotiVectorOffset3 = i10;
+        int imdnNotiVectorOffset3 = imdnNotiVectorOffset;
+        int imdnNotiVectorOffset4 = i10;
         int i11 = ftPayloadOffset;
         int i12 = reportMsgHdrOffset;
         int imdnIdOffset6 = receiversOffset2;
         int receiversOffset3 = imdnIdOffset5;
         int i13 = contentTypeOffset;
         int i14 = confUriOffset2;
-        int i15 = imdnNotiVectorOffset2;
-        int imdnNotiVectorOffset4 = dateTimeOffset2;
+        int i15 = imdnNotiVectorOffset3;
+        int imdnNotiVectorOffset5 = dateTimeOffset2;
         int dateTimeOffset3 = fileFingerprintOffset;
         int fileFingerprintOffset5 = i15;
         int i16 = fileNameOffset;

@@ -213,10 +213,8 @@ public class ResipCmcHandler extends CmcHandler {
         IMSMediaEvent me = new IMSMediaEvent();
         me.setPhoneId((int) recordEvent.phoneId());
         me.setSessionID(sessionId);
-        if (event == 50) {
-            me.setCmcRecordingEvent(10);
-        } else if (event == 60) {
-            me.setCmcRecordingEvent(11);
+        if (event == 50 || event == 60) {
+            me.setCmcRecordingEvent(0);
         } else {
             me.setCmcRecordingEvent(event);
         }
@@ -262,6 +260,15 @@ public class ResipCmcHandler extends CmcHandler {
             }
         }
         return null;
+    }
+
+    public void sendMediaEvent(int phoneId, int sessionId, int event, int handle) {
+        UserAgent ua = (UserAgent) this.mImsFramework.getRegistrationManager().getUserAgent(handle);
+        if (ua == null) {
+            Log.e(this.LOG_TAG, "User Agent was empty!");
+        } else {
+            ua.sendMediaEvent(sessionId, event, 3);
+        }
     }
 
     public void sendRtpStatsToStack(IMSMediaEvent.AudioRtpStats rtpStats) {

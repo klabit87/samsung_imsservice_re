@@ -650,14 +650,14 @@ public class CapabilityUpdate {
         if (storedLastSeen <= 0) {
             time = storedLastSeen;
         } else {
-            long time2 = System.currentTimeMillis();
-            Log.i(LOG_TAG, "last active timestamp " + new Date(storedLastSeen).toString() + "Current Time Stamp " + new Date(time2).toString());
-            long lastSeen = (long) ((int) ((time2 - storedLastSeen) / 60000));
-            long lastSeen2 = MAX_LAST_SEEN;
-            if (lastSeen < MAX_LAST_SEEN) {
-                lastSeen2 = lastSeen;
+            long lastSeen = System.currentTimeMillis();
+            Log.i(LOG_TAG, "last active timestamp " + new Date(storedLastSeen).toString() + "Current Time Stamp " + new Date(lastSeen).toString());
+            long lastSeen2 = (long) ((int) ((lastSeen - storedLastSeen) / 60000));
+            long lastSeen3 = MAX_LAST_SEEN;
+            if (lastSeen2 < MAX_LAST_SEEN) {
+                lastSeen3 = lastSeen2;
             }
-            time = lastSeen2;
+            time = lastSeen3;
         }
         Log.i(LOG_TAG, " last seen value " + time);
         return (int) time;

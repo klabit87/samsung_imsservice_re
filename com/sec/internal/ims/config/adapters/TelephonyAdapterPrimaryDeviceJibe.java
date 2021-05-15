@@ -58,7 +58,7 @@ public class TelephonyAdapterPrimaryDeviceJibe extends TelephonyAdapterPrimaryDe
                     return;
                 } else if (((String) msg.obj).contains(SMS_CONFIGURATION_REQUEST)) {
                     IMSLog.i(LOG_TAG, this.mPhoneId, "request force configuration");
-                    this.mModuleHandler.sendMessage(obtainMessage(21, Integer.valueOf(this.mPhoneId)));
+                    this.mModuleHandler.sendEmptyMessage(21);
                     return;
                 } else {
                     removeMessages(5);

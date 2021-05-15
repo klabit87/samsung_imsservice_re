@@ -162,7 +162,6 @@ public class O2UEntitlementCheckFlow extends NSDSAppFlowBase implements IEntitle
 
     /* access modifiers changed from: protected */
     public void notifyNSDSFlowResponse(boolean success, String method, int operation, int code) {
-        int slotIdx = this.mBaseFlowImpl.getSimManager().getSimSlotIndex();
         Intent intent = new Intent(NSDSNamespaces.NSDSActions.ENTITLEMENT_CHECK_COMPLETED);
         intent.putExtra(NSDSNamespaces.NSDSExtras.REQUEST_STATUS, success);
         intent.putExtra(NSDSNamespaces.NSDSExtras.DEVICE_EVENT_TYPE, this.mDeviceEventType);
@@ -173,13 +172,27 @@ public class O2UEntitlementCheckFlow extends NSDSAppFlowBase implements IEntitle
         intent.putExtra("retry_count", this.mRetryCount);
         intent.putExtra(NSDSNamespaces.NSDSExtras.REQ_TOGGLE_OFF_OP, false);
         intent.putExtra(NSDSNamespaces.NSDSExtras.ORIG_ERROR_CODE, code);
-        intent.putExtra(NSDSNamespaces.NSDSExtras.SIM_SLOT_IDX, slotIdx);
-        intent.putExtra("phoneId", slotIdx);
+        intent.putExtra(NSDSNamespaces.NSDSExtras.SIM_SLOT_IDX, this.mBaseFlowImpl.getSimManager().getSimSlotIndex());
+        intent.putExtra("phoneId", this.mBaseFlowImpl.getSimManager().getSimSlotIndex());
+        postDelayed(new Runnable(intent) {
+            public final /* synthetic */ Intent f$1;
+
+            {
+                this.f$1 = r2;
+            }
+
+            public final void run() {
+                O2UEntitlementCheckFlow.this.lambda$notifyNSDSFlowResponse$0$O2UEntitlementCheckFlow(this.f$1);
+            }
+        }, 1000);
         String str = LOG_TAG;
-        IMSLog.i(str, slotIdx, "notifyNSDSFlowResponse: isSuccess: " + success + ", isVowifiEntitled: " + this.mIsVowifiEntitled + ", isVolteEntitled: " + this.mIsVolteEntitled + ", pollInterval: " + this.mPollInterval + ", mRetryCount: " + this.mRetryCount + ", ErrorCode: " + code);
-        NSDSSharedPrefHelper.setVoWiFiEntitlement(this.mContext, this.mIsVowifiEntitled, slotIdx);
-        NSDSSharedPrefHelper.setVoLteEntitlement(this.mContext, this.mIsVolteEntitled, slotIdx);
+        IMSLog.i(str, "notifyNSDSFlowResponse: isSuccess: " + success + ", isVowifiEntitled: " + this.mIsVowifiEntitled + ", isVolteEntitled: " + this.mIsVolteEntitled + ", pollInterval: " + this.mPollInterval + ", mRetryCount: " + this.mRetryCount + ", ErrorCode: " + code);
+        NSDSSharedPrefHelper.setEntitlementCompleted(this.mContext, NSDSNamespaces.NSDSExtras.SERVICE_VOWIFI, this.mIsVowifiEntitled, this.mBaseFlowImpl.getDeviceId());
+        NSDSSharedPrefHelper.setEntitlementCompleted(this.mContext, NSDSNamespaces.NSDSExtras.SERVICE_VOLTE, this.mIsVolteEntitled, this.mBaseFlowImpl.getDeviceId());
         resetEntitlementStatus();
+    }
+
+    public /* synthetic */ void lambda$notifyNSDSFlowResponse$0$O2UEntitlementCheckFlow(Intent intent) {
         IntentUtil.sendBroadcast(this.mContext, intent, ContextExt.CURRENT_OR_SELF);
     }
 

@@ -646,7 +646,7 @@ public class ImTranslation extends TranslationBase implements IChatEventListener
 
     public void onParticipantAliasUpdated(String chatId, ImParticipant participant) {
         String str = LOG_TAG;
-        Log.i(str, "onParticipantAliasUpdated: " + IMSLog.numberChecker(participant.getUri()));
+        Log.i(str, "onParticipantAliasUpdated: " + IMSLog.checker(participant));
         Preconditions.checkNotNull(chatId);
         Intent intent = new Intent(ImIntent.Action.RECEIVE_PARTICIPANT_ALIAS_UPDATED);
         intent.putExtra("chat_id", chatId);
@@ -705,7 +705,7 @@ public class ImTranslation extends TranslationBase implements IChatEventListener
             intent2.putExtra(ImIntent.Extras.IS_BOT, true);
             if (session.getInitiator() != null) {
                 String str2 = LOG_TAG;
-                Log.i(str2, "session.getInitiator=" + IMSLog.numberChecker(session.getInitiator()));
+                Log.i(str2, "session.getInitiator=" + IMSLog.checker(session.getInitiator().toString()));
                 intent2.putExtra(ImIntent.Extras.SERVICE_ID, session.getInitiator().toString());
             }
         } else {
@@ -998,7 +998,7 @@ public class ImTranslation extends TranslationBase implements IChatEventListener
 
     public void onParticipantInserted(ImParticipant participant) {
         String str = LOG_TAG;
-        Log.i(str, "onParticipantInserted: " + IMSLog.numberChecker(participant.getUri()));
+        Log.i(str, "onParticipantInserted: " + IMSLog.checker(participant));
         Intent intent = new Intent(ImIntent.Action.RECEIVE_PARTICIPANT_INSERTED);
         intent.putExtra("chat_id", participant.getChatId());
         intent.putExtra("participant", participant.getUri().toString());
@@ -1018,7 +1018,7 @@ public class ImTranslation extends TranslationBase implements IChatEventListener
 
     public void onParticipantDeleted(ImParticipant participant) {
         String str = LOG_TAG;
-        Log.i(str, "onParticipantDeleted: " + IMSLog.numberChecker(participant.getUri()));
+        Log.i(str, "onParticipantDeleted: " + IMSLog.checker(participant));
         Intent intent = new Intent(ImIntent.Action.RECEIVE_PARTICIPANT_DELETED);
         intent.putExtra("chat_id", participant.getChatId());
         intent.putExtra("participant", participant.getUri().toString());
@@ -1429,7 +1429,7 @@ public class ImTranslation extends TranslationBase implements IChatEventListener
 
     public void onGroupChatLeaderUpdated(String chatId, String leaderParticipant) {
         String str = LOG_TAG;
-        Log.i(str, "onGroupChatLeaderUpdated: " + IMSLog.numberChecker(leaderParticipant));
+        Log.i(str, "onGroupChatLeaderUpdated: " + IMSLog.checker(leaderParticipant));
         Intent intent = new Intent(ImIntent.Action.RECEIVE_GROUPCHAT_LEADER_CHANGED);
         intent.putExtra("chat_id", chatId);
         ArrayList<String> leaderList = new ArrayList<>();

@@ -203,7 +203,6 @@ public class ResipOptionsHandler extends OptionsHandler {
         int phoneId;
         String extFeature;
         OptionsEvent.OptionsFailureReason reason;
-        int error;
         int sessionId;
         String txId;
         Log.i(LOG_TAG, "handleOptionsReceived()");
@@ -216,7 +215,7 @@ public class ResipOptionsHandler extends OptionsHandler {
         String remoteUri = optionsReceivedInfo.remoteUri();
         boolean isResponse = optionsReceivedInfo.isResponse();
         boolean success = optionsReceivedInfo.success();
-        int error2 = optionsReceivedInfo.reason();
+        int error = optionsReceivedInfo.reason();
         int sessionId2 = (int) optionsReceivedInfo.sessionId();
         String txId2 = optionsReceivedInfo.txId();
         String extFeature2 = optionsReceivedInfo.extFeature();
@@ -296,19 +295,15 @@ public class ResipOptionsHandler extends OptionsHandler {
                 if (isTokenUsed || !isChatbotParticipant) {
                     txId = txId2;
                     sessionId = sessionId2;
-                    error = error2;
                 } else {
                     txId = txId2;
                     if (parsedUri2.getParam("tk") != null) {
                         sessionId = sessionId2;
-                        error = error2;
                         if (parsedUri2.getParam("tk").equals("on")) {
                             isTokenUsed = true;
                         }
-                        parsedUri2.removeParam("tk");
                     } else {
                         sessionId = sessionId2;
-                        error = error2;
                     }
                 }
                 if (generator != null) {
@@ -319,41 +314,39 @@ public class ResipOptionsHandler extends OptionsHandler {
             } else {
                 txId = txId2;
                 sessionId = sessionId2;
-                error = error2;
                 IMSLog.s(LOG_TAG, phoneId, "parsing P-Asserted-Identity " + assertedId + " returned null");
             }
             parsedUri = imsUri;
             txId2 = txId;
             sessionId2 = sessionId;
-            error2 = error;
             assertedIdStrings2 = assertedIdStrings3;
         }
         List<String> list = assertedIdStrings2;
         String txId3 = txId2;
         String str2 = txId3;
+        String extFeature3 = extFeature;
         UriGenerator uriGenerator = generator;
         boolean success2 = success;
-        String extFeature3 = extFeature;
-        int error3 = error2;
+        int error2 = error;
         OptionsEvent optionsEvent = new OptionsEvent(success, uri, FeatureToCaps, phoneId, isResponse, sessionId2, txId3, pAssertedIdSet, extFeature3);
         if (!success2) {
-            if (error3 == 7) {
+            if (error2 == 7) {
                 reason = OptionsEvent.OptionsFailureReason.INVALID_DATA;
-            } else if (error3 == 5) {
+            } else if (error2 == 5) {
                 reason = OptionsEvent.OptionsFailureReason.REQUEST_TIMED_OUT;
-            } else if (error3 == 6) {
+            } else if (error2 == 6) {
                 reason = OptionsEvent.OptionsFailureReason.AUTOMATA_PRESENT;
-            } else if (error3 == 1) {
+            } else if (error2 == 1) {
                 reason = OptionsEvent.OptionsFailureReason.USER_NOT_AVAILABLE;
-            } else if (error3 == 2) {
+            } else if (error2 == 2) {
                 reason = OptionsEvent.OptionsFailureReason.DOES_NOT_EXIST_ANYWHERE;
-            } else if (error3 == 4) {
+            } else if (error2 == 4) {
                 reason = OptionsEvent.OptionsFailureReason.USER_NOT_REACHABLE;
-            } else if (error3 == 3) {
+            } else if (error2 == 3) {
                 reason = OptionsEvent.OptionsFailureReason.USER_NOT_REGISTERED;
-            } else if (error3 == 8) {
+            } else if (error2 == 8) {
                 reason = OptionsEvent.OptionsFailureReason.FORBIDDEN_403;
-            } else if (error3 == 0) {
+            } else if (error2 == 0) {
                 reason = OptionsEvent.OptionsFailureReason.USER_AVAILABLE_OFFLINE;
             } else {
                 reason = OptionsEvent.OptionsFailureReason.ERROR;

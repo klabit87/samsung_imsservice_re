@@ -137,7 +137,7 @@ public class ImsUtil {
             IMSLog.d(str2, phoneId, "emergencyCallDomain: isPsDomainInSettings-" + isPsDomainInSettings + ", SIM absent-" + sm.hasNoSim());
             if (!sm.hasNoSim()) {
                 String simEDomain = ImsSharedPrefHelper.getString(phoneId, context, ImsSharedPrefHelper.GLOBAL_SETTINGS, "originalEmergencyCallDomain", eDomain);
-                if ((emergencyProfile != null && emergencyProfile.getSimMobility()) || DeviceUtil.getGcfMode()) {
+                if ((emergencyProfile != null && emergencyProfile.getSimMobility()) || DeviceUtil.getGcfMode().booleanValue()) {
                     simEDomain = "PS";
                 }
                 String str3 = LOG_TAG;
@@ -197,7 +197,7 @@ public class ImsUtil {
         if (supportNoSimPsE911) {
             isPsTargetDomain = true;
         }
-        if ((OmcCode.isChinaOmcCode() || OmcCode.isJPNOmcCode()) && DeviceUtil.getGcfMode()) {
+        if ((OmcCode.isChinaOmcCode() || OmcCode.isJPNOmcCode()) && DeviceUtil.getGcfMode().booleanValue()) {
             isPsTargetDomain = true;
         }
         if (OmcCode.isDCMOmcCode()) {
@@ -251,7 +251,6 @@ public class ImsUtil {
         SERVICE_OPTION_NOT_SUPPORTED(32),
         SERVICE_OPTION_NOT_SUBSCRIBED(33),
         MULTI_CONN_TO_SAME_PDN_NOT_ALLOWED(55),
-        DETACH_WITH_REATTACH_LTE_NW_DETACH(2153),
         PROTOCOL_ERRORS(111),
         NO_IMS_APN(-1),
         NOT_DEFINED(-1);

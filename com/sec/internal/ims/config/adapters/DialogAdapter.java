@@ -62,7 +62,8 @@ public class DialogAdapter extends Handler implements IDialogAdapter {
     static final String SYSTEM_DIALOG_REASON_HOME_KEY = "homekey";
     static final String SYSTEM_DIALOG_REASON_KEY = "reason";
     static final String SYSTEM_DIALOG_REASON_RECENT_APPS = "recentapps";
-    private String mAccept;
+    /* access modifiers changed from: private */
+    public String mAccept;
     /* access modifiers changed from: private */
     public boolean mAcceptReject;
     /* access modifiers changed from: private */
@@ -72,7 +73,8 @@ public class DialogAdapter extends Handler implements IDialogAdapter {
     /* access modifiers changed from: private */
     public AlertDialog mDialog;
     private DialogNotiReceiver mDialogNotiReceiver;
-    private String mMessage;
+    /* access modifiers changed from: private */
+    public String mMessage;
     /* access modifiers changed from: private */
     public String mMsisdn;
     /* access modifiers changed from: private */
@@ -81,9 +83,12 @@ public class DialogAdapter extends Handler implements IDialogAdapter {
     public NotificationManager mNotificationManager;
     /* access modifiers changed from: private */
     public int mPhoneId;
+    /* access modifiers changed from: private */
+    public boolean mRcsTcNotification;
     private Receiver mReceiver;
     private ReceiverForTcPopup mReceiverForTcPopup;
-    private String mReject;
+    /* access modifiers changed from: private */
+    public String mReject;
     /* access modifiers changed from: private */
     public final Semaphore mSemaphore;
     /* access modifiers changed from: private */
@@ -94,7 +99,8 @@ public class DialogAdapter extends Handler implements IDialogAdapter {
     public boolean mTcPopupFlag;
     /* access modifiers changed from: private */
     public ITelephonyManager mTelephony;
-    private String mTitle;
+    /* access modifiers changed from: private */
+    public String mTitle;
     /* access modifiers changed from: private */
     public boolean mYesNo;
 
@@ -120,6 +126,7 @@ public class DialogAdapter extends Handler implements IDialogAdapter {
         this.mSkip = false;
         this.mMsisdn = "";
         this.mSupportNotiBar = true;
+        this.mRcsTcNotification = false;
         this.mTelephony = null;
         this.mDialogNotiReceiver = new DialogNotiReceiver();
         this.mReceiverForTcPopup = new ReceiverForTcPopup();
@@ -152,9 +159,19 @@ public class DialogAdapter extends Handler implements IDialogAdapter {
             IMSLog.i(access$100, "DialogNotiReceiver : " + action);
             if (context.getContentResolver() != null && intent.getExtras() != null && intent.getExtras().getInt(DialogAdapter.KEY_PHONE_ID, -1) == DialogAdapter.this.mPhoneId) {
                 if (DialogAdapter.SHOW_TC_POPUP.equals(action) && !DialogAdapter.this.mTcPopupFlag) {
-                    DialogAdapter.this.sendEmptyMessage(0);
+                    DialogAdapter dialogAdapter = DialogAdapter.this;
+                    if (dialogAdapter.isStringValid(dialogAdapter.mTitle)) {
+                        DialogAdapter dialogAdapter2 = DialogAdapter.this;
+                        if (!dialogAdapter2.isStringValid(dialogAdapter2.mMessage)) {
+                            return;
+                        }
+                        if (DialogAdapter.shouldShowButton(DialogAdapter.this.mAccept) || DialogAdapter.shouldShowButton(DialogAdapter.this.mReject)) {
+                            DialogAdapter.this.sendEmptyMessage(0);
+                        }
+                    }
                 } else if (DialogAdapter.CANCEL_TC_NOTIFICATION.equals(action)) {
                     boolean unused = DialogAdapter.this.mTcPopupFlag = false;
+                    boolean unused2 = DialogAdapter.this.mRcsTcNotification = false;
                     DialogAdapter.this.mNotificationManager.cancel(DialogAdapter.this.mPhoneId + DialogAdapter.RCS_TC_NOTIFICATION);
                 } else if (DialogAdapter.SHOW_MSISDN_POPUP.equals(action)) {
                     DialogAdapter.this.mNotificationManager.cancel(DialogAdapter.this.mPhoneId + DialogAdapter.RCS_MSISDN_PROMPT_NOTIFICATION);
@@ -227,6 +244,7 @@ public class DialogAdapter extends Handler implements IDialogAdapter {
         mBuilder.setAutoCancel(false);
         mBuilder.setOngoing(true);
         if (type == RCS_TC_NOTIFICATION) {
+            this.mRcsTcNotification = true;
             Intent tcIntent = new Intent(SHOW_TC_POPUP);
             tcIntent.putExtra(KEY_PHONE_ID, this.mPhoneId);
             pendingIntent = PendingIntent.getBroadcast(this.mContext, this.mPhoneId + type, tcIntent, 134217728);
@@ -299,19 +317,26 @@ public class DialogAdapter extends Handler implements IDialogAdapter {
             IMSLog.i(LOG_TAG, this.mPhoneId, "unknown message!!");
         } else {
             AlertDialog dialog2 = (AlertDialog) msg.obj;
+            if (this.mRcsTcNotification) {
+                Intent cancelTcIntent = new Intent(CANCEL_TC_NOTIFICATION);
+                cancelTcIntent.putExtra(KEY_PHONE_ID, this.mPhoneId);
+                this.mContext.sendBroadcast(cancelTcIntent);
+            }
             if (dialog2 != null) {
                 dialog2.dismiss();
                 this.mSemaphore.release();
-                IMSLog.i(LOG_TAG, this.mPhoneId, "dismiss Dialog for getMsisdn");
+                IMSLog.i(LOG_TAG, this.mPhoneId, "dismiss Dialog");
             }
         }
     }
 
-    private boolean isStringValid(String toValidate) {
+    /* access modifiers changed from: private */
+    public boolean isStringValid(String toValidate) {
         return toValidate != null && !toValidate.isEmpty();
     }
 
-    private static boolean shouldShowButton(String toValidate) {
+    /* access modifiers changed from: private */
+    public static boolean shouldShowButton(String toValidate) {
         return "1".equals(toValidate);
     }
 

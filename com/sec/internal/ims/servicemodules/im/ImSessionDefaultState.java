@@ -353,7 +353,7 @@ public class ImSessionDefaultState extends ImSessionStateBase {
         if (sipNumber == null || sipNumber.isEmpty()) {
             return false;
         }
-        Log.i(LOG_TAG, "updateParticipantWithPAI, sipNumber = " + IMSLog.numberChecker(sipNumber));
+        Log.i(LOG_TAG, "updateParticipantWithPAI, sipNumber = " + IMSLog.checker(sipNumber));
         ImsUri sipUri = ImsUri.parse(sipNumber);
         if (sipUri == null || sipUri.equals(ImsUri.EMPTY)) {
             return false;
@@ -493,7 +493,7 @@ public class ImSessionDefaultState extends ImSessionStateBase {
         if (this.mImSession.getRcsStrategy(this.mPhoneId).isRevocationAvailableMessage(imMsg) && !hasChatbotUri) {
             if (this.mImSession.isMsgRevocationSupported() && result.getImError() == ImError.SUCCESS && (result.getSipResponse() != SipResponse.SIP_486_BUSY_HERE || this.mImSession.getRcsStrategy(this.mPhoneId).boolSetting(RcsPolicySettings.RcsPolicy.SUPPORT_REVOKE_MSG_FOR_486_RESP))) {
                 MessageBase msg = this.mImSession.mGetter.getMessage(imMsg.getId());
-                if (msg != null && msg.getNotificationStatus() == NotificationStatus.NONE && !msg.isTemporary() && !msg.getDispositionNotification().contains(NotificationStatus.NONE)) {
+                if (msg != null && msg.getNotificationStatus() == NotificationStatus.NONE && !msg.isTemporary()) {
                     imMsg.updateRevocationStatus(ImConstants.RevocationStatus.AVAILABLE);
                     this.mImSession.getNeedToRevokeMessages().put(msg.getImdnId(), Integer.valueOf(msg.getId()));
                     if (!this.mImSession.mIsRevokeTimerRunning) {

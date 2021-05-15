@@ -138,18 +138,23 @@ public class CapabilityRegistration {
             if ((this.mCapabilityDiscovery.getCapabilityConfig(phoneId) == null || this.mCapabilityDiscovery.getCapabilityConfig(phoneId).usePresence()) && !this.mCapabilityDiscovery.getPresenceModule().isOwnCapPublished()) {
                 return true;
             }
-            if (!Mno.fromName(regiInfo.getImsProfile().getMnoName()).isKor() || !regiInfo.hasRcsService()) {
+            Mno mno = Mno.fromName(regiInfo.getImsProfile().getMnoName());
+            if (mno.isKor() && regiInfo.hasRcsService()) {
+                long newFeature = this.mCapabilityDiscovery.getOwnList().get(Integer.valueOf(phoneId)).getFeature();
+                if (mOldFeature != newFeature) {
+                    this.mCapabilityDiscovery.setOldFeature(newFeature, phoneId);
+                    IMSLog.e(LOG_TAG, phoneId, "needPublish: do publish, service list is same, but different Features.(KOR RCS only)");
+                    return true;
+                }
+                IMSLog.e(LOG_TAG, phoneId, "needPublish: do not publish, service list & feature list are same.");
+                return false;
+            } else if (mno != Mno.ATT || mImsRegInfoList.get(Integer.valueOf(phoneId)).getEpdgStatus() || !regiInfo.getEpdgStatus() || this.mCapabilityUtil.isMmtelServiceAvailable(mImsRegInfoList.get(Integer.valueOf(phoneId)).getRegiRat())) {
                 IMSLog.e(LOG_TAG, phoneId, "needPublish: do not publish, service list is same.");
                 return false;
-            }
-            long newFeature = this.mCapabilityDiscovery.getOwnList().get(Integer.valueOf(phoneId)).getFeature();
-            if (mOldFeature != newFeature) {
-                this.mCapabilityDiscovery.setOldFeature(newFeature, phoneId);
-                IMSLog.e(LOG_TAG, phoneId, "needPublish: do publish, service list is same, but different Features.(KOR RCS only)");
+            } else {
+                IMSLog.i(LOG_TAG, phoneId, "needPublish: do publish, epdg handover");
                 return true;
             }
-            IMSLog.e(LOG_TAG, phoneId, "needPublish: do not publish, service list & feature list are same.");
-            return false;
         }
     }
 

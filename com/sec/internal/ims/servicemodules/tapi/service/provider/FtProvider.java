@@ -410,12 +410,11 @@ public class FtProvider extends ContentProvider {
     }
 
     public int transState(String statusAndDirection) {
-        int imDirectionIndex;
         String[] strArr = statusAndDirection.split(";");
-        if (strArr.length != 2 || (imDirectionIndex = Integer.parseInt(strArr[1])) < 0 || imDirectionIndex >= ImDirection.values().length) {
+        if (strArr.length != 2) {
             return -1;
         }
-        ImDirection direction = ImDirection.values()[imDirectionIndex];
+        ImDirection direction = ImDirection.values()[Integer.parseInt(strArr[1])];
         int stateId = Integer.parseInt(strArr[0]);
         if (!(stateId == 0 || stateId == 1)) {
             if (stateId == 2) {

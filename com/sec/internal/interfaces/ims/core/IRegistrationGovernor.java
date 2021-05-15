@@ -115,8 +115,6 @@ public interface IRegistrationGovernor {
 
     boolean isReadyToDualRegister(boolean z);
 
-    boolean isReadyToGetReattach();
-
     boolean isReadyToRegister(int i);
 
     boolean isSrvccCase();

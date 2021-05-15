@@ -198,10 +198,6 @@ public class RegistrationGovernorRjil extends RegistrationGovernorBase {
             if (!filteredServices.isEmpty()) {
                 filteredServices.retainAll(enabledServices2);
             }
-            if (!filteredServices.contains("im") && !filteredServices.contains("ec")) {
-                IMSLog.i(LOG_TAG, this.mPhoneId, "No RCS services, Remove options");
-                filteredServices.remove("options");
-            }
             return filteredServices;
         }
         IMSLog.i(LOG_TAG, this.mPhoneId, "filterServices: services null");

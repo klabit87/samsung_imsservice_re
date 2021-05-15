@@ -18,8 +18,6 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 class GeoLocationUtility {
-    private static final float ATT_SCC_E911_MAX_LOCATIONFIX_ACCURACY = 150.0f;
-    private static final long ATT_SCC_E911_MAX_LOCATIONFIX_AGE = 1800;
     private static final String LOG_TAG = GeoLocationUtility.class.getSimpleName();
     private static LocationInfo mLocationInfo = null;
 
@@ -141,20 +139,6 @@ class GeoLocationUtility {
             String str = LOG_TAG;
             IMSLog.i(str, "getAddressUsingGeocoder: " + e.getMessage());
             return null;
-        }
-    }
-
-    public static boolean isLocationValid(Location location) {
-        if ((location.getTime() - System.currentTimeMillis()) / 1000 > ATT_SCC_E911_MAX_LOCATIONFIX_AGE) {
-            String str = LOG_TAG;
-            Log.d(str, "invalid location time expired location.time = " + location.getTime() + " current time = " + System.currentTimeMillis());
-            return false;
-        } else if (!location.hasAccuracy() || location.getAccuracy() <= ATT_SCC_E911_MAX_LOCATIONFIX_ACCURACY) {
-            return true;
-        } else {
-            String str2 = LOG_TAG;
-            Log.d(str2, "Location received is not valid, hence not notifying acc = " + location.getAccuracy());
-            return false;
         }
     }
 }

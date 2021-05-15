@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteCallbackList;
 import android.os.SemSystemProperties;
+import android.telecom.TelecomManager;
 import android.util.Log;
 import com.sec.ims.ImsRegistration;
 import com.sec.ims.util.SipError;
@@ -65,7 +66,7 @@ public class ImsIncomingCall extends CallState {
         if (cameraId >= 0 && !this.mSession.getCameraStartByApp()) {
             if (this.mModule.getCallCount()[1] > 1) {
                 this.mSession.startCamera(cameraId);
-            } else if (this.mMno != Mno.SKT || !ImsCallUtil.isTPhoneMode(this.mContext)) {
+            } else if (this.mMno != Mno.SKT || !isTPhoneMode()) {
                 Log.e("CallStateMachine", "camera in use by other app");
                 this.mCsm.sendMessageDelayed(24, 0, -1, 100);
             } else {
@@ -177,6 +178,13 @@ public class ImsIncomingCall extends CallState {
         this.mCsm.removeMessages(24);
         this.mCsm.setPreviousState(this);
         this.mCsm.stopRingTimer();
+    }
+
+    private boolean isTPhoneMode() {
+        if ("com.skt.prod.dialer".equals(((TelecomManager) this.mContext.getSystemService("telecom")).getDefaultDialerPackage())) {
+            return true;
+        }
+        return false;
     }
 
     private void delayedCamStart_IncomingCall(Message msg) {
@@ -412,7 +420,7 @@ public class ImsIncomingCall extends CallState {
         Bundle bundle = (Bundle) msg.obj;
         CallProfile profile = bundle.getParcelable("profile");
         int srvccVersion = this.mModule.getSrvccVersion(this.mSession.getPhoneId());
-        if (profile != null || srvccVersion == 0 || (srvccVersion < 10 && !DeviceUtil.getGcfMode())) {
+        if (profile != null || srvccVersion == 0 || (srvccVersion < 10 && !DeviceUtil.getGcfMode().booleanValue())) {
             Log.i("CallStateMachine", "Postpone update request till established state");
             this.mSession.mModifyRequestedProfile = profile;
             if (this.mSession.mModifyRequestedProfile == null || !ImsCallUtil.isTtyCall(this.mSession.mModifyRequestedProfile.getCallType())) {

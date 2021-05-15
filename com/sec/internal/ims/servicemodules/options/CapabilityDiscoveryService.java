@@ -1,5 +1,6 @@
 package com.sec.internal.ims.servicemodules.options;
 
+import android.os.IBinder;
 import android.os.RemoteException;
 import com.sec.ims.options.Capabilities;
 import com.sec.ims.options.CapabilityRefreshType;
@@ -7,19 +8,38 @@ import com.sec.ims.options.ICapabilityService;
 import com.sec.ims.options.ICapabilityServiceEventListener;
 import com.sec.ims.util.ImsUri;
 import com.sec.internal.ims.servicemodules.base.ServiceModuleBase;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CapabilityDiscoveryService extends ICapabilityService.Stub {
-    private Map<ICapabilityServiceEventListener, Integer> mQueuedCapabilityListener = new HashMap();
-    private CapabilityDiscoveryModule mServiceModule = null;
+    private static int mRegisterToken = 0;
+    /* access modifiers changed from: private */
+    public Map<String, CallBack> mCapabilityListenerMap = new ConcurrentHashMap();
+    /* access modifiers changed from: private */
+    public Map<String, CallBack> mQueuedCapabilityListener = new ConcurrentHashMap();
+    /* access modifiers changed from: private */
+    public CapabilityDiscoveryModule mServiceModule = null;
+
+    protected static synchronized String getRegisterToken(ICapabilityServiceEventListener listener) {
+        String str;
+        synchronized (CapabilityDiscoveryService.class) {
+            if (mRegisterToken == Integer.MAX_VALUE) {
+                mRegisterToken = 100;
+            }
+            mRegisterToken++;
+            str = listener.hashCode() + "$" + mRegisterToken;
+        }
+        return str;
+    }
 
     public void setServiceModule(ServiceModuleBase service) {
         this.mServiceModule = (CapabilityDiscoveryModule) service;
         if (!this.mQueuedCapabilityListener.isEmpty()) {
-            for (Map.Entry<ICapabilityServiceEventListener, Integer> entry : this.mQueuedCapabilityListener.entrySet()) {
-                this.mServiceModule.registerListener(entry.getKey(), entry.getValue().intValue());
+            for (CallBack callback : this.mQueuedCapabilityListener.values()) {
+                this.mCapabilityListenerMap.put(callback.mToken, callback);
+                this.mServiceModule.registerListener(callback.mListener, callback.mPhoneId);
             }
             this.mQueuedCapabilityListener.clear();
         }
@@ -97,21 +117,38 @@ public class CapabilityDiscoveryService extends ICapabilityService.Stub {
         return null;
     }
 
-    public void registerListener(ICapabilityServiceEventListener listener, int phoneId) throws RemoteException {
-        CapabilityDiscoveryModule capabilityDiscoveryModule = this.mServiceModule;
-        if (capabilityDiscoveryModule != null) {
-            capabilityDiscoveryModule.registerListener(listener, phoneId);
+    public String registerListener(ICapabilityServiceEventListener listener, int phoneId) throws RemoteException {
+        if (listener == null) {
+            return null;
+        }
+        String token = getRegisterToken(listener);
+        CallBack callback = new CallBack(listener, phoneId, token);
+        if (this.mServiceModule != null) {
+            this.mCapabilityListenerMap.put(token, callback);
+            this.mServiceModule.registerListener(listener, phoneId);
         } else {
-            this.mQueuedCapabilityListener.put(listener, Integer.valueOf(phoneId));
+            this.mQueuedCapabilityListener.put(token, callback);
+        }
+        return token;
+    }
+
+    public void registerListenerWithToken(ICapabilityServiceEventListener listener, String token, int phoneId) {
+        if (listener != null && token != null) {
+            CallBack callback = new CallBack(listener, phoneId, token);
+            if (this.mServiceModule != null) {
+                this.mCapabilityListenerMap.put(token, callback);
+                this.mServiceModule.registerListener(listener, phoneId);
+                return;
+            }
+            this.mQueuedCapabilityListener.put(token, callback);
         }
     }
 
-    public void unregisterListener(ICapabilityServiceEventListener listener, int phoneId) throws RemoteException {
-        CapabilityDiscoveryModule capabilityDiscoveryModule = this.mServiceModule;
-        if (capabilityDiscoveryModule != null) {
+    public void unregisterListener(String token, int phoneId) throws RemoteException {
+        ICapabilityServiceEventListener listener;
+        CapabilityDiscoveryModule capabilityDiscoveryModule;
+        if (token != null && (listener = removeCallback(token)) != null && (capabilityDiscoveryModule = this.mServiceModule) != null) {
             capabilityDiscoveryModule.unregisterListener(listener, phoneId);
-        } else if (!this.mQueuedCapabilityListener.isEmpty()) {
-            this.mQueuedCapabilityListener.remove(listener);
         }
     }
 
@@ -148,6 +185,59 @@ public class CapabilityDiscoveryService extends ICapabilityService.Stub {
         CapabilityDiscoveryModule capabilityDiscoveryModule = this.mServiceModule;
         if (capabilityDiscoveryModule != null) {
             capabilityDiscoveryModule.setUserActive(isActive, phoneId);
+        }
+    }
+
+    private ICapabilityServiceEventListener removeCallback(String token) {
+        CallBack callback = null;
+        if (this.mServiceModule != null) {
+            callback = this.mCapabilityListenerMap.remove(token);
+        }
+        if (!this.mQueuedCapabilityListener.isEmpty()) {
+            CallBack tempCallback = this.mQueuedCapabilityListener.remove(token);
+            if (callback == null && tempCallback != null) {
+                callback = tempCallback;
+            }
+        }
+        if (callback == null) {
+            return null;
+        }
+        ICapabilityServiceEventListener listener = callback.mListener;
+        callback.reset();
+        return listener;
+    }
+
+    private final class CallBack implements IBinder.DeathRecipient {
+        final ICapabilityServiceEventListener mListener;
+        final int mPhoneId;
+        final String mToken;
+
+        CallBack(ICapabilityServiceEventListener listener, int phoneId, String token) {
+            this.mListener = listener;
+            this.mPhoneId = phoneId;
+            this.mToken = token;
+            try {
+                listener.asBinder().linkToDeath(this, 0);
+            } catch (RemoteException e) {
+            }
+        }
+
+        public void binderDied() {
+            reset();
+            if (!CapabilityDiscoveryService.this.mQueuedCapabilityListener.isEmpty()) {
+                CapabilityDiscoveryService.this.mQueuedCapabilityListener.remove(this.mToken);
+            }
+            if (CapabilityDiscoveryService.this.mServiceModule != null) {
+                CapabilityDiscoveryService.this.mCapabilityListenerMap.remove(this.mToken);
+            }
+        }
+
+        /* access modifiers changed from: protected */
+        public void reset() {
+            try {
+                this.mListener.asBinder().unlinkToDeath(this, 0);
+            } catch (NoSuchElementException e) {
+            }
         }
     }
 }

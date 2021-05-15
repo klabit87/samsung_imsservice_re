@@ -18,8 +18,6 @@ public class IMSMediaEvent {
     public static final int CMC_RECORDER_NO_ERROR = 0;
     public static final int CMC_RECORDER_NO_SPACE = 1;
     public static final int CMC_RECORDER_RECORDERERROR = 4;
-    public static final int CMC_RECORDER_START_SUCCESS = 10;
-    public static final int CMC_RECORDER_STOP_SUCCESS = 11;
     public static final int DTMF_RECEIVED = 0;
     public static final int EPDG_DL_INFO = 78;
     public static final int EVENT_TYPE_AUDIO = 0;

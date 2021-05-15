@@ -600,7 +600,7 @@ public class UtServiceModule extends ServiceModuleBase implements IUtServiceModu
             }
         }
         IUserAgent ua = getUa(phoneId);
-        if (ua == null || !ua.getImsProfile().isSoftphoneEnabled()) {
+        if (ua == null || !ua.getImsProfile().isSoftphoneEnabled() || isTerminalRequest(phoneId, profile)) {
             utsmc.query(profile);
             return;
         }

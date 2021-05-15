@@ -15,7 +15,6 @@ import com.sec.internal.helper.SimUtil;
 import com.sec.internal.imscr.LogClass;
 import com.sec.internal.log.IMSLog;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -42,15 +41,13 @@ public class ImsMultiEndPointImpl extends IImsMultiEndpoint.Stub {
 
     public void setDialogInfo(DialogEvent de, int cmcType) {
         int dialogId;
+        int i = cmcType;
         this.mDialogList.clear();
         if (de.getDialogList().size() == 0) {
             this.mDialogList.add(new ImsExternalCallState(-1, Uri.parse(""), false, 2, 0, false));
             return;
         }
-        Iterator it = de.getDialogList().iterator();
-        int cmcType2 = cmcType;
-        while (it.hasNext()) {
-            Dialog info = (Dialog) it.next();
+        for (Dialog info : de.getDialogList()) {
             if (info != null) {
                 if (SimUtil.getSimMno(this.mPhoneId) == Mno.VZW) {
                     dialogId = ImsCallUtil.getIdForString(info.getSipCallId());
@@ -58,11 +55,13 @@ public class ImsMultiEndPointImpl extends IImsMultiEndpoint.Stub {
                     try {
                         dialogId = Integer.parseInt(info.getDialogId());
                     } catch (NumberFormatException e) {
+                        i = cmcType;
                     }
                 }
                 String remoteUri = info.getRemoteUri();
                 if (TextUtils.isEmpty(remoteUri)) {
-                    int i = dialogId;
+                    int i2 = dialogId;
+                    i = cmcType;
                 } else if (remoteUri.contains(":")) {
                     if (remoteUri.startsWith("tel:")) {
                         remoteUri = remoteUri.replace("tel:", "sip:");
@@ -70,7 +69,7 @@ public class ImsMultiEndPointImpl extends IImsMultiEndpoint.Stub {
                     if (!TextUtils.isEmpty(info.getRemoteDispName())) {
                         remoteUri = remoteUri + ";displayName=" + info.getRemoteDispName();
                     }
-                    if (cmcType2 == 2 || cmcType2 == 4 || cmcType2 == 8) {
+                    if (i == 2 || i == 4 || i == 8) {
                         String tmpRemoteUri = remoteUri.substring(remoteUri.indexOf(":") + 1);
                         if (!TextUtils.isEmpty(tmpRemoteUri)) {
                             remoteUri = remoteUri + ";oir=" + getOirExtraFromDialingNumber(tmpRemoteUri);
@@ -78,19 +77,15 @@ public class ImsMultiEndPointImpl extends IImsMultiEndpoint.Stub {
                                 remoteUri = remoteUri + ";cmc_pd_state=" + 1;
                             }
                         }
-                        if (cmcType2 == 4 || cmcType2 == 8) {
-                            cmcType2 = 2;
-                        }
-                        remoteUri = remoteUri + ";cmc_type=" + cmcType2;
+                        remoteUri = remoteUri + ";cmc_type=" + i;
                     }
-                    int i2 = dialogId;
+                    int i3 = dialogId;
                     ImsExternalCallState imsExternalCallState = r7;
                     ImsExternalCallState imsExternalCallState2 = new ImsExternalCallState(dialogId, Uri.parse(remoteUri), info.isPullAvailable(), info.getState(), DataTypeConvertor.convertToGoogleCallType(info.getCallType()), info.isHeld());
                     this.mDialogList.add(imsExternalCallState);
-                    it = it;
+                    i = cmcType;
                 }
             }
-            it = it;
         }
         StringBuffer crLogBuf = new StringBuffer("DE=");
         for (ImsExternalCallState iecs : this.mDialogList) {

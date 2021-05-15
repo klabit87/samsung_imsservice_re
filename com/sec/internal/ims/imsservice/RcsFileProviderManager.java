@@ -10,9 +10,7 @@ import com.sec.internal.helper.FileUtils;
 import com.sec.internal.helper.os.IntentUtil;
 import com.sec.internal.ims.servicemodules.im.interfaces.FtIntent;
 import com.sec.internal.imscr.LogClass;
-import com.sec.internal.log.IMSLog;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -123,19 +121,21 @@ public class RcsFileProviderManager {
 
     private static void deleteFiles(List<String> list) {
         if (list != null) {
-            List<String> deleteFailedMsgs = new ArrayList<>();
             for (String path : list) {
-                try {
-                    File file = new File(path);
-                    if (file.exists() && !file.delete()) {
-                        deleteFailedMsgs.add(path);
+                File file = new File(path);
+                if (file.exists()) {
+                    try {
+                        if (file.delete()) {
+                            Log.i(LOG_TAG, "deleteFile success!");
+                        } else {
+                            Log.i(LOG_TAG, "deleteFile failed!");
+                        }
+                    } catch (Exception e) {
+                        String str = LOG_TAG;
+                        Log.i(str, "deleteFile failed! " + e.getMessage());
                     }
-                } catch (Exception e) {
-                    deleteFailedMsgs.add(path);
                 }
             }
-            String str = LOG_TAG;
-            Log.i(str, "deleteFiles failed messages : Count=" + deleteFailedMsgs.size() + ", files =" + IMSLog.checker(deleteFailedMsgs.toString()));
         }
     }
 }

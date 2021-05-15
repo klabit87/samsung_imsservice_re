@@ -60,7 +60,7 @@ public class TelephonyAdapterPrimaryDeviceUp extends TelephonyAdapterPrimaryDevi
                 IMSLog.i(LOG_TAG, this.mPhoneId, "no SMS data!");
             } else if (((String) msg.obj).contains(SMS_CONFIGURATION_REQUEST)) {
                 IMSLog.i(LOG_TAG, this.mPhoneId, "request force configuration");
-                this.mModuleHandler.sendMessage(obtainMessage(4, Integer.valueOf(this.mPhoneId)));
+                this.mModuleHandler.sendEmptyMessage(4);
             } else {
                 removeMessages(5);
                 this.mPortOtp = (String) msg.obj;

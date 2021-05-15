@@ -234,7 +234,7 @@ public class UriGeneratorImpl extends UriGenerator {
         ImsUri uri;
         String domainToUse = (domain == null || domain.isEmpty()) ? this.mDomain : domain;
         IMSLog.s(LOG_TAG, "getNetworkPreferredUri: mDomain : " + domainToUse + ", uriType : " + uriType);
-        if (isLocalNumber(number) && !DeviceUtil.getGcfMode()) {
+        if (isLocalNumber(number) && !DeviceUtil.getGcfMode().booleanValue()) {
             String plmn = null;
             if (this.mProfile != null && serviceType == UriGenerator.URIServiceType.VOLTE_URI && this.mRat == 13 && isRoaming() && "geo-local".equals(this.mProfile.getPolicyOnLocalNumbers())) {
                 plmn = this.mTelephonyManager.getNetworkOperator(this.mSubscriptionId);

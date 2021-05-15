@@ -17,23 +17,18 @@ public class ContextExt {
     public static final UserHandle OWNER = ((UserHandle) ReflectionUtils.getValueOf("OWNER", (Class<?>) UserHandle.class));
     public static final String STATUS_BAR_SERVICE = ((String) ReflectionUtils.getValueOf("STATUS_BAR_SERVICE", (Class<?>) Context.class));
 
-    public static boolean bindServiceAsUser(Context context, Intent intent, ServiceConnection serviceConnection, int i, UserHandle userHandle) {
+    public static boolean bindServiceAsUser(Context context, Intent service, ServiceConnection conn, int flags, UserHandle user) {
         try {
-            Class<?> cls = context.getClass();
-            Object invoke2 = ReflectionUtils.invoke2(cls.getMethod("bindServiceAsUser", new Class[]{Intent.class, ServiceConnection.class, Integer.TYPE, UserHandle.class}), context, intent, serviceConnection, Integer.valueOf(i), userHandle);
-            if (invoke2 == null || !((Boolean) invoke2).booleanValue()) {
-                return false;
-            }
-            return true;
+            return ((Boolean) ReflectionUtils.invoke2(context.getClass().getMethod("bindServiceAsUser", new Class[]{Intent.class, ServiceConnection.class, Integer.TYPE, UserHandle.class}), context, service, conn, Integer.valueOf(flags), user)).booleanValue();
         } catch (IllegalStateException | NoSuchMethodException e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    public static Intent registerReceiverAsUser(Context context, BroadcastReceiver broadcastReceiver, UserHandle userHandle, IntentFilter intentFilter, String str, Handler handler) {
+    public static Intent registerReceiverAsUser(Context context, BroadcastReceiver receiver, UserHandle user, IntentFilter filter, String broadcastPermission, Handler scheduler) {
         try {
-            return (Intent) ReflectionUtils.invoke2(context.getClass().getMethod("registerReceiverAsUser", new Class[]{BroadcastReceiver.class, UserHandle.class, IntentFilter.class, String.class, Handler.class}), context, broadcastReceiver, userHandle, intentFilter, str, handler);
+            return (Intent) ReflectionUtils.invoke2(context.getClass().getMethod("registerReceiverAsUser", new Class[]{BroadcastReceiver.class, UserHandle.class, IntentFilter.class, String.class, Handler.class}), context, receiver, user, filter, broadcastPermission, scheduler);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
             return null;
@@ -48,15 +43,15 @@ public class ContextExt {
         }
     }
 
-    public static String getStringFromField(String str, String str2) {
+    static String getStringFromField(String name, String defaultValue) {
         try {
-            Field field = ReflectionUtils.getField(Context.class, str);
+            Field field = ReflectionUtils.getField(Context.class, name);
             if (field != null) {
                 return (String) field.get((Object) null);
             }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        return str2;
+        return defaultValue;
     }
 }

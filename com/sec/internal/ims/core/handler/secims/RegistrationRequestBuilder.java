@@ -60,7 +60,7 @@ public class RegistrationRequestBuilder {
         int instanceId;
         int serviceListOffSet;
         int sessionRefresher2;
-        int authalg2;
+        int encralg2;
         FlatBufferBuilder flatBufferBuilder = builder;
         UaProfile uaProfile = ua;
         int mediaOffest = addMediaParameters(builder, ua);
@@ -102,7 +102,7 @@ public class RegistrationRequestBuilder {
             authalg = -1;
             encralg = -1;
         }
-        int authalg3 = authalg;
+        int authalg2 = authalg;
         if (uaProfile.password != null) {
             password = flatBufferBuilder.createString((CharSequence) uaProfile.password);
         } else {
@@ -285,29 +285,28 @@ public class RegistrationRequestBuilder {
             RequestUACreation.addHostname(flatBufferBuilder, hostname3);
         }
         int i4 = hostname3;
-        int sessionRefresher4 = sessionRefresher3;
-        if (sessionRefresher4 != -1) {
-            RequestUACreation.addSessionRefresher(flatBufferBuilder, sessionRefresher4);
+        int hostname4 = sessionRefresher3;
+        if (hostname4 != -1) {
+            RequestUACreation.addSessionRefresher(flatBufferBuilder, hostname4);
         }
         if (uaProfile.isipsec) {
             RequestUACreation.addIsIpsec(flatBufferBuilder, uaProfile.isipsec);
-            int authalg4 = authalg3;
-            int authalg5 = sessionRefresher4;
+            int authalg3 = authalg2;
+            int authalg4 = hostname4;
             sessionRefresher2 = -1;
-            if (authalg4 != -1) {
-                RequestUACreation.addAuthAlg(flatBufferBuilder, authalg4);
+            if (authalg3 != -1) {
+                RequestUACreation.addAuthAlg(flatBufferBuilder, authalg3);
             }
-            int i5 = authalg4;
-            authalg2 = encralg;
-            if (authalg2 != -1) {
-                RequestUACreation.addEncrAlg(flatBufferBuilder, authalg2);
+            int i5 = authalg3;
+            encralg2 = encralg;
+            if (encralg2 != -1) {
+                RequestUACreation.addEncrAlg(flatBufferBuilder, encralg2);
             }
         } else {
-            authalg2 = encralg;
-            int authalg6 = sessionRefresher4;
+            encralg2 = encralg;
+            int authalg5 = hostname4;
             sessionRefresher2 = -1;
         }
-        int encralg2 = authalg2;
         int password3 = password2;
         if (password3 != sessionRefresher2) {
             RequestUACreation.addPassword(flatBufferBuilder, password3);
@@ -352,19 +351,19 @@ public class RegistrationRequestBuilder {
             RequestUACreation.addImMsgTech(flatBufferBuilder, imMsgTech3);
         }
         int i12 = imMsgTech3;
-        int imMsgTech4 = cmcRelayType2;
-        if (imMsgTech4 != -1) {
-            RequestUACreation.addCmcRelayType(flatBufferBuilder, imMsgTech4);
+        int cmcRelayType3 = cmcRelayType2;
+        if (cmcRelayType3 != -1) {
+            RequestUACreation.addCmcRelayType(flatBufferBuilder, cmcRelayType3);
         }
-        int i13 = imMsgTech4;
+        int i13 = cmcRelayType3;
         int serviceListOffSet3 = serviceListOffSet2;
         if (serviceListOffSet3 != -1) {
             RequestUACreation.addServiceList(flatBufferBuilder, serviceListOffSet3);
         }
         int i14 = serviceListOffSet3;
-        int serviceListOffSet4 = featureTagList2;
-        if (serviceListOffSet4 != -1) {
-            RequestUACreation.addFeatureTagList(flatBufferBuilder, serviceListOffSet4);
+        int featureTagList3 = featureTagList2;
+        if (featureTagList3 != -1) {
+            RequestUACreation.addFeatureTagList(flatBufferBuilder, featureTagList3);
         }
         int i15 = uuid3;
         RequestUACreation.addConfigDualIms(flatBufferBuilder, (long) StackRequestBuilderUtil.translateConfigDualIms());
@@ -747,9 +746,9 @@ public class RegistrationRequestBuilder {
         for (int i = 0; i < featureTagArray.length; i++) {
             featureTagArray[i] = featureTagList.get(i).intValue();
         }
-        int i2 = RequestUpdateFeatureTag.createFeatureTagListVector(builder, featureTagArray);
+        int featureTagListOffset = RequestUpdateFeatureTag.createFeatureTagListVector(builder, featureTagArray);
         RequestUpdateFeatureTag.startRequestUpdateFeatureTag(builder);
-        RequestUpdateFeatureTag.addFeatureTagList(builder, i2);
+        RequestUpdateFeatureTag.addFeatureTagList(builder, featureTagListOffset);
         RequestUpdateFeatureTag.addHandle(builder, (long) handle);
         int requestUpdateFeatureTagOffset = RequestUpdateFeatureTag.endRequestUpdateFeatureTag(builder);
         Request.startRequest(builder);

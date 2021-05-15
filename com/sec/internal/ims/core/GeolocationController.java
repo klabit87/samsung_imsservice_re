@@ -58,9 +58,9 @@ public class GeolocationController extends Handler implements IGeolocationContro
     private int[] mDataRegState;
     ContentObserver mDtLocUserConsentObserver = new ContentObserver(this) {
         public void onChange(boolean selfChange, Uri uri) {
-            Context access$700 = GeolocationController.this.mContext;
+            Context access$600 = GeolocationController.this.mContext;
             Context unused = GeolocationController.this.mContext;
-            int dtLocUserConsent = ImsSharedPrefHelper.getSharedPref(-1, access$700, "dtlocuserconsent", 0, false).getInt("dtlocation", -1);
+            int dtLocUserConsent = ImsSharedPrefHelper.getSharedPref(-1, access$600, "dtlocuserconsent", 0, false).getInt("dtlocation", -1);
             Log.i(GeolocationController.LOG_TAG, "onChange- dtlocuserconsent : " + dtLocUserConsent);
             for (int i = 0; i < GeolocationController.this.mTelephonyManager.getPhoneCount(); i++) {
                 Mno mno = SimUtil.getSimMno(i);
@@ -92,8 +92,6 @@ public class GeolocationController extends Handler implements IGeolocationContro
     public final LocationManager mLocationManager;
     private Handler mLocationUpdateHandler;
     private HandlerThread mLocationUpdateThread;
-    /* access modifiers changed from: private */
-    public int mPhoneId = 0;
     private final RegistrationManagerBase mRegistrationManager;
     /* access modifiers changed from: private */
     public final ITelephonyManager mTelephonyManager;
@@ -158,7 +156,6 @@ public class GeolocationController extends Handler implements IGeolocationContro
                 return;
             }
             final int phoneId = msg.arg1;
-            this.mPhoneId = phoneId;
             if (msg.arg2 == 1) {
                 z = true;
             }
@@ -472,11 +469,7 @@ public class GeolocationController extends Handler implements IGeolocationContro
 
         public void onLocationChanged(Location location) {
             Log.i(GeolocationController.LOG_TAG, "onLocationChanged : location = " + IMSLog.checker(location));
-            Mno mno = SimUtil.getSimMno(GeolocationController.this.mPhoneId);
-            if (location == null) {
-                return;
-            }
-            if (mno != Mno.ATT || GeoLocationUtility.isLocationValid(location)) {
+            if (location != null) {
                 try {
                     Log.i(GeolocationController.LOG_TAG, "onLocationChanged : removing location listener");
                     IMSLog.c(LogClass.VOLTE_UPDATE_LOCATION_PRO, "" + location.getProvider());

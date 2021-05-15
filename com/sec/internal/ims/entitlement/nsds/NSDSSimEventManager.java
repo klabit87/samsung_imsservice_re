@@ -70,14 +70,12 @@ public class NSDSSimEventManager extends Handler {
             }
         }
     };
-    /* access modifiers changed from: private */
-    public final Context mContext;
+    private final Context mContext;
     protected BroadcastReceiver mDeviceReadyReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             IMSLog.i(NSDSSimEventManager.LOG_TAG, "DeviceReadyReceiver: " + intent.getAction());
             if (NSDSSimEventManager.this.isDeviceReady()) {
                 for (ISimManager sm : NSDSSimEventManager.this.mSimManagers) {
-                    DeviceIdHelper.makeDeviceId(NSDSSimEventManager.this.mContext, sm.getSimSlotIndex());
                     NSDSSimEventManager.this.onEventSimReady(sm.getSimSlotIndex());
                 }
             }
@@ -190,9 +188,7 @@ public class NSDSSimEventManager extends Handler {
                 return;
             }
         }
-        AsyncResult ar = (AsyncResult) msg.obj;
-        DeviceIdHelper.makeDeviceId(this.mContext, ((Integer) ar.result).intValue());
-        onEventSimReady(((Integer) ar.result).intValue());
+        onEventSimReady(((Integer) ((AsyncResult) msg.obj).result).intValue());
     }
 
     private void initSimManagers() {

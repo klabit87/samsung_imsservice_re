@@ -351,7 +351,6 @@ public class ImsEmergencySession extends ImsCallSession {
 
             private boolean onEmergecyInvite() {
                 ImsUri destUri;
-                ImsCallSession boundSession;
                 Network emergencyNwk;
                 int regId = -1;
                 EmergencyCallStateMachine emergencyCallStateMachine = this.this$1;
@@ -384,7 +383,6 @@ public class ImsEmergencySession extends ImsCallSession {
                 CallSetupData data = new CallSetupData(destUri, dialedNumer, this.this$1.callType, this.this$1.this$0.mCallProfile.getCLI());
                 data.setOriginatingUri(this.this$1.this$0.getOriginatingUri());
                 data.setLteEpsOnlyAttached(this.mModule.getLteEpsOnlyAttached(this.this$1.this$0.mPhoneId));
-                data.setCmcBoundSessionId(this.this$1.this$0.mCallProfile.getCmcBoundSessionId());
                 ImsRegistration reg = this.this$1.this$0.getEmergencyRegistration();
                 if (reg != null) {
                     regId = reg.getHandle();
@@ -407,11 +405,6 @@ public class ImsEmergencySession extends ImsCallSession {
                     if (sessionId < 0) {
                         this.this$1.mThisEsm.sendMessage(4, 0, -1, new SipError(1001, "stack return -1."));
                         return true;
-                    }
-                    int boundSessionId = this.mSession.getCallProfile().getCmcBoundSessionId();
-                    if (boundSessionId > 0 && (boundSession = this.mModule.getSession(boundSessionId)) != null) {
-                        boundSession.getCallProfile().setCmcBoundSessionId(sessionId);
-                        Log.i("CallStateMachine", "[Emergency ReadyToCall] updated boundSessionId : " + boundSession.getCallProfile().getCmcBoundSessionId());
                     }
                     this.this$1.this$0.setSessionId(sessionId);
                     this.this$1.this$0.mCallProfile.setDirection(0);
@@ -1131,7 +1124,7 @@ public class ImsEmergencySession extends ImsCallSession {
     /* access modifiers changed from: private */
     public boolean needRemoveTimerOn18X() {
         if (!this.mMno.isKor()) {
-            if (!this.mMno.isOneOf(Mno.VZW, Mno.TELENOR_NORWAY, Mno.TELIA_NORWAY, Mno.VODAFONE_NETHERLAND, Mno.BELL)) {
+            if (!this.mMno.isOneOf(Mno.VZW, Mno.TELENOR_NORWAY, Mno.TELIA_NORWAY, Mno.VODAFONE_NETHERLAND)) {
                 return false;
             }
         }

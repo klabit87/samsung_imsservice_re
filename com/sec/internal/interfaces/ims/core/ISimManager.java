@@ -71,6 +71,8 @@ public interface ISimManager extends ISequentialInitializable {
 
     String getRilSimOperator();
 
+    String getSimEmergencyDomain();
+
     Mno getSimMno();
 
     String getSimMnoName();

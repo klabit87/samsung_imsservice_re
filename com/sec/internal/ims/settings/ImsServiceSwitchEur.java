@@ -25,13 +25,10 @@ import com.sec.internal.helper.SimUtil;
 import com.sec.internal.helper.SimpleEventLog;
 import com.sec.internal.helper.os.DeviceUtil;
 import com.sec.internal.helper.os.SystemUtil;
-import com.sec.internal.ims.core.sim.SimManagerFactory;
 import com.sec.internal.ims.imsservice.ImsServiceStub;
-import com.sec.internal.ims.rcs.util.RcsUtils;
 import com.sec.internal.ims.settings.ImsServiceSwitch;
 import com.sec.internal.imscr.LogClass;
 import com.sec.internal.interfaces.ims.core.IRegistrationManager;
-import com.sec.internal.interfaces.ims.core.ISimManager;
 import com.sec.internal.log.IMSLog;
 import java.util.Arrays;
 import java.util.List;
@@ -284,7 +281,7 @@ public class ImsServiceSwitchEur extends ImsServiceSwitchBase {
                 imsswitch.put(service, true);
             }
         }
-        if (!DeviceUtil.getGcfMode() && !"GCF".equalsIgnoreCase(OmcCode.get()) && !TextUtils.isEmpty(operator) && !isLabSimCard && isSimLoaded && !"45001".equals(operator) && !SimUtil.isSoftphoneEnabled() && ((imsswitch = loadImsSwitchFromJson(mnoname, "")) == null || imsswitch.size() == 0)) {
+        if (!DeviceUtil.getGcfMode().booleanValue() && !"GCF".equalsIgnoreCase(OmcCode.get()) && !TextUtils.isEmpty(operator) && !isLabSimCard && isSimLoaded && !"45001".equals(operator) && !SimUtil.isSoftphoneEnabled() && ((imsswitch = loadImsSwitchFromJson(mnoname, "")) == null || imsswitch.size() == 0)) {
             cscLteVideoCallEnabled = false;
             cscVolteEnabled = false;
             this.mEventLog.logAndAdd(this.mPhoneId, "init: No ImsSettings in Json for [" + operator + "]. Switch off.");
@@ -334,54 +331,6 @@ public class ImsServiceSwitchEur extends ImsServiceSwitchBase {
         }
         dumpServiceSwitch();
         IMSLog.c(LogClass.SWITCH_LOAD, this.mPhoneId + ",LOAD:" + getSwitchDump());
-    }
-
-    public void updateServiceSwitch(ContentValues mnoinfo) {
-        IMSLog.d(LOG_TAG, this.mPhoneId, "updateServiceSwitch:");
-        boolean hasSIM = mnoinfo.getAsBoolean(ISimManager.KEY_HAS_SIM).booleanValue();
-        ISimManager sm = SimManagerFactory.getSimManagerFromSimSlot(this.mPhoneId);
-        boolean isLabSimCard = sm != null && sm.isLabSimCard();
-        int i = this.mPhoneId;
-        IMSLog.d(LOG_TAG, i, "updateServiceSwitch: isLabSimCard [" + isLabSimCard + "]");
-        Integer imsSwitchType = mnoinfo.getAsInteger(ISimManager.KEY_IMSSWITCH_TYPE);
-        if (imsSwitchType == null) {
-            imsSwitchType = 0;
-        }
-        if (!hasSIM || !(!isLabSimCard || imsSwitchType.intValue() == 4 || imsSwitchType.intValue() == 3)) {
-            this.mContext.sendBroadcast(new Intent("android.intent.action.IMS_SETTINGS_UPDATED"));
-            IMSLog.e(LOG_TAG, this.mPhoneId, "No operator code for settings. Update UI!");
-            return;
-        }
-        int i2 = this.mPhoneId;
-        IMSLog.i(LOG_TAG, i2, "updateMno: hasSIM:" + hasSIM + ", imsSwitchType:" + imsSwitchType + ", mnoinfo:" + mnoinfo);
-        if (imsSwitchType.intValue() == 3 || imsSwitchType.intValue() == 4 || imsSwitchType.intValue() == 5) {
-            if (imsSwitchType.intValue() == 4) {
-                ContentValues imsSwitch = loadImsSwitchFromJson(mnoinfo.getAsString("mnoname"), mnoinfo.getAsString(ISimManager.KEY_MVNO_NAME));
-                if (imsSwitch.size() > 0) {
-                    mnoinfo.putAll(imsSwitch);
-                } else {
-                    for (String var : getImsServiceSwitchTable()) {
-                        mnoinfo.put(var, false);
-                    }
-                }
-            }
-            if (imsSwitchType.intValue() == 3) {
-                ContentValues imsSwitch2 = loadImsSwitchFromJson(mnoinfo.getAsString("mnoname"), mnoinfo.getAsString(ISimManager.KEY_MVNO_NAME));
-                if (imsSwitch2.size() > 0 && imsSwitch2.containsKey(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS)) {
-                    mnoinfo.put(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS, imsSwitch2.getAsBoolean(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS));
-                    if (imsSwitch2.containsKey(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS_CHAT_SERVICE)) {
-                        mnoinfo.put(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS_CHAT_SERVICE, imsSwitch2.getAsBoolean(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS_CHAT_SERVICE));
-                    }
-                }
-            }
-            turnOffAllSwitch();
-            updateServiceSwitchInternal(mnoinfo);
-            saveImsSwitch(mnoinfo);
-            enable(this.mServiceMap);
-            return;
-        }
-        IMSLog.e(LOG_TAG, this.mPhoneId, "can not find a matched ims switch type");
-        init();
     }
 
     /* access modifiers changed from: protected */
@@ -533,44 +482,34 @@ public class ImsServiceSwitchEur extends ImsServiceSwitchBase {
 
     /* access modifiers changed from: protected */
     public ContentValues updateRcsSwitchForEur(ContentValues imsSwitch) {
-        boolean isEnableRcs;
-        boolean z;
-        ContentValues contentValues = imsSwitch;
         String salesCode = OmcCode.get();
         String nwCode = OmcCode.getNWCode(this.mPhoneId);
+        boolean z = false;
         String[] carrier_list = GlobalSettingsManager.getInstance(this.mContext, this.mPhoneId).getStringArray(GlobalSettingsConstants.RCS.RCS_CARRIER_LIST, new String[0]);
-        String[] open_list = GlobalSettingsManager.getInstance(this.mContext, this.mPhoneId).getStringArray(GlobalSettingsConstants.RCS.RCS_OPEN_LIST_FOR_EUR, new String[0]);
-        boolean isSingleIncluded = RcsUtils.isSingleIncludedForTss();
         SharedPreferences.Editor editor = ImsSharedPrefHelper.getSharedPref(this.mPhoneId, this.mContext, "imsswitch", 0, false).edit();
         IMSLog.i(LOG_TAG, this.mPhoneId, "salesCode = " + salesCode + " nwCode = " + nwCode);
         if (!Arrays.asList(carrier_list).contains(salesCode)) {
-            if (isSingleIncluded || salesCode.equals(nwCode)) {
-                if (!isSingleIncluded) {
-                    z = false;
-                } else if (Arrays.asList(open_list).contains(salesCode)) {
-                    z = false;
+            if (!salesCode.equals(nwCode)) {
+                IMSLog.i(LOG_TAG, this.mPhoneId, "not support sim mobility");
+                editor.putBoolean(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS, false);
+                editor.putBoolean(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS_CHAT_SERVICE, false);
+                imsSwitch.put(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS, false);
+                imsSwitch.put(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS_CHAT_SERVICE, false);
+            } else {
+                boolean imsSwitchFromJson = CollectionUtils.getBooleanValue(imsSwitch, ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS, false);
+                if (GlobalSettingsManager.getInstance(this.mContext, this.mPhoneId).getBoolean(GlobalSettingsConstants.RCS.RCS_OPEN_SWITCH_FOR_EUR, true) && imsSwitchFromJson) {
+                    z = true;
                 }
-                boolean imsSwitchFromJson = CollectionUtils.getBooleanValue(contentValues, ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS, z);
-                boolean isEnableRcs2 = GlobalSettingsManager.getInstance(this.mContext, this.mPhoneId).getBoolean(GlobalSettingsConstants.RCS.RCS_OPEN_SWITCH_FOR_EUR, true) && imsSwitchFromJson;
-                IMSLog.i(LOG_TAG, this.mPhoneId, "imsSwitchFromJson [" + imsSwitchFromJson + "], RCS_OPEN_SWITCH_FOR_EUR [" + isEnableRcs2 + "]");
-                editor.putBoolean(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS, isEnableRcs2);
-                editor.putBoolean(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS_CHAT_SERVICE, isEnableRcs2);
-                contentValues.put(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS, Boolean.valueOf(isEnableRcs2));
-                contentValues.put(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS_CHAT_SERVICE, Boolean.valueOf(isEnableRcs2));
-                editor.apply();
-                return contentValues;
+                boolean isEnableRcs = z;
+                IMSLog.i(LOG_TAG, this.mPhoneId, "imsSwitchFromJson [" + imsSwitchFromJson + "], RCS_OPEN_SWITCH_FOR_EUR [" + isEnableRcs + "]");
+                editor.putBoolean(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS, isEnableRcs);
+                editor.putBoolean(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS_CHAT_SERVICE, isEnableRcs);
+                imsSwitch.put(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS, Boolean.valueOf(isEnableRcs));
+                imsSwitch.put(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS_CHAT_SERVICE, Boolean.valueOf(isEnableRcs));
             }
-            IMSLog.i(LOG_TAG, this.mPhoneId, "not support sim mobility");
-            editor.putBoolean(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS, false);
-            editor.putBoolean(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS_CHAT_SERVICE, false);
-            contentValues.put(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS, false);
-            contentValues.put(ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS_CHAT_SERVICE, false);
-            isEnableRcs = false;
-        } else {
-            isEnableRcs = false;
         }
         editor.apply();
-        return contentValues;
+        return imsSwitch;
     }
 
     /* access modifiers changed from: protected */

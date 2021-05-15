@@ -79,12 +79,12 @@ public class GlobalSettingsConstants {
         public static final String PRE_CONSENT = "rcs_pre_consent";
         public static final String RCS_APP_LIST = "rcs_app_list";
         public static final String RCS_CARRIER_LIST = "rcs_carrier_list";
+        public static final String RCS_CLIENT_PLATFORM = "rcs_client_platform";
         public static final String RCS_CLIENT_VERSION = "rcs_client_version";
         public static final String RCS_DEFAULT_DISABLE_INITIAL_SCAN = "rcs_default_disable_initial_scan";
         public static final String RCS_DEFAULT_ENABLED = "rcs_default_enabled";
         public static final String RCS_FORCE_DISABLE_INITIAL_SCAN = "rcs_force_disable_initial_scan";
         public static final String RCS_INITIAL_CONTACT_SYNC_BEFORE_REGI = "rcs_initial_contact_sync_before_regi";
-        public static final String RCS_OPEN_LIST_FOR_EUR = "rcs_open_list_for_eur";
         public static final String RCS_OPEN_SWITCH_FOR_EUR = "rcs_open_switch_for_eur";
         public static final String RCS_PHASE_VERSION = "rcs_phase_version";
         public static final String RCS_PROVISIONING_VERSION = "rcs_provisioning_version";

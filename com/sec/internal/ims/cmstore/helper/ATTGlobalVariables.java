@@ -65,7 +65,7 @@ public class ATTGlobalVariables {
 
     private static void initVersion() {
         if (isAmbsPhaseIV()) {
-            VERSION_NAME = "5.4.109";
+            VERSION_NAME = "5.4.108";
         } else {
             VERSION_NAME = "5.3.81";
         }

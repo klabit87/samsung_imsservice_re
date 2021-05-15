@@ -217,35 +217,30 @@ public class CmcImsCallSessionImpl extends ImsCallSessionImpl {
         int sessionId = this.mP2pCSM.getSessionId();
         if (isP2pPrimaryType(cmcType)) {
             cmcType = 1;
-        } else if (isCmcSecondaryType(cmcType)) {
-            cmcType = 2;
         }
-        Log.i("CmcImsCallSessionImpl", "updateCmcCallExtras(), SEM_EXTRA_CMC_TYPE: (" + this.mP2pCSM.getMainSession().getCmcType() + " -> " + cmcType + ")");
-        if (oemExtras != null) {
-            oemExtras.putInt("com.samsung.telephony.extra.CMC_TYPE", cmcType);
-            oemExtras.putInt("com.samsung.telephony.extra.CMC_SESSION_ID", sessionId);
-            if (cmcType == 1) {
-                oemExtras.putString("com.samsung.telephony.extra.CMC_DIAL_TO", cp.getDialingNumber());
-                int dtmfKey = cp.getCmcDtmfKey();
-                if (dtmfKey > -1 && dtmfKey < 12) {
-                    char keyChar = 0;
-                    if (dtmfKey >= 0 && dtmfKey <= 9) {
-                        keyChar = (char) (dtmfKey + 48);
-                    } else if (dtmfKey == 10) {
-                        keyChar = '*';
-                    } else if (dtmfKey == 11) {
-                        keyChar = '#';
-                    }
-                    oemExtras.putString("com.samsung.telephony.extra.CMC_CS_DTMF_KEY", Character.toString(keyChar));
+        oemExtras.putInt("com.samsung.telephony.extra.CMC_TYPE", cmcType);
+        oemExtras.putInt("com.samsung.telephony.extra.CMC_SESSION_ID", sessionId);
+        if (cmcType == 1) {
+            oemExtras.putString("com.samsung.telephony.extra.CMC_DIAL_TO", cp.getDialingNumber());
+            int dtmfKey = cp.getCmcDtmfKey();
+            if (dtmfKey > -1 && dtmfKey < 12) {
+                char keyChar = 0;
+                if (dtmfKey >= 0 && dtmfKey <= 9) {
+                    keyChar = (char) (dtmfKey + 48);
+                } else if (dtmfKey == 10) {
+                    keyChar = '*';
+                } else if (dtmfKey == 11) {
+                    keyChar = '#';
                 }
-            } else if (isCmcSecondaryType(cmcType)) {
-                oemExtras.putString("com.samsung.telephony.extra.CMC_PD_CALL_CONNECT_TIME", cp.getCmcCallTime());
+                oemExtras.putString("com.samsung.telephony.extra.CMC_CS_DTMF_KEY", Character.toString(keyChar));
             }
-            if (!TextUtils.isEmpty(cp.getReplaceSipCallId())) {
-                oemExtras.putString("com.samsung.telephony.extra.CMC_DEVICE_ID_BY_SD", cp.getCmcDeviceId());
-            } else if (cp.getCmcDeviceId() != null) {
-                oemExtras.putString("com.samsung.telephony.extra.CMC_DEVICE_ID", cp.getCmcDeviceId());
-            }
+        } else if (isCmcSecondaryType(cmcType)) {
+            oemExtras.putString("com.samsung.telephony.extra.CMC_PD_CALL_CONNECT_TIME", cp.getCmcCallTime());
+        }
+        if (!TextUtils.isEmpty(cp.getReplaceSipCallId())) {
+            oemExtras.putString("com.samsung.telephony.extra.CMC_DEVICE_ID_BY_SD", cp.getCmcDeviceId());
+        } else if (cp.getCmcDeviceId() != null) {
+            oemExtras.putString("com.samsung.telephony.extra.CMC_DEVICE_ID", cp.getCmcDeviceId());
         }
         this.mCallProfile.mCallExtras.putBundle("android.telephony.ims.extra.OEM_EXTRAS", oemExtras);
     }

@@ -196,7 +196,7 @@ public class ImsAlertingCall extends CallState {
         CallProfile profile = bundle.getParcelable("profile");
         int srvccVersion = this.mModule.getSrvccVersion(this.mSession.getPhoneId());
         if (profile == null && srvccVersion != 0) {
-            if (srvccVersion >= 10 || DeviceUtil.getGcfMode()) {
+            if (srvccVersion >= 10 || DeviceUtil.getGcfMode().booleanValue()) {
                 Log.i("CallStateMachine", "MO aSRVCC supported");
                 this.mVolteSvcIntf.sendReInvite(this.mSession.getSessionId(), new SipReason("SIP", bundle.getInt("cause"), bundle.getString("reasonText"), new String[0]));
             }

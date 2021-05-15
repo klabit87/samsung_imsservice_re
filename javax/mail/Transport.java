@@ -48,8 +48,8 @@ public abstract class Transport extends Service {
             i++;
             message = msg;
         }
-        int i2 = protocols.size();
-        if (i2 != 0) {
+        int dsize = protocols.size();
+        if (dsize != 0) {
             Address[] addressArr2 = null;
             if (message.session != null) {
                 session = message.session;
@@ -58,7 +58,7 @@ public abstract class Transport extends Service {
             }
             Session s = session;
             char c = 0;
-            if (i2 == 1) {
+            if (dsize == 1) {
                 Transport transport = s.getTransport(addressArr[0]);
                 try {
                     transport.connect();

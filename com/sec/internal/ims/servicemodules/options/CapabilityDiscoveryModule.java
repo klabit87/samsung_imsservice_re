@@ -205,7 +205,7 @@ public class CapabilityDiscoveryModule extends ServiceModuleBase implements ICap
         this.mConfigs = new PhoneIdKeyMap<>(phoneCount, null);
         this.mControl = new PhoneIdKeyMap<>(phoneCount, null);
         this.mUserLastActive = new PhoneIdKeyMap<>(phoneCount, -1L);
-        this.mCapabilityUtil = new CapabilityUtil(this);
+        this.mCapabilityUtil = new CapabilityUtil(this, this.mEventLog);
         this.mCapabilityForIncall = new CapabilityForIncall(this, this.mCapabilityUtil, iRegistrationManager);
         CapabilityExchange capabilityExchange = new CapabilityExchange(this, this.mCapabilityUtil, this.mEventLog);
         this.mCapabilityExchange = capabilityExchange;

@@ -227,7 +227,6 @@ public class VolteServiceModuleInternal extends ServiceModuleBase implements IVo
         this.mImsExternalCallController = new ImsExternalCallController(this);
         this.mVolteNotifier = new VolteNotifier();
         setRttMode(ImsUtil.isRttModeOnFromCallSettings(this.mContext, 0) ? Extensions.TelecomManager.RTT_MODE : Extensions.TelecomManager.TTY_MODE_OFF);
-        setTtyMode(Settings.System.getInt(this.mContext.getContentResolver(), "current_tty_mode", 0));
         this.mRttSettingObserver = new RttSettingObserver(this.mContext, this);
         IntentFilter filter = new IntentFilter();
         filter.addAction(ImsConstants.Intents.ACTION_EMERGENCY_CALLBACK_MODE_CHANGED);
@@ -498,37 +497,6 @@ public class VolteServiceModuleInternal extends ServiceModuleBase implements IVo
             return true;
         }
         return false;
-    }
-
-    public void setTtyMode(int mode) {
-        setTtyMode(this.mDefaultPhoneId, mode);
-    }
-
-    public synchronized void setTtyMode(int phoneId, int mode) {
-        int prevMode = this.mTtyMode[phoneId];
-        this.mTtyMode[phoneId] = mode;
-        SimpleEventLog simpleEventLog = this.mEventLog;
-        simpleEventLog.logAndAdd("setTtyMode: " + prevMode + " -> " + this.mTtyMode[phoneId]);
-        this.mRegMan.setTtyMode(phoneId, this.mTtyMode[phoneId]);
-        if (prevMode == this.mTtyMode[phoneId]) {
-            Log.e(LOG_TAG, "setTtyMode: not updating sessions");
-            return;
-        }
-        ImsRegistration regiInfo = getImsRegistration(phoneId);
-        if (regiInfo == null) {
-            Log.e(LOG_TAG, "when non-registered status, do not pass TTY Mode");
-            return;
-        }
-        if (regiInfo.getImsProfile().getTtyType() != 1) {
-            if (regiInfo.getImsProfile().getTtyType() != 3) {
-                IMSLog.c(LogClass.VOLTE_CHANGE_TTYMODE, phoneId + "," + this.mTtyMode[phoneId]);
-                this.mVolteSvcIntf.setTtyMode(phoneId, 0, this.mTtyMode[phoneId]);
-                this.mImsCallSessionManager.setTtyMode(phoneId, mode);
-                return;
-            }
-        }
-        Log.e(LOG_TAG, "setTtyMode: do not call setTtyMode() for non IMS TTY operator");
-        this.mTtyMode[phoneId] = prevMode;
     }
 
     public void setRttMode(int mode) {
@@ -1399,10 +1367,18 @@ public class VolteServiceModuleInternal extends ServiceModuleBase implements IVo
     }
 
     private void handlePreAlerting(ImsRegistration reg, IncomingCallEvent event, boolean isSamsungMdmnCall, boolean isDelayedIncoming, SipError error) {
+        Mno mno;
         SipError error2;
         int callType;
         IncomingCallEvent incomingCallEvent = event;
-        Mno mno = Mno.fromName(reg.getImsProfile().getMnoName());
+        boolean z = isSamsungMdmnCall;
+        Mno mno2 = Mno.fromName(reg.getImsProfile().getMnoName());
+        if (z) {
+            Log.i(LOG_TAG, "change mno to MDMN");
+            mno = Mno.MDMN;
+        } else {
+            mno = mno2;
+        }
         if (!hasCsCall(reg.getPhoneId()) || isDelayedIncoming) {
             CallProfile profile = new CallProfile();
             int callType2 = event.getCallType();
@@ -1430,7 +1406,7 @@ public class VolteServiceModuleInternal extends ServiceModuleBase implements IVo
                 profile.setMediaProfile(new MediaProfile());
                 profile.setNetworkType(reg.getNetworkType());
                 profile.setDirection(1);
-                profile.setSamsungMdmnCall(isSamsungMdmnCall);
+                profile.setSamsungMdmnCall(z);
                 profile.setDialingNumber(getDialingNumber(incomingCallEvent, mno));
                 setDisplayName(mno, incomingCallEvent, profile);
                 if (event.getParams().getComposerData() != null && !event.getParams().getComposerData().isEmpty()) {
@@ -1444,10 +1420,9 @@ public class VolteServiceModuleInternal extends ServiceModuleBase implements IVo
                 }
                 ImsCallSession incomingCallSession = this.mImsCallSessionManager.onImsIncomingCallEvent(event, profile, reg, callType, this.mTtyMode[reg.getPhoneId()]);
                 if (error2 != SipErrorBase.OK) {
-                    int i = callType;
                     ImsRegistry.getImsNotifier().onIncomingPreAlerting(new ImsCallInfo(incomingCallSession.getCallId(), callType, false, false, 0, 0, 0, 0, (String) null, (String) null, 0, false), event.getPeerAddr().getUri().toString());
                 } else if (PackageUtils.isOneTalkFeatureEnabled(this.mContext)) {
-                    int i2 = callType;
+                    int i = callType;
                 } else if (this.mVolteSvcIntf.proceedIncomingCall(event.getSessionID(), (HashMap<String, String>) null) != 0) {
                     try {
                         incomingCallSession.terminate(5);
@@ -1455,9 +1430,9 @@ public class VolteServiceModuleInternal extends ServiceModuleBase implements IVo
                         Log.e(LOG_TAG, "session already removed: ", e);
                     }
                     this.mImsCallSessionManager.removeSession(event.getSessionID());
-                    int i3 = callType;
+                    int i2 = callType;
                 } else {
-                    int i4 = callType;
+                    int i3 = callType;
                 }
                 this.mVolteNotifier.notifyIncomingPreAlerting(incomingCallSession);
                 return;

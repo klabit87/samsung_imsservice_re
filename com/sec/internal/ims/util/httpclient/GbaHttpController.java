@@ -488,12 +488,13 @@ public class GbaHttpController {
     }
 
     public void sendBsfRequest(String bsfServer, int bsfPort, String username, String imei, String realm, byte[] gbaType, byte[] nafId, boolean isGbaSupported, HttpRequestParams requestParams) {
-        String url = buildUrl(bsfServer, bsfPort);
+        String str = bsfServer;
+        String url = buildUrl(requestParams.getPhoneId(), requestParams.getUseTls(), str, bsfPort);
         if (this.mGbaServiceModule == null) {
             this.mGbaServiceModule = ImsRegistry.getGbaService();
         }
         Map<String, String> requestHeader = new HashMap<>();
-        requestHeader.put(HttpController.HEADER_HOST, bsfServer);
+        requestHeader.put(HttpController.HEADER_HOST, str);
         StringBuilder sb = new StringBuilder();
         sb.append("GBA-service; 0.1; ");
         sb.append(isGbaSupported ? "3gpp-gba-uicc" : HttpController.VAL_3GPP_GBA);
@@ -502,14 +503,14 @@ public class GbaHttpController {
         if (requestParams.getUseImei()) {
             requestHeader.put(HttpController.HEADER_X_TMUS_IMEI, imei);
         } else {
-            String str = imei;
+            String str2 = imei;
         }
         final boolean z = isGbaSupported;
         final HttpRequestParams httpRequestParams = requestParams;
-        final String str2 = url;
-        final String str3 = username;
-        final String str4 = bsfServer;
-        final String str5 = imei;
+        final String str3 = url;
+        final String str4 = username;
+        final String str5 = bsfServer;
+        final String str6 = imei;
         final byte[] bArr = gbaType;
         final byte[] bArr2 = nafId;
         HttpRequestParams bsfRequestParams = makeHttpRequestParams(HttpRequestParams.Method.GET, url, requestHeader, new HttpRequestParams.HttpRequestCallback() {
@@ -540,7 +541,7 @@ public class GbaHttpController {
                     return;
                 }
                 WwwAuthenticateHeader wwwAuthParsedHeader = new WwwAuthHeaderParser().parseHeaderValue(wwwAuthHeaders.get(0));
-                GbaHttpController.this.sendBsfRequestWithAuthorization(str2, str3, wwwAuthParsedHeader, str4, str5, bArr, bArr2, z, httpRequestParams);
+                GbaHttpController.this.sendBsfRequestWithAuthorization(str3, str4, wwwAuthParsedHeader, str5, str6, bArr, bArr2, z, httpRequestParams);
             }
 
             public void onFail(IOException arg1) {
@@ -718,18 +719,45 @@ public class GbaHttpController {
         loggingHttpMessage(bsfRequestParams.toString(), 0);
     }
 
-    private String buildUrl(String bsfIP, int bsfPort) {
-        StringBuilder url = new StringBuilder();
-        if (bsfPort == 443) {
-            url.append("https://");
-        } else {
-            url.append("http://");
-        }
-        url.append(bsfIP);
-        url.append(':');
-        url.append(bsfPort);
-        url.append('/');
-        return url.toString();
+    /* JADX WARNING: Code restructure failed: missing block: B:4:0x001b, code lost:
+        if (com.sec.internal.helper.SimUtil.getSimMno(r6).isOneOf(com.sec.internal.constants.Mno.SPARK) != false) goto L_0x0024;
+     */
+    /* Code decompiled incorrectly, please refer to instructions dump. */
+    private java.lang.String buildUrl(int r6, boolean r7, java.lang.String r8, int r9) {
+        /*
+            r5 = this;
+            java.lang.StringBuilder r0 = new java.lang.StringBuilder
+            r0.<init>()
+            r1 = 443(0x1bb, float:6.21E-43)
+            if (r9 == r1) goto L_0x0024
+            if (r7 == 0) goto L_0x001e
+            com.sec.internal.constants.Mno r1 = com.sec.internal.helper.SimUtil.getSimMno(r6)
+            r2 = 1
+            com.sec.internal.constants.Mno[] r2 = new com.sec.internal.constants.Mno[r2]
+            r3 = 0
+            com.sec.internal.constants.Mno r4 = com.sec.internal.constants.Mno.SPARK
+            r2[r3] = r4
+            boolean r1 = r1.isOneOf(r2)
+            if (r1 == 0) goto L_0x001e
+            goto L_0x0024
+        L_0x001e:
+            java.lang.String r1 = "http://"
+            r0.append(r1)
+            goto L_0x0029
+        L_0x0024:
+            java.lang.String r1 = "https://"
+            r0.append(r1)
+        L_0x0029:
+            r0.append(r8)
+            r1 = 58
+            r0.append(r1)
+            r0.append(r9)
+            r1 = 47
+            r0.append(r1)
+            java.lang.String r1 = r0.toString()
+            return r1
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.sec.internal.ims.util.httpclient.GbaHttpController.buildUrl(int, boolean, java.lang.String, int):java.lang.String");
     }
 
     /* access modifiers changed from: private */

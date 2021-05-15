@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.IVoIPInterface;
 import android.os.ServiceManager;
-import android.telecom.TelecomManager;
 import android.text.TextUtils;
 import android.util.Log;
 import com.google.i18n.phonenumbers.NumberParseException;
@@ -226,7 +225,7 @@ public class ImsCallUtil {
         if (addr != null) {
             ImsUri uri = addr.getUri();
             if (mno != null) {
-                if (mno == Mno.KDDI || mno == Mno.CTC || mno == Mno.CTCMO || mno == Mno.MDMN) {
+                if (mno == Mno.KDDI || mno == Mno.CTC || mno == Mno.CTCMO || mno == Mno.MDMN || mno == Mno.RAKUTEN_JAPAN) {
                     callerId = addr.getDisplayName();
                 } else if (uri != null && mno == Mno.VZW) {
                     callerId = removeUriPlusPrefix(uri.getMsisdn(), hidePrivateInfo);
@@ -613,25 +612,6 @@ public class ImsCallUtil {
         }
     }
 
-    public static int convertRecordEventForCmcInfo(int recordEvent) {
-        if (recordEvent == 1) {
-            return 100;
-        }
-        if (recordEvent == 701) {
-            return 1;
-        }
-        if (recordEvent == 702) {
-            return 2;
-        }
-        if (recordEvent == 800) {
-            return 3;
-        }
-        if (recordEvent != 801) {
-            return 0;
-        }
-        return 4;
-    }
-
     public static boolean isOngoingCallState(CallConstants.STATE callstate) {
         return isDialingCallState(callstate) || isDuringCallState(callstate);
     }
@@ -656,17 +636,7 @@ public class ImsCallUtil {
         return callstate == CallConstants.STATE.InCall || callstate == CallConstants.STATE.ResumingCall;
     }
 
-    public static boolean isTPhoneMode(Context context) {
-        if ("com.skt.prod.dialer".equals(((TelecomManager) context.getSystemService("telecom")).getDefaultDialerPackage())) {
-            return true;
-        }
-        return false;
-    }
-
     public static boolean isTPhoneRelaxMode(Context context, String dialingNumber) {
-        if (!isTPhoneMode(context)) {
-            return false;
-        }
         int result = 0;
         Cursor cursor = context.getContentResolver().query(Uri.parse("content://com.skt.prod.dialer.sktincallscreen.provider" + "/" + "get_relaxation"), (String[]) null, (String) null, new String[]{dialingNumber}, (String) null);
         if (cursor != null) {
@@ -928,7 +898,7 @@ public class ImsCallUtil {
 
     public static SipError onConvertSipErrorReason(CallStateEvent event) {
         SipError error = event.getErrorCode();
-        if (!SipErrorBase.ALTERNATIVE_SERVICE.equals(error) || !DeviceUtil.getGcfMode()) {
+        if (!SipErrorBase.ALTERNATIVE_SERVICE.equals(error) || !DeviceUtil.getGcfMode().booleanValue()) {
             return error;
         }
         String type = event.getAlternativeServiceType();

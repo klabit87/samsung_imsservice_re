@@ -5,12 +5,9 @@ import android.content.SharedPreferences;
 import com.sec.internal.constants.ims.entitilement.NSDSNamespaces;
 import com.sec.internal.ims.entitlement.util.NSDSConfigHelper;
 import com.sec.internal.log.IMSLog;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class NSDSSharedPrefHelper {
     private static final String LOG_TAG = NSDSSharedPrefHelper.class.getSimpleName();
-    private static AtomicBoolean[] mIsVolteEntitled = {new AtomicBoolean(false), new AtomicBoolean(false)};
-    private static AtomicBoolean[] mIsVowifiEntitled = {new AtomicBoolean(false), new AtomicBoolean(false)};
 
     public static SharedPreferences getSharedPref(Context context, String prefName, int mode) {
         if (!NSDSConfigHelper.isUserUnlocked(context)) {
@@ -164,43 +161,24 @@ public class NSDSSharedPrefHelper {
         return entitlmentUrl;
     }
 
-    public static boolean getVoWiFiEntitlement(int slotId) {
-        boolean value = mIsVowifiEntitled[slotId].get();
+    public static boolean getEntitlementCompleted(Context context, String prefName, String deviceUid) {
+        if (!NSDSConfigHelper.isUserUnlocked(context)) {
+            return false;
+        }
+        boolean prefValue = context.createCredentialProtectedStorageContext().getSharedPreferences(NSDSNamespaces.NSDSSharedPref.PREF_ENTITLEMENT_COMPLETED, 0).getBoolean(getKey(deviceUid, prefName), false);
         String str = LOG_TAG;
-        IMSLog.i(str, slotId, "getVoWiFiEntitlement: " + value);
-        return value;
+        IMSLog.i(str, "Get preference with key: " + deviceUid + ":" + prefName + " Value: " + prefValue);
+        return prefValue;
     }
 
-    public static boolean getVoWiFiEntitlement(Context context, int slotIdx) {
-        boolean value = context.getSharedPreferences("entitlement_completed_" + slotIdx, 0).getBoolean(NSDSNamespaces.NSDSExtras.SERVICE_VOWIFI, false);
-        String str = LOG_TAG;
-        IMSLog.i(str, slotIdx, "getVoWiFiEntitlement: " + value);
-        return value;
-    }
-
-    public static boolean getVoLteEntitlement(Context context, int slotIdx) {
-        boolean value = context.getSharedPreferences("entitlement_completed_" + slotIdx, 0).getBoolean(NSDSNamespaces.NSDSExtras.SERVICE_VOLTE, false);
-        String str = LOG_TAG;
-        IMSLog.i(str, slotIdx, "getVoLteEntitlement: " + value);
-        return value;
-    }
-
-    public static void setVoWiFiEntitlement(Context context, boolean value, int slotIdx) {
-        mIsVowifiEntitled[slotIdx].set(value);
-        SharedPreferences.Editor editor = context.getSharedPreferences("entitlement_completed_" + slotIdx, 0).edit();
-        editor.putBoolean(NSDSNamespaces.NSDSExtras.SERVICE_VOWIFI, value);
-        editor.commit();
-        String str = LOG_TAG;
-        IMSLog.i(str, slotIdx, "setVoWiFiEntitlement: " + value);
-    }
-
-    public static void setVoLteEntitlement(Context context, boolean value, int slotIdx) {
-        mIsVolteEntitled[slotIdx].set(value);
-        SharedPreferences.Editor editor = context.getSharedPreferences("entitlement_completed_" + slotIdx, 0).edit();
-        editor.putBoolean(NSDSNamespaces.NSDSExtras.SERVICE_VOLTE, value);
-        editor.commit();
-        String str = LOG_TAG;
-        IMSLog.i(str, slotIdx, "setVoLteEntitlement: " + value);
+    public static void setEntitlementCompleted(Context context, String prefName, boolean prefValue, String deviceUid) {
+        if (NSDSConfigHelper.isUserUnlocked(context)) {
+            SharedPreferences.Editor editor = context.createCredentialProtectedStorageContext().getSharedPreferences(NSDSNamespaces.NSDSSharedPref.PREF_ENTITLEMENT_COMPLETED, 0).edit();
+            editor.putBoolean(getKey(deviceUid, prefName), prefValue);
+            editor.apply();
+            String str = LOG_TAG;
+            IMSLog.i(str, "Set preference with key: " + prefName + " Value: " + prefValue);
+        }
     }
 
     public static String getGcmSenderId(Context context, String deviceUid, String defaultSenderId) {

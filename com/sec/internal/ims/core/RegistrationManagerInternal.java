@@ -346,7 +346,6 @@ abstract class RegistrationManagerInternal extends RegistrationManager {
             while (it.hasNext()) {
                 RegisterTask task = (RegisterTask) it.next();
                 if (!RegistrationUtils.isCmcProfile(task.getProfile()) || this.mHandler.hasMessages(42)) {
-                    this.mHandler.removeMessages(22, task);
                     task.getGovernor().stopTimsTimer(RegistrationConstants.REASON_SIM_REFRESH);
                     stopPdnConnectivity(task.getPdnType(), task);
                     IMSLog.i(IRegistrationManager.LOG_TAG, phoneId, "Remove task: " + task);
@@ -375,7 +374,7 @@ abstract class RegistrationManagerInternal extends RegistrationManager {
             Iterator it = rtl.iterator();
             while (it.hasNext()) {
                 RegisterTask task = (RegisterTask) it.next();
-                if (!RegistrationUtils.needToSkipTryRegister(task, this.mRcsPolicyManager.pendingRcsRegister(task, getPendingRegistration(phoneId), phoneId), sm != null && sm.hasNoSim(), this.mHandler.hasMessages(107), this.mTelephonyManager, this.mPdnController)) {
+                if (!RegistrationUtils.needToSkipTryRegister(task, this.mRcsPolicyManager.pendingRcsRegister(task, getPendingRegistration(phoneId), phoneId), sm != null && sm.hasNoSim(), this.mHandler.hasMessages(107))) {
                     RegistrationConstants.RegistrationType rcsVolteSingleRegistration = SlotBasedConfig.getInstance(phoneId).getRcsVolteSingleRegistration();
                     if (rcsVolteSingleRegistration != RegistrationConstants.RegistrationType.IMS_PROFILE_BASED_REG && task.isRcsOnly() && task.getState() == RegistrationConstants.RegisterTaskState.CONFIGURED) {
                         RegistrationConstants.RegistrationType newRcsVolteSingleRegistration = RegistrationConstants.RegistrationType.valueOf(RcsConfigurationHelper.readIntParam(this.mContext, ImsUtil.getPathWithPhoneId(ConfigConstants.ConfigTable.EXT_RCS_VOLTE_SINGLE_REGISTRATION, phoneId), Integer.valueOf(rcsVolteSingleRegistration.getValue())).intValue());
@@ -420,13 +419,9 @@ abstract class RegistrationManagerInternal extends RegistrationManager {
         ImsProfile profile = task.getProfile();
         int phoneId = task.getPhoneId();
         IMSLog.i(IRegistrationManager.LOG_TAG, phoneId, registerTask, "checkForTryRegister id: " + profile.getId());
-        SlotBasedConfig.RegisterTaskList rtl = RegistrationUtils.getPendingRegistrationInternal(phoneId);
-        if (rtl == null || !rtl.contains(registerTask)) {
-            IMSLog.e(IRegistrationManager.LOG_TAG, phoneId, registerTask, "checkForTryRegister UNKNOWN task. (it should be removed task)");
-            return false;
-        }
         int rat = RegistrationUtils.findBestNetwork(phoneId, profile, task.getGovernor(), isPdnConnected(profile, phoneId), this.mPdnController, this.mVsm, this.mTelephonyManager.getVoiceNetworkType(SimUtil.getSubId(phoneId)), this.mContext);
         registerTask.setRegistrationRat(rat);
+        boolean z = true;
         if (!task.getGovernor().isReadyToDualRegister(this.mCmcAccountManager.getCmcRegisterTask(SimUtil.getOppositeSimSlot(task.getPhoneId())) != null && RegistrationUtils.isCmcProfile(task.getProfile()))) {
             this.mHandler.sendTryRegister(phoneId, 2500);
             return false;
@@ -439,8 +434,8 @@ abstract class RegistrationManagerInternal extends RegistrationManager {
         boolean isAirplaneModeOn = ImsConstants.SystemSettings.AIRPLANE_MODE.get(this.mContext, 0) == ImsConstants.SystemSettings.AIRPLANE_MODE_ON;
         boolean isRoaming = this.mTelephonyManager.isNetworkRoaming();
         IMSLog.i(IRegistrationManager.LOG_TAG, phoneId, registerTask, "checkInitialRegistrationIsReady: APM ON [" + isAirplaneModeOn + "], Roamimg [" + isRoaming + "]");
-        boolean z = isRoaming;
-        boolean z2 = isAirplaneModeOn;
+        boolean z2 = isRoaming;
+        boolean z3 = isAirplaneModeOn;
         if (!RegistrationUtils.checkInitialRegistrationIsReady(task, getPendingRegistration(phoneId), isAirplaneModeOn, isRoaming, sm.hasNoSim(), this.mRcsPolicyManager, this.mHandler)) {
             return false;
         }
@@ -465,7 +460,10 @@ abstract class RegistrationManagerInternal extends RegistrationManager {
             }
             int pdn = RegistrationUtils.selectPdnType(profile, rat);
             registerTask.setPdnType(pdn);
-            Set<String> services = getServiceForNetwork(profile, rat, ConfigUtil.isRcsEur(phoneId) && task.isRcsOnly(), phoneId);
+            if (!ConfigUtil.isRcsEur(phoneId) || !task.isRcsOnly()) {
+                z = false;
+            }
+            Set<String> services = getServiceForNetwork(profile, rat, z, phoneId);
             if (!checkServicesForInitialRegistration(registerTask, services)) {
                 return false;
             }
@@ -509,10 +507,6 @@ abstract class RegistrationManagerInternal extends RegistrationManager {
                 task.getGovernor().startTimsTimer(RegistrationConstants.REASON_INTERNET_PDN_REQUEST);
             }
             this.mPdnController.startPdnConnectivity(i2, registerTask, RegistrationUtils.getPhoneIdForStartConnectivity(task));
-            if (task.getGovernor().isReadyToGetReattach()) {
-                Log.i(IRegistrationManager.LOG_TAG, "keep pdn and block trying registration. return");
-                return false;
-            }
             String pcscf = this.mNetEvtCtr.getPcscfIpAddress(registerTask, this.mPdnController.getInterfaceName(registerTask));
             if (TextUtils.isEmpty(pcscf)) {
                 IMSLog.i(IRegistrationManager.LOG_TAG, phoneId, registerTask, "tryRegister: pcscf is null. return..");
@@ -526,24 +520,18 @@ abstract class RegistrationManagerInternal extends RegistrationManager {
                         }
                     }
                     this.mEventLog.logAndAdd(phoneId, registerTask, "regi failed due to empty p-cscf");
-                    if (task.getPdnType() == 11) {
-                        if (task.getMno() == Mno.TMOUS) {
-                            stopPdnConnectivity(task.getPdnType(), registerTask);
-                            registerTask.setState(RegistrationConstants.RegisterTaskState.IDLE);
-                            registerTask.setDeregiReason(42);
-                            onRegisterError(registerTask, -1, SipErrorBase.EMPTY_PCSCF, 0);
-                        }
-                        if (task.getMno().isOneOf(Mno.CTC, Mno.CTCMO)) {
-                            Log.i(IRegistrationManager.LOG_TAG, "tryRegister: pcscf is null. Notify registration state to CP.");
-                            notifyImsNotAvailable(registerTask, false);
-                            if (getImsIconManager(phoneId) != null) {
-                                Log.i(IRegistrationManager.LOG_TAG, "tryRegister: pcscf is null. fresh icon once.");
-                                getImsIconManager(phoneId).updateRegistrationIcon(task.isSuspended());
-                            }
-                        }
-                        if (task.getMno().isOneOf(Mno.CMCC, Mno.CU) && i == 20) {
-                            Log.i(IRegistrationManager.LOG_TAG, "tryRegister: pcscf is null. Notify registration state to CP in NR rat.");
-                            notifyImsNotAvailable(registerTask, true);
+                    if (task.getMno() == Mno.TMOUS && task.getPdnType() == 11) {
+                        stopPdnConnectivity(task.getPdnType(), registerTask);
+                        registerTask.setState(RegistrationConstants.RegisterTaskState.IDLE);
+                        registerTask.setDeregiReason(42);
+                        onRegisterError(registerTask, -1, SipErrorBase.EMPTY_PCSCF, 0);
+                    }
+                    if (task.getMno().isOneOf(Mno.CTC, Mno.CTCMO) && task.getPdnType() == 11) {
+                        Log.i(IRegistrationManager.LOG_TAG, "tryRegister: pcscf is null. Notify registration state to CP.");
+                        notifyImsNotAvailable(registerTask, false);
+                        if (getImsIconManager(phoneId) != null) {
+                            Log.i(IRegistrationManager.LOG_TAG, "tryRegister: pcscf is null. fresh icon once.");
+                            getImsIconManager(phoneId).updateRegistrationIcon(task.isSuspended());
                         }
                     }
                     return false;
@@ -741,8 +729,7 @@ abstract class RegistrationManagerInternal extends RegistrationManager {
         startSilentEmergency();
     }
 
-    /* access modifiers changed from: protected */
-    public void startSilentEmergency() {
+    private void startSilentEmergency() {
         if (this.mHasSilentE911 != null) {
             startEmergencyRegistration(this.mPhoneIdForSilentE911, this.mHasSilentE911);
             this.mHasSilentE911 = null;
@@ -802,12 +789,6 @@ abstract class RegistrationManagerInternal extends RegistrationManager {
                 IMSLog.i(IRegistrationManager.LOG_TAG, phoneId2, "location info is not loaded");
                 return false;
             } else {
-                if (task.getMno() == Mno.RJIL) {
-                    if (this.mRcsPolicyManager.doRcsConfig(registerTask, getPendingRegistration(phoneId2))) {
-                        IMSLog.i(IRegistrationManager.LOG_TAG, phoneId2, registerTask, "RCS auto-configuration triggered..");
-                        return false;
-                    }
-                }
                 ImsProfile imsProfile2 = profile;
                 int i = phoneId2;
                 return compareSvcAndDoUpdateRegistration(task, isForceReRegi, immediately, rat, ne);
@@ -1252,8 +1233,8 @@ abstract class RegistrationManagerInternal extends RegistrationManager {
             ImsProfile profile = task.getProfile();
             SlotBasedConfig.getInstance(phoneId).addImsRegistration(IRegistrationManager.getRegistrationInfoId(profile.getId(), phoneId), reg);
             SimpleEventLog simpleEventLog = this.mEventLog;
-            simpleEventLog.logAndAdd(phoneId, task, "onRegistered: RAT = " + task.getRegistrationRat() + ", profile=" + profile.getName() + ", service=" + Arrays.toString(reg.getServices().toArray()));
-            IMSLog.c(LogClass.REGI_REGISTERED, phoneId + ",REG OK:" + task.getRegistrationRat() + ":" + task.getMno().getName() + ":" + profile.getPdn() + ":" + DiagnosisConstants.convertServiceSetToHex(reg.getServices()));
+            simpleEventLog.logAndAdd(phoneId, task, "onRegistered: RAT = " + task.getRegistrationRat() + ", profile=" + profile.getName() + ", service=" + Arrays.toString(task.getImsRegistration().getServices().toArray()));
+            IMSLog.c(LogClass.REGI_REGISTERED, phoneId + ",REG OK:" + task.getRegistrationRat() + ":" + task.getMno().getName() + ":" + profile.getPdn() + ":" + DiagnosisConstants.convertServiceSetToHex(task.getImsRegistration().getServices()));
             if (ImsGateConfig.isGateEnabled()) {
                 IMSLog.g("GATE", "<GATE-M>IMS_ENABLED_PS_IND_" + SemSystemProperties.get(ImsConstants.SystemProperties.PS_INDICATOR) + "</GATE-M>");
             }

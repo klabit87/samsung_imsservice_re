@@ -373,7 +373,7 @@ public class ChatData extends Observable {
     }
 
     public String toString() {
-        return "ChatData [mId=" + this.mId + ", mChatId=" + this.mChatId + ", mOwnNumber=" + IMSLog.numberChecker(this.mOwnNumber) + ", mChatType=" + this.mChatType + ", mState=" + this.mState + ", mSubject=" + IMSLog.checker(this.mSubject) + ", mIsMuted=" + this.mIsMuted + ", mMaxParticipantCount=" + this.mMaxParticipantCount + ", mConversationId=" + this.mConversationId + ", mContributionId=" + this.mContributionId + ", mDirection=" + this.mDirection + ", mIsReusable=" + this.mIsReusable + ", mInsertedTimeStamp=" + this.mInsertedTimeStamp + ", mOwnIMSI=" + IMSLog.numberChecker(this.mOwnIMSI) + ", mIsChatbotRole=" + this.mIsChatbotRole + ", mChatMode=" + this.mChatMode + "]";
+        return "ChatData [mId=" + this.mId + ", mChatId=" + this.mChatId + ", mOwnNumber=" + IMSLog.checker(this.mOwnNumber) + ", mChatType=" + this.mChatType + ", mState=" + this.mState + ", mSubject=" + IMSLog.checker(this.mSubject) + ", mIsMuted=" + this.mIsMuted + ", mMaxParticipantCount=" + this.mMaxParticipantCount + ", mConversationId=" + this.mConversationId + ", mContributionId=" + this.mContributionId + ", mDirection=" + this.mDirection + ", mIsReusable=" + this.mIsReusable + ", mInsertedTimeStamp=" + this.mInsertedTimeStamp + ", mOwnIMSI=" + IMSLog.checker(this.mOwnIMSI) + ", mIsChatbotRole=" + this.mIsChatbotRole + ", mChatMode=" + this.mChatMode + "]";
     }
 
     public boolean equals(Object obj) {

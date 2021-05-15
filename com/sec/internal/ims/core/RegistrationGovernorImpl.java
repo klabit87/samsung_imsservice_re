@@ -29,7 +29,7 @@ public class RegistrationGovernorImpl extends RegistrationGovernorBase {
     }
 
     public Set<String> filterService(Set<String> services, int network) {
-        if (!DeviceUtil.getGcfMode() || this.mMno != Mno.GCF || SemSystemProperties.getInt(ImsConstants.SystemProperties.IMS_TEST_MODE_PROP, 0) != 1) {
+        if (!DeviceUtil.getGcfMode().booleanValue() || this.mMno != Mno.GCF || SemSystemProperties.getInt(ImsConstants.SystemProperties.IMS_TEST_MODE_PROP, 0) != 1) {
             return super.filterService(services, network);
         }
         Log.i(LOG_TAG, "by GCF(VZW) IMS_TEST_MODE_PROP - remove all service");

@@ -1092,10 +1092,10 @@ public final class Phonemetadata {
             for (int i = 0; i < numberFormatSize; i++) {
                 this.numberFormat_.get(i).writeExternal(objectOutput);
             }
-            int i2 = intlNumberFormatSize();
-            objectOutput.writeInt(i2);
-            for (int i3 = 0; i3 < i2; i3++) {
-                this.intlNumberFormat_.get(i3).writeExternal(objectOutput);
+            int intlNumberFormatSize = intlNumberFormatSize();
+            objectOutput.writeInt(intlNumberFormatSize);
+            for (int i2 = 0; i2 < intlNumberFormatSize; i2++) {
+                this.intlNumberFormat_.get(i2).writeExternal(objectOutput);
             }
             objectOutput.writeBoolean(this.mainCountryForCode_);
             objectOutput.writeBoolean(this.hasLeadingDigits);
@@ -1217,8 +1217,8 @@ public final class Phonemetadata {
                 numFormat.readExternal(objectInput);
                 this.numberFormat_.add(numFormat);
             }
-            int i2 = objectInput.readInt();
-            for (int i3 = 0; i3 < i2; i3++) {
+            int intlNumberFormatSize = objectInput.readInt();
+            for (int i2 = 0; i2 < intlNumberFormatSize; i2++) {
                 NumberFormat numFormat2 = new NumberFormat();
                 numFormat2.readExternal(objectInput);
                 this.intlNumberFormat_.add(numFormat2);

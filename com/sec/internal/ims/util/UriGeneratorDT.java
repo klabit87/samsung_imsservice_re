@@ -31,7 +31,7 @@ public class UriGeneratorDT extends UriGeneratorImpl {
         ImsUri uri;
         IMSLog.s(LOG_TAG, "getNetworkPreferredUri: mDomain " + this.mDomain);
         IMSLog.s(LOG_TAG, "getNetworkPreferredUri: mPhoneContext " + this.mPhoneContext);
-        if (isLocalNumber(number) && !DeviceUtil.getGcfMode()) {
+        if (isLocalNumber(number) && !DeviceUtil.getGcfMode().booleanValue()) {
             String plmn = null;
             if (this.mProfile != null && serviceType == UriGenerator.URIServiceType.VOLTE_URI && this.mRat == 13 && isRoaming() && "geo-local".equals(this.mProfile.getPolicyOnLocalNumbers())) {
                 plmn = this.mTelephonyManager.getNetworkOperator(this.mSubscriptionId);

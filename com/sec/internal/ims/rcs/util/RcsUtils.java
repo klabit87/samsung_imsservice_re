@@ -310,11 +310,4 @@ public class RcsUtils {
         tmp.retainAll(Arrays.asList(ImsProfile.getRcsServiceList()));
         return !tmp.isEmpty();
     }
-
-    public static boolean isSingleIncludedForTss() {
-        boolean isSingleIncluded = OmcCode.getPath().contains("single");
-        String str = LOG_TAG;
-        Log.i(str, "isSingleIncludedForTss " + isSingleIncluded);
-        return isSingleIncluded;
-    }
 }

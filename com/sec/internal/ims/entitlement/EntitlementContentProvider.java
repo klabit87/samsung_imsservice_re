@@ -16,6 +16,7 @@ import com.sec.internal.constants.ims.entitilement.NSDSNamespaces;
 import com.sec.internal.helper.SimUtil;
 import com.sec.internal.ims.core.sim.SimManagerFactory;
 import com.sec.internal.ims.entitlement.config.EntitlementConfigService;
+import com.sec.internal.ims.entitlement.storagehelper.DeviceIdHelper;
 import com.sec.internal.ims.entitlement.storagehelper.NSDSSharedPrefHelper;
 import com.sec.internal.ims.entitlement.util.NSDSConfigHelper;
 import com.sec.internal.ims.registry.ImsRegistry;
@@ -164,7 +165,7 @@ public class EntitlementContentProvider extends ContentProvider {
                 entitlementStatus = aecModule.isEntitlementDisabled(slotId) ? true : aecModule.getVoWiFiEntitlementStatus(slotId);
             }
         } else if ("Nsds".equalsIgnoreCase(entitlementServer)) {
-            entitlementStatus = NSDSSharedPrefHelper.getVoWiFiEntitlement(slotId);
+            entitlementStatus = NSDSSharedPrefHelper.getEntitlementCompleted(this.mContext, NSDSNamespaces.NSDSExtras.SERVICE_VOWIFI, DeviceIdHelper.getDeviceId(this.mContext, slotId));
         }
         String str = LOG_TAG;
         IMSLog.i(str, slotId, "getVoWiFiEntitlementStatus: " + entitlementStatus);

@@ -1371,7 +1371,7 @@ public class WorkflowVzwMvs extends WorkflowUpBase {
             WorkflowVzwMvs.this.mSharedInfo.addHttpParam(ConfigConstants.PNAME.RCS_PROFILE, "UP_1.0");
             WorkflowVzwMvs.this.mSharedInfo.addHttpParam(ConfigConstants.PNAME.CLIENT_VENDOR, ConfigConstants.PVALUE.CLIENT_VENDOR);
             SharedInfo sharedInfo = WorkflowVzwMvs.this.mSharedInfo;
-            sharedInfo.addHttpParam(ConfigConstants.PNAME.CLIENT_VERSION, ConfigConstants.PVALUE.CLIENT_VERSION_NAME + WorkflowVzwMvs.this.mClientVersion);
+            sharedInfo.addHttpParam(ConfigConstants.PNAME.CLIENT_VERSION, WorkflowVzwMvs.this.mClientPlatform + WorkflowVzwMvs.this.mClientVersion);
             SharedInfo sharedInfo2 = WorkflowVzwMvs.this.mSharedInfo;
             if (WorkflowVzwMvs.this.mIsDefaultSmsAppInuse) {
                 str = "1";

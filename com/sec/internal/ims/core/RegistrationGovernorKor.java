@@ -1294,7 +1294,7 @@ public class RegistrationGovernorKor extends RegistrationGovernorBase {
     }
 
     public void releaseThrottle(int releaseCase) {
-        if (releaseCase == 4 || releaseCase == 10 || ((this.mIsAkaChallengeTimeout && (releaseCase == 1 || releaseCase == 5)) || (needImsNotAvailable() && (releaseCase == 9 || releaseCase == 1)))) {
+        if (releaseCase == 4 || ((this.mIsAkaChallengeTimeout && (releaseCase == 1 || releaseCase == 5)) || (needImsNotAvailable() && (releaseCase == 9 || releaseCase == 1)))) {
             this.mIsPermanentStopped = false;
             resetIPSecAllow();
             this.mCurImpu = 0;
@@ -1305,15 +1305,6 @@ public class RegistrationGovernorKor extends RegistrationGovernorBase {
         if (!this.mIsPermanentStopped) {
             SimpleEventLog eventLog = this.mRegMan.getEventLog();
             eventLog.logAndAdd("releaseThrottle: case by " + releaseCase);
-        }
-    }
-
-    public void onPdnRequestFailed(String reason) {
-        super.onPdnRequestFailed(reason);
-        if ("DETACH_WITH_REATTACH_LTE_NW_DETACH".equals(reason)) {
-            this.mRegMan.getEventLog().logAndAdd("got DETACH_WITH_REATTACH_LTE_NW_DETACH, release throttle.");
-            releaseThrottle(10);
-            this.mIsReadyToGetReattach = false;
         }
     }
 
@@ -1796,7 +1787,6 @@ public class RegistrationGovernorKor extends RegistrationGovernorBase {
             Toast.makeText(this.mContext, this.mContext.getResources().getString(R.string.regi_failed_msg_skt), 1).show();
         } else if (this.mMno == Mno.KT) {
             Toast.makeText(this.mContext, this.mContext.getResources().getString(R.string.regi_failed_msg_kt), 1).show();
-            this.mIsReadyToGetReattach = true;
         } else if (this.mMno == Mno.LGU) {
             Toast.makeText(this.mContext, this.mContext.getResources().getString(R.string.regi_failed_msg_lgu, new Object[]{"1544-0010"}), 1).show();
         }

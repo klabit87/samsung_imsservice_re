@@ -526,7 +526,7 @@ public class ImsCallSessionEventHandler {
                     Log.e(access$1600, "KDDI : INVITE retry should happen after " + retryAfter + " seconds");
                     ImsCallSessionEventHandler.this.smCallStateMachine.setRetryInprogress(true);
                 }
-                if (callEvent != null && !DeviceUtil.getGcfMode()) {
+                if (callEvent != null && !DeviceUtil.getGcfMode().booleanValue()) {
                     handleErrorSetCodeReason(error, callEvent);
                 }
             }

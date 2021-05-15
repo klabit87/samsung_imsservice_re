@@ -186,7 +186,7 @@ public class ImRevocationHandler extends Handler {
             return;
         }
         ImDump imDump = this.mImModule.getImDump();
-        imDump.addEventLogs("onSendMessageRevokeRequestDone: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", imdnId=" + response.mImdnId);
+        imDump.addEventLogs("onSendMessageRevokeRequestDone: conversationId=" + session.getConversationId() + ", imdnId=" + response.mImdnId);
         int phoneId = this.mImModule.getPhoneIdByIMSI(session.getChatData().getOwnIMSI());
         if (this.mImModule.getImConfig(phoneId).isCfsTrigger()) {
             List<String> dumps = new ArrayList<>();
@@ -215,7 +215,7 @@ public class ImRevocationHandler extends Handler {
             return;
         }
         ImDump imDump = this.mImModule.getImDump();
-        imDump.addEventLogs("onMessageRevokeResponseReceived: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", imdnId=" + response.mImdnId + ", result=" + response.mResult);
+        imDump.addEventLogs("onMessageRevokeResponseReceived: conversationId=" + session.getConversationId() + ", imdnId=" + response.mImdnId + ", result=" + response.mResult);
         int phoneId = this.mImModule.getPhoneIdByIMSI(session.getChatData().getOwnIMSI());
         List<String> dumps = new ArrayList<>();
         String str2 = "1";
@@ -231,10 +231,6 @@ public class ImRevocationHandler extends Handler {
         dumps.add(str2);
         ImsUtil.listToDumpFormat(LogClass.IM_REVOKE_RES, phoneId, session.getChatId(), dumps);
         MessageBase message = this.mCache.getMessage(session.getNeedToRevokeMessages().get(response.mImdnId).intValue());
-        if (message == null) {
-            Log.e(LOG_TAG, "onSendMessageRevokeRequestDone(): message not found.");
-            return;
-        }
         session.stopMsgRevokeOperationTimer(message.getImdnId());
         Collection<MessageBase> messages = new ArrayList<>();
         messages.add(message);

@@ -100,9 +100,9 @@ public interface IImsFramework {
 
     void notifyImsReady(boolean z, int i);
 
-    void registerImsRegistrationListener(IImsRegistrationListener iImsRegistrationListener) throws RemoteException;
+    String registerImsRegistrationListener(IImsRegistrationListener iImsRegistrationListener, boolean z, int i);
 
-    void registerImsRegistrationListener(IImsRegistrationListener iImsRegistrationListener, boolean z, int i);
+    void registerImsRegistrationListener(IImsRegistrationListener iImsRegistrationListener) throws RemoteException;
 
     void sendDeregister(int i, int i2);
 

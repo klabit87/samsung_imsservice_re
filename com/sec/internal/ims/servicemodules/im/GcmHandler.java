@@ -14,7 +14,6 @@ import com.sec.internal.imscr.LogClass;
 import com.sec.internal.log.IMSLog;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,7 +37,7 @@ public class GcmHandler {
         String str = chatId;
         List<ImsUri> list = participants;
         String str2 = LOG_TAG;
-        Log.i(str2, "AddParticipants: chatId=" + str + " participants=" + IMSLog.numberChecker((Collection<ImsUri>) participants));
+        Log.i(str2, "AddParticipants: chatId=" + str + " participants=" + IMSLog.checker(participants));
         ImSession session = this.mCache.getImSession(str);
         if (session == null) {
             for (IChatEventListener listener : this.mImSessionProcessor.mChatEventListeners) {
@@ -119,7 +118,7 @@ public class GcmHandler {
     /* access modifiers changed from: protected */
     public void changeGroupChatLeader(String chatId, List<ImsUri> participants) {
         String str = LOG_TAG;
-        Log.i(str, "changeGroupChatLeader: chatId=" + chatId + " participants=" + IMSLog.numberChecker((Collection<ImsUri>) participants));
+        Log.i(str, "changeGroupChatLeader: chatId=" + chatId + " participants=" + IMSLog.checker(participants));
         ImSession session = this.mCache.getImSession(chatId);
         if (session == null) {
             for (IChatEventListener listener : this.mImSessionProcessor.mChatEventListeners) {
@@ -154,7 +153,7 @@ public class GcmHandler {
     public void removeParticipants(String chatId, List<ImsUri> participants) {
         ImParticipant p;
         String str = LOG_TAG;
-        Log.i(str, "removeParticipants: chatId=" + chatId + " participants=" + IMSLog.numberChecker((Collection<ImsUri>) participants));
+        Log.i(str, "removeParticipants: chatId=" + chatId + " participants=" + IMSLog.checker(participants));
         ImSession session = this.mCache.getImSession(chatId);
         if (session == null) {
             for (IChatEventListener listener : this.mImSessionProcessor.mChatEventListeners) {
@@ -219,7 +218,7 @@ public class GcmHandler {
                 }
             }
             String str = LOG_TAG;
-            Log.i(str, "added participants : " + IMSLog.numberChecker((Collection<ImsUri>) addedUris) + ", removed participants : " + IMSLog.numberChecker((Collection<ImsUri>) deletedUris));
+            Log.i(str, "added participants : " + IMSLog.checker(addedUris) + ", removed participants : " + IMSLog.checker(deletedUris));
             if (!deletedParticipants.isEmpty()) {
                 this.mCache.deleteParticipant(deletedParticipants);
                 session.deleteParticipant(deletedParticipants);

@@ -131,20 +131,20 @@ public class Name implements Comparable, Serializable {
                 throw new IllegalStateException("invalid label");
             }
         }
-        int i2 = length + alength;
-        if (i2 <= 255) {
+        int newlength = length + alength;
+        if (newlength <= 255) {
             int labels = getlabels();
             int newlabels = labels + n;
             if (newlabels <= 128) {
-                byte[] newname = new byte[i2];
+                byte[] newname = new byte[newlength];
                 if (length != 0) {
                     System.arraycopy(this.name, offset(0), newname, 0, length);
                 }
                 System.arraycopy(array, start, newname, length, alength);
                 this.name = newname;
                 int pos2 = length;
-                for (int i3 = 0; i3 < n; i3++) {
-                    setoffset(labels + i3, pos2);
+                for (int i2 = 0; i2 < n; i2++) {
+                    setoffset(labels + i2, pos2);
                     pos2 += newname[pos2] + 1;
                 }
                 setlabels(newlabels);

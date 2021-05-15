@@ -20,6 +20,7 @@ import com.sec.internal.constants.ims.config.ConfigConstants;
 import com.sec.internal.constants.ims.os.NetworkEvent;
 import com.sec.internal.helper.DmConfigHelper;
 import com.sec.internal.helper.SimUtil;
+import com.sec.internal.helper.SimpleEventLog;
 import com.sec.internal.helper.UriUtil;
 import com.sec.internal.helper.os.ImsGateConfig;
 import com.sec.internal.ims.core.handler.secims.imsCommonStruc.Id;
@@ -53,10 +54,12 @@ public class CapabilityUtil {
     private static final String LOG_TAG = "CapabilityUtil";
     static final int[] exponentialCapInfoExpiry = {Id.REQUEST_SIP_DIALOG_SEND_SIP, 3600, 7200, 14400, 28800};
     private CapabilityDiscoveryModule mCapabilityDiscovery;
+    private SimpleEventLog mEventLog;
     private IPresenceModule mPresenceModule = ImsRegistry.getServiceModuleManager().getPresenceModule();
 
-    CapabilityUtil(CapabilityDiscoveryModule capabilityDiscoveryModule) {
+    CapabilityUtil(CapabilityDiscoveryModule capabilityDiscoveryModule, SimpleEventLog eventLog) {
         this.mCapabilityDiscovery = capabilityDiscoveryModule;
+        this.mEventLog = eventLog;
     }
 
     /* access modifiers changed from: package-private */
@@ -341,14 +344,14 @@ public class CapabilityUtil {
         if (services.contains("lastseen")) {
             maskRcsServices |= Capabilities.FEATURE_LAST_SEEN_ACTIVE;
         }
-        if (services.contains("mmtel") && isServiceAvailable(networkType)) {
+        if (services.contains("mmtel") && isMmtelServiceAvailable(networkType)) {
             maskRcsServices |= (long) (Capabilities.FEATURE_MMTEL | Capabilities.FEATURE_IPCALL);
         }
         ISimManager sm = SimManagerFactory.getSimManager();
-        if (services.contains("mmtel-video") && (sm.getSimMno().isKor() || isServiceAvailable(networkType))) {
+        if (services.contains("mmtel-video") && (sm.getSimMno().isKor() || isMmtelServiceAvailable(networkType))) {
             maskRcsServices |= (long) (Capabilities.FEATURE_MMTEL_VIDEO | Capabilities.FEATURE_IPCALL_VIDEO | Capabilities.FEATURE_IPCALL_VIDEO_ONLY);
         }
-        if (!isServiceAvailable(networkType) || !services.contains("mmtel") || !services.contains("mmtel-call-composer")) {
+        if (!isMmtelServiceAvailable(networkType) || !services.contains("mmtel") || !services.contains("mmtel-call-composer")) {
             return maskRcsServices;
         }
         return maskRcsServices | Capabilities.FEATURE_MMTEL_CALL_COMPOSER;
@@ -422,7 +425,8 @@ public class CapabilityUtil {
         return filteredServices;
     }
 
-    private boolean isServiceAvailable(int networkType) {
+    /* access modifiers changed from: package-private */
+    public boolean isMmtelServiceAvailable(int networkType) {
         ISimManager sm = SimManagerFactory.getSimManager();
         Mno mno = sm.getSimMno();
         if (mno == Mno.ATT) {
@@ -536,25 +540,27 @@ public class CapabilityUtil {
             IMSLog.s(LOG_TAG, phoneId, "onNetworkChanged: mAvailablePhoneId = ! phoneId");
             return;
         }
-        int networkclass = TelephonyManagerExt.getNetworkClass(event.network);
-        boolean doUpdate = true;
         if (event.network == 0 && !event.isWifiConnected) {
             return;
         }
         if (mNetworkEvent == null || mNetworkEvent.network != event.network) {
-            if (mNetworkClass == networkclass) {
-                doUpdate = false;
-            }
             if (!event.isWifiConnected || (SimUtil.getSimMno(phoneId).isRjil() && event.network != 0)) {
                 this.mCapabilityDiscovery.setNetworkType(event.network);
             } else {
                 this.mCapabilityDiscovery.setNetworkType(18);
             }
             this.mCapabilityDiscovery.setNetworkEvent(event);
-            this.mCapabilityDiscovery.setNetworkClass(networkclass);
+            this.mCapabilityDiscovery.setNetworkClass(TelephonyManagerExt.getNetworkClass(event.network));
             Mno mno = SimUtil.getSimMno(phoneId);
-            if (mno == Mno.ATT && doUpdate) {
-                this.mCapabilityDiscovery.setOwnCapabilities(phoneId, true);
+            if (mno == Mno.ATT) {
+                if (mImsRegInfoList.containsKey(Integer.valueOf(phoneId)) && mNetworkEvent != null && isMmtelServiceAvailable(mNetworkEvent.network) != isMmtelServiceAvailable(event.network)) {
+                    if (mNetworkEvent.isWifiConnected || !event.isWifiConnected || event.isEpdgConnected) {
+                        this.mEventLog.logAndAdd("onNetworkChanged: update capability");
+                        this.mCapabilityDiscovery.setOwnCapabilities(phoneId, true);
+                        return;
+                    }
+                    IMSLog.i(LOG_TAG, phoneId, "onNetworkChanged: wifi connected, but epdg is not yet");
+                }
             } else if (ConfigUtil.isRcsEur(mno)) {
                 Log.i(LOG_TAG, "onNetworkChanged: setOwnCapabilities(false) is called");
                 if (RcsUtils.DualRcs.isDualRcsReg()) {
@@ -612,23 +618,19 @@ public class CapabilityUtil {
 
     /* access modifiers changed from: package-private */
     public void onServiceSwitched(int phoneId, ContentValues switchStatus, Map<Integer, Boolean> mPresenceSwitchOnList, Map<Integer, Boolean> mOptionsSwitchOnList, boolean mCapabilityModuleOn) {
-        IMSLog.d(LOG_TAG, phoneId, "onServiceSwitched: ");
+        IMSLog.i(LOG_TAG, phoneId, "onServiceSwitched: ");
+        boolean isPresenceOn = ((Integer) switchStatus.get("presence")).intValue() == 1;
+        boolean isOptionsOn = ((Integer) switchStatus.get("options")).intValue() == 1;
         boolean isChanged = false;
-        boolean isPresenceOn = false;
-        boolean isOptionsOn = false;
-        if (switchStatus != null) {
-            isPresenceOn = ((Integer) switchStatus.get("presence")).intValue() == 1;
-            isOptionsOn = ((Integer) switchStatus.get("options")).intValue() == 1;
-        }
         if (mPresenceSwitchOnList.get(Integer.valueOf(phoneId)).booleanValue() != isPresenceOn) {
             this.mCapabilityDiscovery.setPresenceSwitch(phoneId, isPresenceOn);
             isChanged = true;
-            IMSLog.d(LOG_TAG, phoneId, "onServiceSwitched: presence changed: " + isPresenceOn);
+            IMSLog.i(LOG_TAG, phoneId, "onServiceSwitched: presence changed: " + isPresenceOn);
         }
         if (mOptionsSwitchOnList.get(Integer.valueOf(phoneId)).booleanValue() != isOptionsOn) {
             this.mCapabilityDiscovery.settOptionsSwitch(phoneId, isOptionsOn);
             isChanged = true;
-            IMSLog.d(LOG_TAG, phoneId, "onServiceSwitched: options changed: " + isOptionsOn);
+            IMSLog.i(LOG_TAG, phoneId, "onServiceSwitched: options changed: " + isOptionsOn);
         }
         if (!isChanged) {
             return;
@@ -645,7 +647,7 @@ public class CapabilityUtil {
     /* access modifiers changed from: package-private */
     public void onUserSwitched() {
         int userId = Extensions.ActivityManager.getCurrentUser();
-        Log.d(LOG_TAG, "onUserSwitched: userId = " + userId);
+        Log.i(LOG_TAG, "onUserSwitched: userId = " + userId);
         for (Integer phoneId : this.mCapabilityDiscovery.getUrisToRequest().keySet()) {
             List<ImsUri> urisToRequest = this.mCapabilityDiscovery.getUrisToRequest().get(phoneId);
             synchronized (urisToRequest) {
@@ -657,7 +659,7 @@ public class CapabilityUtil {
         if (capabilityDiscoveryModule.getCapabilityConfig(capabilityDiscoveryModule.getDefaultPhoneId()) != null) {
             CapabilityDiscoveryModule capabilityDiscoveryModule2 = this.mCapabilityDiscovery;
             if (!capabilityDiscoveryModule2.getCapabilityConfig(capabilityDiscoveryModule2.getDefaultPhoneId()).isDisableInitialScan()) {
-                Log.d(LOG_TAG, "onUserSwitched: start ContactCache");
+                Log.i(LOG_TAG, "onUserSwitched: start ContactCache");
                 this.mCapabilityDiscovery.getPhonebook().stop();
                 this.mCapabilityDiscovery.getPhonebook().start();
                 this.mCapabilityDiscovery.getPhonebook().sendMessageContactSync();
@@ -667,7 +669,7 @@ public class CapabilityUtil {
 
     /* access modifiers changed from: package-private */
     public long getRandomizedDelayForPeriodicPolling(int phoneId, long delay) {
-        IMSLog.d(LOG_TAG, phoneId, "getRandomizedDelayForPeriodicPolling: delay: " + (1000 * delay));
+        IMSLog.i(LOG_TAG, phoneId, "getRandomizedDelayForPeriodicPolling: delay: " + (1000 * delay));
         return (long) (((0.2d * Math.random()) + 0.9d) * ((double) delay));
     }
 }

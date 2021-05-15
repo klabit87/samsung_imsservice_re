@@ -213,8 +213,8 @@ public class ConfigContract {
         PATH_TABLE.putAll(getPathTable(ConfigConstants.ConfigPath.MESSAGESTORE_CHARACTERISTIC_PATH, ConfigConstants.ConfigTable.MESSAGESTORE_MSG_STORE_USER_PWD));
         PATH_TABLE.putAll(getPathTable(ConfigConstants.ConfigPath.PLUGINS_CHARACTERISTIC_PATH, ConfigConstants.ConfigTable.PLUGINS_CATALOGURI));
         PATH_TABLE.putAll(getPathTable(ConfigConstants.ConfigPath.SERVICEPROVIDEREXT_CHARACTERISTIC_PATH, ConfigConstants.ConfigTable.SERVICEPROVIDEREXT_FTHTTPGROUPCHAT));
-        PATH_TABLE.putAll(getPathTable(ConfigConstants.ConfigPath.SERVICEPROVIDEREXT_CHARACTERISTIC_PATH, ConfigConstants.ConfigTable.SERVICEPROVIDEREXT_CHATBOT_USER_NAME));
-        PATH_TABLE.putAll(getPathTable(ConfigConstants.ConfigPath.SERVICEPROVIDEREXT_CHARACTERISTIC_PATH, ConfigConstants.ConfigTable.SERVICEPROVIDEREXT_CHATBOT_PASSWORD));
+        PATH_TABLE.putAll(getPathTable(ConfigConstants.ConfigPath.SERVICEPROVIDEREXT_CHATBOT_PATH, ConfigConstants.ConfigTable.SERVICEPROVIDEREXT_CHATBOT_USER_NAME));
+        PATH_TABLE.putAll(getPathTable(ConfigConstants.ConfigPath.SERVICEPROVIDEREXT_CHATBOT_PATH, ConfigConstants.ConfigTable.SERVICEPROVIDEREXT_CHATBOT_PASSWORD));
         PATH_TABLE.putAll(getPathTable(ConfigConstants.ConfigPath.SERVICE_PATH, ConfigConstants.ConfigTable.SERVICES_RCS_STATE));
         PATH_TABLE.putAll(getPathTable(ConfigConstants.ConfigPath.SERVICE_PATH, ConfigConstants.ConfigTable.SERVICES_RCS_DISABLED_STATE));
         PATH_TABLE.putAll(getPathTable(ConfigConstants.ConfigPath.SERVICE_PROVIDER_EXT_PATH, ConfigConstants.ConfigTable.SPG_URL));

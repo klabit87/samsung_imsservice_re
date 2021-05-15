@@ -871,7 +871,7 @@ class NetworkEventController {
             IMSLog.i(LOG_TAG, i, "onNetworkEventChanged: WiFi has turned off. release throttle.");
             task.getGovernor().releaseThrottle(2);
         }
-        if (!(networkEvent.voiceOverPs != VoPsIndication.NOT_SUPPORTED || task.getState() != RegistrationConstants.RegisterTaskState.CONNECTING || task.getPdnType() != 11 || networkEvent.network == 18 || task.getMno() == Mno.ATT || task.getMno() == Mno.VZW || task.getMno() == Mno.TRUEMOVE || task.getMno() == Mno.AIS || task.getMno() == Mno.SPRINT || task.getMno().isKor())) {
+        if (!(networkEvent.voiceOverPs != VoPsIndication.NOT_SUPPORTED || task.getState() != RegistrationConstants.RegisterTaskState.CONNECTING || task.getPdnType() != 11 || task.getRegistrationRat() == 18 || task.getMno() == Mno.ATT || task.getMno() == Mno.VZW || task.getMno() == Mno.TRUEMOVE || task.getMno() == Mno.AIS || task.getMno() == Mno.SPRINT || task.getMno().isKor())) {
             this.mRegMan.stopPdnConnectivity(task.getPdnType(), registerTask);
             registerTask.setState(RegistrationConstants.RegisterTaskState.IDLE);
         }
@@ -972,8 +972,8 @@ class NetworkEventController {
         }
     }
 
-    /* JADX WARNING: Code restructure failed: missing block: B:51:0x017a, code lost:
-        if (r8.isOneOf(com.sec.internal.constants.ims.core.RegistrationConstants.RegisterTaskState.CONFIGURING, com.sec.internal.constants.ims.core.RegistrationConstants.RegisterTaskState.CONFIGURED) != false) goto L_0x017c;
+    /* JADX WARNING: Code restructure failed: missing block: B:51:0x0178, code lost:
+        if (r8.isOneOf(com.sec.internal.constants.ims.core.RegistrationConstants.RegisterTaskState.CONFIGURING, com.sec.internal.constants.ims.core.RegistrationConstants.RegisterTaskState.CONFIGURED) != false) goto L_0x017a;
      */
     /* Code decompiled incorrectly, please refer to instructions dump. */
     private void handleNetworkEvent(int r7, com.sec.internal.ims.core.RegisterTask r8, com.sec.internal.constants.ims.os.NetworkEvent r9, com.sec.internal.constants.ims.os.NetworkEvent r10, boolean r11, boolean r12) {
@@ -981,18 +981,18 @@ class NetworkEventController {
             r6 = this;
             com.sec.internal.constants.Mno r0 = r8.getMno()
             boolean r0 = r0.isKor()
-            if (r0 == 0) goto L_0x0196
+            if (r0 == 0) goto L_0x0192
             boolean r0 = r8.isRcsOnly()
             java.lang.String r1 = "RegiMgr-NetEvtCtr"
             r2 = 2
             r3 = 0
             r4 = 1
-            if (r0 != 0) goto L_0x0079
+            if (r0 != 0) goto L_0x0078
             boolean r0 = r9.isDataRoaming
-            if (r0 == 0) goto L_0x0079
+            if (r0 == 0) goto L_0x0078
             com.sec.internal.interfaces.ims.core.IRegistrationGovernor r0 = r8.getGovernor()
             boolean r0 = r0.allowRoaming()
-            if (r0 == 0) goto L_0x0079
+            if (r0 == 0) goto L_0x0078
             int r0 = r9.network
             r5 = 13
             if (r0 == r5) goto L_0x002f
@@ -1004,7 +1004,7 @@ class NetworkEventController {
             com.sec.internal.constants.ims.os.VoPsIndication r5 = com.sec.internal.constants.ims.os.VoPsIndication.SUPPORTED
             if (r0 != r5) goto L_0x0039
             boolean r0 = r9.outOfService
-            if (r0 == 0) goto L_0x0079
+            if (r0 == 0) goto L_0x0078
         L_0x0039:
             java.lang.String r0 = "device moved into VoLTE roaming disabled condition, stop PDN request and set state to IDLE"
             com.sec.internal.log.IMSLog.i(r1, r7, r0)
@@ -1019,12 +1019,12 @@ class NetworkEventController {
             com.sec.internal.constants.ims.core.RegistrationConstants$RegisterTaskState r5 = com.sec.internal.constants.ims.core.RegistrationConstants.RegisterTaskState.REGISTERED
             r0[r4] = r5
             boolean r0 = r8.isOneOf(r0)
-            if (r0 == 0) goto L_0x0064
+            if (r0 == 0) goto L_0x0063
             java.lang.String r0 = "onNetworkEventChanged: REGISTERED or REGISTERING"
             r8.setReason(r0)
             com.sec.internal.ims.core.RegistrationManagerBase r0 = r6.mRegMan
             r0.tryDeregisterInternal(r8, r3, r3)
-        L_0x0064:
+        L_0x0063:
             com.sec.internal.ims.core.RegistrationManagerBase r0 = r6.mRegMan
             int r5 = r8.getPdnType()
             r0.stopPdnConnectivity(r5, r8)
@@ -1032,28 +1032,28 @@ class NetworkEventController {
             r8.setState(r0)
             com.sec.internal.interfaces.ims.core.IRegistrationGovernor r0 = r8.getGovernor()
             r0.resetAllRetryFlow()
-        L_0x0079:
+        L_0x0078:
             com.sec.internal.interfaces.ims.core.IRegistrationGovernor r0 = r8.getGovernor()
             boolean r0 = r0.isThrottled()
-            if (r0 == 0) goto L_0x00a8
+            if (r0 == 0) goto L_0x00a7
             com.sec.internal.interfaces.ims.core.IRegistrationGovernor r0 = r8.getGovernor()
             boolean r0 = r0.needImsNotAvailable()
-            if (r0 == 0) goto L_0x00a8
+            if (r0 == 0) goto L_0x00a7
             java.lang.String r0 = r10.operatorNumeric
             java.lang.String r5 = r9.operatorNumeric
             boolean r0 = android.text.TextUtils.equals(r0, r5)
-            if (r0 == 0) goto L_0x009f
+            if (r0 == 0) goto L_0x009e
             com.sec.internal.ims.core.PdnController r0 = r6.mPdnController
             boolean r0 = r0.isEpsOnlyReg(r7)
-            if (r0 == 0) goto L_0x00a8
-        L_0x009f:
+            if (r0 == 0) goto L_0x00a7
+        L_0x009e:
             com.sec.internal.interfaces.ims.core.IRegistrationGovernor r0 = r8.getGovernor()
             r5 = 9
             r0.releaseThrottle(r5)
-        L_0x00a8:
+        L_0x00a7:
             com.sec.internal.interfaces.ims.core.IRegistrationGovernor r0 = r8.getGovernor()
             boolean r0 = r0.isMobilePreferredForRcs()
-            if (r0 == 0) goto L_0x017f
+            if (r0 == 0) goto L_0x017d
             java.lang.StringBuilder r0 = new java.lang.StringBuilder
             r0.<init>()
             java.lang.String r5 = "onNetworkEventChanged: event.isDataStateConnected: "
@@ -1099,62 +1099,62 @@ class NetworkEventController {
             java.lang.String r0 = r0.toString()
             com.sec.internal.log.IMSLog.i(r1, r7, r0)
             boolean r0 = r9.isDataStateConnected
-            if (r0 == 0) goto L_0x0136
+            if (r0 == 0) goto L_0x0134
             boolean r0 = r10.isDataStateConnected
-            if (r0 == 0) goto L_0x013e
-        L_0x0136:
+            if (r0 == 0) goto L_0x013c
+        L_0x0134:
             boolean r0 = r9.outOfService
-            if (r0 == 0) goto L_0x017f
+            if (r0 == 0) goto L_0x017d
             boolean r0 = r10.outOfService
-            if (r0 != 0) goto L_0x017f
-        L_0x013e:
+            if (r0 != 0) goto L_0x017d
+        L_0x013c:
             com.sec.internal.ims.core.PdnController r0 = r6.mPdnController
             boolean r0 = r0.isWifiConnected()
-            if (r0 == 0) goto L_0x017f
+            if (r0 == 0) goto L_0x017d
             int r0 = r8.getPdnType()
-            if (r0 != r4) goto L_0x017f
+            if (r0 != r4) goto L_0x017d
             com.sec.internal.constants.ims.core.RegistrationConstants$RegisterTaskState[] r0 = new com.sec.internal.constants.ims.core.RegistrationConstants.RegisterTaskState[r2]
             com.sec.internal.constants.ims.core.RegistrationConstants$RegisterTaskState r5 = com.sec.internal.constants.ims.core.RegistrationConstants.RegisterTaskState.REGISTERING
             r0[r3] = r5
             com.sec.internal.constants.ims.core.RegistrationConstants$RegisterTaskState r5 = com.sec.internal.constants.ims.core.RegistrationConstants.RegisterTaskState.REGISTERED
             r0[r4] = r5
             boolean r0 = r8.isOneOf(r0)
-            if (r0 != 0) goto L_0x017c
+            if (r0 != 0) goto L_0x017a
             com.sec.internal.constants.ims.core.RegistrationConstants$RegisterTaskState[] r0 = new com.sec.internal.constants.ims.core.RegistrationConstants.RegisterTaskState[r2]
             com.sec.internal.constants.ims.core.RegistrationConstants$RegisterTaskState r5 = com.sec.internal.constants.ims.core.RegistrationConstants.RegisterTaskState.RESOLVING
             r0[r3] = r5
             com.sec.internal.constants.ims.core.RegistrationConstants$RegisterTaskState r5 = com.sec.internal.constants.ims.core.RegistrationConstants.RegisterTaskState.RESOLVED
             r0[r4] = r5
             boolean r0 = r8.isOneOf(r0)
-            if (r0 != 0) goto L_0x017c
+            if (r0 != 0) goto L_0x017a
             com.sec.internal.constants.ims.core.RegistrationConstants$RegisterTaskState[] r0 = new com.sec.internal.constants.ims.core.RegistrationConstants.RegisterTaskState[r2]
             com.sec.internal.constants.ims.core.RegistrationConstants$RegisterTaskState r2 = com.sec.internal.constants.ims.core.RegistrationConstants.RegisterTaskState.CONFIGURING
             r0[r3] = r2
             com.sec.internal.constants.ims.core.RegistrationConstants$RegisterTaskState r2 = com.sec.internal.constants.ims.core.RegistrationConstants.RegisterTaskState.CONFIGURED
             r0[r4] = r2
             boolean r0 = r8.isOneOf(r0)
-            if (r0 == 0) goto L_0x017f
-        L_0x017c:
+            if (r0 == 0) goto L_0x017d
+        L_0x017a:
             r6.isPreferredPdnForRCSRegister(r8, r7, r4)
-        L_0x017f:
-            if (r11 != 0) goto L_0x0190
-            if (r12 == 0) goto L_0x0184
-            goto L_0x0190
-        L_0x0184:
+        L_0x017d:
+            if (r11 != 0) goto L_0x018d
+            if (r12 == 0) goto L_0x0182
+            goto L_0x018d
+        L_0x0182:
             java.lang.String r0 = "onNetworkEventChanged: sendTryRegister"
             com.sec.internal.log.IMSLog.i(r1, r7, r0)
             com.sec.internal.ims.core.RegistrationManagerHandler r0 = r6.mRegHandler
             r0.sendTryRegister(r7)
-            goto L_0x0196
-        L_0x0190:
+            goto L_0x0192
+        L_0x018d:
             java.lang.String r0 = "onNetworkEventChanged: do not call sendTryRegister"
             com.sec.internal.log.IMSLog.i(r1, r7, r0)
-        L_0x0196:
+        L_0x0192:
             com.sec.internal.constants.ims.os.NetworkEvent$VopsState r0 = r9.isVopsUpdated(r10)
             com.sec.internal.constants.ims.os.NetworkEvent$VopsState r1 = com.sec.internal.constants.ims.os.NetworkEvent.VopsState.DISABLED
-            if (r0 != r1) goto L_0x01a1
-            r6.handleVopsDisabledOnNetworkEventChanged(r8, r9, r7)
-        L_0x01a1:
+            if (r0 != r1) goto L_0x019d
+            r6.handleVopsDisabledOnNetworkEventChanged(r8, r7)
+        L_0x019d:
             return
         */
         throw new UnsupportedOperationException("Method not decompiled: com.sec.internal.ims.core.NetworkEventController.handleNetworkEvent(int, com.sec.internal.ims.core.RegisterTask, com.sec.internal.constants.ims.os.NetworkEvent, com.sec.internal.constants.ims.os.NetworkEvent, boolean, boolean):void");
@@ -1173,7 +1173,7 @@ class NetworkEventController {
                     return true;
                 }
             }
-            if (mno.isOneOf(Mno.TELE2NL, Mno.VODAFONE_UK, Mno.VODAFONE_IRELAND, Mno.VODAFONE_ROMANIA, Mno.VODAFONE_ALBANIA, Mno.STC_KSA, Mno.VIRGIN) && event.isDataRoaming && !task.getGovernor().allowRoaming()) {
+            if (mno.isOneOf(Mno.TELE2NL, Mno.VODAFONE_UK, Mno.VODAFONE_IRELAND, Mno.VODAFONE_ROMANIA, Mno.VODAFONE_ALBANIA, Mno.STC_KSA, Mno.VIRGIN, Mno.TELEFONICA_CZ) && event.isDataRoaming && !task.getGovernor().allowRoaming()) {
                 Log.i(LOG_TAG, "onNetworkChanged: VoWiFi Roaming not support");
                 this.mRegMan.tryDeregisterInternal(task, false, false);
                 this.mRegMan.stopPdnConnectivity(task.getPdnType(), task);
@@ -1219,7 +1219,7 @@ class NetworkEventController {
         }
     }
 
-    private void handleVopsDisabledOnNetworkEventChanged(RegisterTask task, NetworkEvent event, int phoneId) {
+    private void handleVopsDisabledOnNetworkEventChanged(RegisterTask task, int phoneId) {
         if (task.getMno() == Mno.VZW) {
             task.getGovernor().stopTimsTimer(RegistrationConstants.REASON_VOPS_CHANGED);
             this.mRegHandler.removeMessages(132);
@@ -1232,15 +1232,12 @@ class NetworkEventController {
             if (task.getMno() == Mno.KDDI && this.mTelephonyManager.isNetworkRoaming()) {
                 this.mRegMan.notifyImsNotAvailable(task, true);
             }
-        } else if (task.getMno().isChn() && !this.mRegMan.getCsfbSupported(phoneId)) {
-            task.getGovernor().stopTimsTimer(RegistrationConstants.REASON_VOPS_CHANGED);
-            this.mRegHandler.removeMessages(132);
-            if (!task.getMno().isOneOf(Mno.CTC, Mno.CTCMO)) {
-                if (!task.getMno().isOneOf(Mno.CMCC, Mno.CU) || event.network != 20) {
-                    return;
-                }
+        } else {
+            if (task.getMno().isOneOf(Mno.CTC, Mno.CTCMO) && !this.mRegMan.getCsfbSupported(phoneId)) {
+                task.getGovernor().stopTimsTimer(RegistrationConstants.REASON_VOPS_CHANGED);
+                this.mRegHandler.removeMessages(132);
+                this.mRegMan.notifyImsNotAvailable(task, true);
             }
-            this.mRegMan.notifyImsNotAvailable(task, true);
         }
     }
 

@@ -669,7 +669,7 @@ public class GsmSmsUtil {
             } else {
                 return sca;
             }
-        } else if (!DeviceUtil.getGcfMode()) {
+        } else if (!DeviceUtil.getGcfMode().booleanValue()) {
             return sca;
         } else {
             if (regInfo != null) {

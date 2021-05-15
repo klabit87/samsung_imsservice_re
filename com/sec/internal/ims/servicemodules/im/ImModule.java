@@ -1007,7 +1007,7 @@ public class ImModule extends ServiceModuleBase implements IImModule, IGetter, I
         IServiceAvailabilityEventListener iServiceAvailabilityEventListener;
         if (ownIdentity == null || remoteUri == null || timestamp == null || (iServiceAvailabilityEventListener = this.mServiceAvailabilityEventListener) == null) {
             String str = LOG_TAG;
-            Log.i(str, "Service availability cannot be updated, ownIdentity = " + IMSLog.checker(ownIdentity) + ", remoteUri = " + IMSLog.numberChecker(remoteUri) + ", timestamp = " + timestamp + ", mServiceAvailabilityEventListener = " + this.mServiceAvailabilityEventListener);
+            Log.i(str, "Service availability cannot be updated, ownIdentity = " + IMSLog.checker(ownIdentity) + ", remoteUri = " + IMSLog.checker(remoteUri) + ", timestamp = " + timestamp + ", mServiceAvailabilityEventListener = " + this.mServiceAvailabilityEventListener);
             return;
         }
         iServiceAvailabilityEventListener.onServiceAvailabilityUpdate(ownIdentity, remoteUri, timestamp);

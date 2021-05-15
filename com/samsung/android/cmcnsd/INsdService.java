@@ -5,36 +5,11 @@ import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
+import com.samsung.android.cmcnsd.INsdNetworkCallback;
 import com.samsung.android.cmcnsd.network.NsdNetworkCapabilities;
 import com.samsung.android.cmcnsd.network.NsdNetworkMessage;
 
 public interface INsdService extends IInterface {
-
-    public static class Default implements INsdService {
-        public boolean acquireNetwork(int i, NsdNetworkCapabilities nsdNetworkCapabilities) throws RemoteException {
-            return false;
-        }
-
-        public IBinder asBinder() {
-            return null;
-        }
-
-        public boolean registerNetworkCallback(int i, INsdNetworkCallback iNsdNetworkCallback) throws RemoteException {
-            return false;
-        }
-
-        public void releaseNetwork(int i) throws RemoteException {
-        }
-
-        public boolean sendNetworkMessage(int i, String str, NsdNetworkCapabilities nsdNetworkCapabilities, NsdNetworkMessage nsdNetworkMessage) throws RemoteException {
-            return false;
-        }
-
-        public boolean unregisterNetworkCallback(INsdNetworkCallback iNsdNetworkCallback) throws RemoteException {
-            return false;
-        }
-    }
-
     boolean acquireNetwork(int i, NsdNetworkCapabilities nsdNetworkCapabilities) throws RemoteException;
 
     boolean registerNetworkCallback(int i, INsdNetworkCallback iNsdNetworkCallback) throws RemoteException;
@@ -45,282 +20,272 @@ public interface INsdService extends IInterface {
 
     boolean unregisterNetworkCallback(INsdNetworkCallback iNsdNetworkCallback) throws RemoteException;
 
-    public static abstract class Stub extends Binder implements INsdService {
-        public static final String DESCRIPTOR = "com.samsung.android.cmcnsd.INsdService";
-        public static final int TRANSACTION_acquireNetwork = 3;
-        public static final int TRANSACTION_registerNetworkCallback = 1;
-        public static final int TRANSACTION_releaseNetwork = 4;
-        public static final int TRANSACTION_sendNetworkMessage = 5;
-        public static final int TRANSACTION_unregisterNetworkCallback = 2;
+    public static class Default implements INsdService {
+        public boolean registerNetworkCallback(int hashCode, INsdNetworkCallback callback) throws RemoteException {
+            return false;
+        }
+
+        public boolean unregisterNetworkCallback(INsdNetworkCallback callback) throws RemoteException {
+            return false;
+        }
+
+        public boolean acquireNetwork(int hashCode, NsdNetworkCapabilities capabilities) throws RemoteException {
+            return false;
+        }
+
+        public void releaseNetwork(int hashCode) throws RemoteException {
+        }
+
+        public boolean sendNetworkMessage(int hashCode, String deviceId, NsdNetworkCapabilities capabilities, NsdNetworkMessage message) throws RemoteException {
+            return false;
+        }
 
         public IBinder asBinder() {
-            return this;
+            return null;
         }
+    }
+
+    public static abstract class Stub extends Binder implements INsdService {
+        private static final String DESCRIPTOR = "com.samsung.android.cmcnsd.INsdService";
+        static final int TRANSACTION_acquireNetwork = 3;
+        static final int TRANSACTION_registerNetworkCallback = 1;
+        static final int TRANSACTION_releaseNetwork = 4;
+        static final int TRANSACTION_sendNetworkMessage = 5;
+        static final int TRANSACTION_unregisterNetworkCallback = 2;
 
         public Stub() {
             attachInterface(this, DESCRIPTOR);
         }
 
-        public static INsdService asInterface(IBinder iBinder) {
-            if (iBinder == null) {
+        public static INsdService asInterface(IBinder obj) {
+            if (obj == null) {
                 return null;
             }
-            IInterface queryLocalInterface = iBinder.queryLocalInterface(DESCRIPTOR);
-            if (queryLocalInterface == null || !(queryLocalInterface instanceof INsdService)) {
-                return new Proxy(iBinder);
+            IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
+            if (iin == null || !(iin instanceof INsdService)) {
+                return new Proxy(obj);
             }
-            return (INsdService) queryLocalInterface;
+            return (INsdService) iin;
         }
 
-        /* JADX DEBUG: Multi-variable search result rejected for TypeSearchVarInfo{r3v1, resolved type: com.samsung.android.cmcnsd.network.NsdNetworkCapabilities} */
-        /* JADX DEBUG: Multi-variable search result rejected for TypeSearchVarInfo{r3v4, resolved type: com.samsung.android.cmcnsd.network.NsdNetworkMessage} */
-        /* JADX WARNING: type inference failed for: r3v0 */
-        /* JADX WARNING: type inference failed for: r3v7 */
-        /* JADX WARNING: type inference failed for: r3v8 */
-        /* JADX WARNING: Multi-variable type inference failed */
-        /* Code decompiled incorrectly, please refer to instructions dump. */
-        public boolean onTransact(int r5, android.os.Parcel r6, android.os.Parcel r7, int r8) throws android.os.RemoteException {
-            /*
-                r4 = this;
-                r0 = 1
-                java.lang.String r1 = "com.samsung.android.cmcnsd.INsdService"
-                r2 = 1598968902(0x5f4e5446, float:1.4867585E19)
-                if (r5 == r2) goto L_0x00b4
-                if (r5 == r0) goto L_0x009a
-                r2 = 2
-                if (r5 == r2) goto L_0x0084
-                r2 = 3
-                r3 = 0
-                if (r5 == r2) goto L_0x0061
-                r2 = 4
-                if (r5 == r2) goto L_0x0053
-                r2 = 5
-                if (r5 == r2) goto L_0x001c
-                boolean r5 = super.onTransact(r5, r6, r7, r8)
-                return r5
-            L_0x001c:
-                r6.enforceInterface(r1)
-                int r5 = r6.readInt()
-                java.lang.String r8 = r6.readString()
-                int r1 = r6.readInt()
-                if (r1 == 0) goto L_0x0036
-                android.os.Parcelable$Creator<com.samsung.android.cmcnsd.network.NsdNetworkCapabilities> r1 = com.samsung.android.cmcnsd.network.NsdNetworkCapabilities.CREATOR
-                java.lang.Object r1 = r1.createFromParcel(r6)
-                com.samsung.android.cmcnsd.network.NsdNetworkCapabilities r1 = (com.samsung.android.cmcnsd.network.NsdNetworkCapabilities) r1
-                goto L_0x0037
-            L_0x0036:
-                r1 = r3
-            L_0x0037:
-                int r2 = r6.readInt()
-                if (r2 == 0) goto L_0x0047
-                android.os.Parcelable$Creator<com.samsung.android.cmcnsd.network.NsdNetworkMessage> r2 = com.samsung.android.cmcnsd.network.NsdNetworkMessage.CREATOR
-                java.lang.Object r6 = r2.createFromParcel(r6)
-                r3 = r6
-                com.samsung.android.cmcnsd.network.NsdNetworkMessage r3 = (com.samsung.android.cmcnsd.network.NsdNetworkMessage) r3
-                goto L_0x0048
-            L_0x0047:
-            L_0x0048:
-                boolean r5 = r4.sendNetworkMessage(r5, r8, r1, r3)
-                r7.writeNoException()
-                r7.writeInt(r5)
-                return r0
-            L_0x0053:
-                r6.enforceInterface(r1)
-                int r5 = r6.readInt()
-                r4.releaseNetwork(r5)
-                r7.writeNoException()
-                return r0
-            L_0x0061:
-                r6.enforceInterface(r1)
-                int r5 = r6.readInt()
-                int r8 = r6.readInt()
-                if (r8 == 0) goto L_0x0078
-                android.os.Parcelable$Creator<com.samsung.android.cmcnsd.network.NsdNetworkCapabilities> r8 = com.samsung.android.cmcnsd.network.NsdNetworkCapabilities.CREATOR
-                java.lang.Object r6 = r8.createFromParcel(r6)
-                r3 = r6
-                com.samsung.android.cmcnsd.network.NsdNetworkCapabilities r3 = (com.samsung.android.cmcnsd.network.NsdNetworkCapabilities) r3
-                goto L_0x0079
-            L_0x0078:
-            L_0x0079:
-                boolean r5 = r4.acquireNetwork(r5, r3)
-                r7.writeNoException()
-                r7.writeInt(r5)
-                return r0
-            L_0x0084:
-                r6.enforceInterface(r1)
-                android.os.IBinder r5 = r6.readStrongBinder()
-                com.samsung.android.cmcnsd.INsdNetworkCallback r5 = com.samsung.android.cmcnsd.INsdNetworkCallback.Stub.asInterface(r5)
-                boolean r5 = r4.unregisterNetworkCallback(r5)
-                r7.writeNoException()
-                r7.writeInt(r5)
-                return r0
-            L_0x009a:
-                r6.enforceInterface(r1)
-                int r5 = r6.readInt()
-                android.os.IBinder r6 = r6.readStrongBinder()
-                com.samsung.android.cmcnsd.INsdNetworkCallback r6 = com.samsung.android.cmcnsd.INsdNetworkCallback.Stub.asInterface(r6)
-                boolean r5 = r4.registerNetworkCallback(r5, r6)
-                r7.writeNoException()
-                r7.writeInt(r5)
-                return r0
-            L_0x00b4:
-                r7.writeString(r1)
-                return r0
-            */
-            throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.cmcnsd.INsdService.Stub.onTransact(int, android.os.Parcel, android.os.Parcel, int):boolean");
+        public IBinder asBinder() {
+            return this;
         }
 
-        public static class Proxy implements INsdService {
+        public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
+            NsdNetworkCapabilities _arg1;
+            NsdNetworkCapabilities _arg2;
+            NsdNetworkMessage _arg3;
+            if (code == 1) {
+                data.enforceInterface(DESCRIPTOR);
+                boolean _result = registerNetworkCallback(data.readInt(), INsdNetworkCallback.Stub.asInterface(data.readStrongBinder()));
+                reply.writeNoException();
+                reply.writeInt(_result);
+                return true;
+            } else if (code == 2) {
+                data.enforceInterface(DESCRIPTOR);
+                boolean _result2 = unregisterNetworkCallback(INsdNetworkCallback.Stub.asInterface(data.readStrongBinder()));
+                reply.writeNoException();
+                reply.writeInt(_result2);
+                return true;
+            } else if (code == 3) {
+                data.enforceInterface(DESCRIPTOR);
+                int _arg0 = data.readInt();
+                if (data.readInt() != 0) {
+                    _arg1 = NsdNetworkCapabilities.CREATOR.createFromParcel(data);
+                } else {
+                    _arg1 = null;
+                }
+                boolean _result3 = acquireNetwork(_arg0, _arg1);
+                reply.writeNoException();
+                reply.writeInt(_result3);
+                return true;
+            } else if (code == 4) {
+                data.enforceInterface(DESCRIPTOR);
+                releaseNetwork(data.readInt());
+                reply.writeNoException();
+                return true;
+            } else if (code == 5) {
+                data.enforceInterface(DESCRIPTOR);
+                int _arg02 = data.readInt();
+                String _arg12 = data.readString();
+                if (data.readInt() != 0) {
+                    _arg2 = NsdNetworkCapabilities.CREATOR.createFromParcel(data);
+                } else {
+                    _arg2 = null;
+                }
+                if (data.readInt() != 0) {
+                    _arg3 = NsdNetworkMessage.CREATOR.createFromParcel(data);
+                } else {
+                    _arg3 = null;
+                }
+                boolean _result4 = sendNetworkMessage(_arg02, _arg12, _arg2, _arg3);
+                reply.writeNoException();
+                reply.writeInt(_result4);
+                return true;
+            } else if (code != 1598968902) {
+                return super.onTransact(code, data, reply, flags);
+            } else {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
+        }
+
+        private static class Proxy implements INsdService {
             public static INsdService sDefaultImpl;
-            public IBinder mRemote;
+            private IBinder mRemote;
 
-            public String getInterfaceDescriptor() {
-                return Stub.DESCRIPTOR;
-            }
-
-            public Proxy(IBinder iBinder) {
-                this.mRemote = iBinder;
+            Proxy(IBinder remote) {
+                this.mRemote = remote;
             }
 
             public IBinder asBinder() {
                 return this.mRemote;
             }
 
-            public boolean registerNetworkCallback(int i, INsdNetworkCallback iNsdNetworkCallback) throws RemoteException {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
+            public String getInterfaceDescriptor() {
+                return Stub.DESCRIPTOR;
+            }
+
+            public boolean registerNetworkCallback(int hashCode, INsdNetworkCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain();
+                Parcel _reply = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeStrongBinder(iNsdNetworkCallback != null ? iNsdNetworkCallback.asBinder() : null);
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(hashCode);
+                    _data.writeStrongBinder(callback != null ? callback.asBinder() : null);
                     boolean z = false;
-                    if (!this.mRemote.transact(1, obtain, obtain2, 0) && Stub.getDefaultImpl() != null) {
-                        return Stub.getDefaultImpl().registerNetworkCallback(i, iNsdNetworkCallback);
+                    if (!this.mRemote.transact(1, _data, _reply, 0) && Stub.getDefaultImpl() != null) {
+                        return Stub.getDefaultImpl().registerNetworkCallback(hashCode, callback);
                     }
-                    obtain2.readException();
-                    if (obtain2.readInt() != 0) {
+                    _reply.readException();
+                    if (_reply.readInt() != 0) {
                         z = true;
                     }
-                    obtain2.recycle();
-                    obtain.recycle();
-                    return z;
+                    boolean _result = z;
+                    _reply.recycle();
+                    _data.recycle();
+                    return _result;
                 } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
+                    _reply.recycle();
+                    _data.recycle();
                 }
             }
 
-            public boolean unregisterNetworkCallback(INsdNetworkCallback iNsdNetworkCallback) throws RemoteException {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
+            public boolean unregisterNetworkCallback(INsdNetworkCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain();
+                Parcel _reply = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeStrongBinder(iNsdNetworkCallback != null ? iNsdNetworkCallback.asBinder() : null);
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongBinder(callback != null ? callback.asBinder() : null);
                     boolean z = false;
-                    if (!this.mRemote.transact(2, obtain, obtain2, 0) && Stub.getDefaultImpl() != null) {
-                        return Stub.getDefaultImpl().unregisterNetworkCallback(iNsdNetworkCallback);
+                    if (!this.mRemote.transact(2, _data, _reply, 0) && Stub.getDefaultImpl() != null) {
+                        return Stub.getDefaultImpl().unregisterNetworkCallback(callback);
                     }
-                    obtain2.readException();
-                    if (obtain2.readInt() != 0) {
+                    _reply.readException();
+                    if (_reply.readInt() != 0) {
                         z = true;
                     }
-                    obtain2.recycle();
-                    obtain.recycle();
-                    return z;
+                    boolean _result = z;
+                    _reply.recycle();
+                    _data.recycle();
+                    return _result;
                 } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
+                    _reply.recycle();
+                    _data.recycle();
                 }
             }
 
-            public boolean acquireNetwork(int i, NsdNetworkCapabilities nsdNetworkCapabilities) throws RemoteException {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
+            public boolean acquireNetwork(int hashCode, NsdNetworkCapabilities capabilities) throws RemoteException {
+                Parcel _data = Parcel.obtain();
+                Parcel _reply = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    boolean z = true;
-                    if (nsdNetworkCapabilities != null) {
-                        obtain.writeInt(1);
-                        nsdNetworkCapabilities.writeToParcel(obtain, 0);
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(hashCode);
+                    boolean _result = true;
+                    if (capabilities != null) {
+                        _data.writeInt(1);
+                        capabilities.writeToParcel(_data, 0);
                     } else {
-                        obtain.writeInt(0);
+                        _data.writeInt(0);
                     }
-                    if (!this.mRemote.transact(3, obtain, obtain2, 0) && Stub.getDefaultImpl() != null) {
-                        return Stub.getDefaultImpl().acquireNetwork(i, nsdNetworkCapabilities);
+                    if (!this.mRemote.transact(3, _data, _reply, 0) && Stub.getDefaultImpl() != null) {
+                        return Stub.getDefaultImpl().acquireNetwork(hashCode, capabilities);
                     }
-                    obtain2.readException();
-                    if (obtain2.readInt() == 0) {
-                        z = false;
+                    _reply.readException();
+                    if (_reply.readInt() == 0) {
+                        _result = false;
                     }
-                    obtain2.recycle();
-                    obtain.recycle();
-                    return z;
+                    _reply.recycle();
+                    _data.recycle();
+                    return _result;
                 } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
+                    _reply.recycle();
+                    _data.recycle();
                 }
             }
 
-            public void releaseNetwork(int i) throws RemoteException {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
+            public void releaseNetwork(int hashCode) throws RemoteException {
+                Parcel _data = Parcel.obtain();
+                Parcel _reply = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    if (this.mRemote.transact(4, obtain, obtain2, 0) || Stub.getDefaultImpl() == null) {
-                        obtain2.readException();
-                    } else {
-                        Stub.getDefaultImpl().releaseNetwork(i);
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(hashCode);
+                    if (this.mRemote.transact(4, _data, _reply, 0) || Stub.getDefaultImpl() == null) {
+                        _reply.readException();
+                        _reply.recycle();
+                        _data.recycle();
+                        return;
                     }
+                    Stub.getDefaultImpl().releaseNetwork(hashCode);
                 } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
+                    _reply.recycle();
+                    _data.recycle();
                 }
             }
 
-            public boolean sendNetworkMessage(int i, String str, NsdNetworkCapabilities nsdNetworkCapabilities, NsdNetworkMessage nsdNetworkMessage) throws RemoteException {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
+            public boolean sendNetworkMessage(int hashCode, String deviceId, NsdNetworkCapabilities capabilities, NsdNetworkMessage message) throws RemoteException {
+                Parcel _data = Parcel.obtain();
+                Parcel _reply = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeString(str);
-                    boolean z = true;
-                    if (nsdNetworkCapabilities != null) {
-                        obtain.writeInt(1);
-                        nsdNetworkCapabilities.writeToParcel(obtain, 0);
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(hashCode);
+                    _data.writeString(deviceId);
+                    boolean _result = true;
+                    if (capabilities != null) {
+                        _data.writeInt(1);
+                        capabilities.writeToParcel(_data, 0);
                     } else {
-                        obtain.writeInt(0);
+                        _data.writeInt(0);
                     }
-                    if (nsdNetworkMessage != null) {
-                        obtain.writeInt(1);
-                        nsdNetworkMessage.writeToParcel(obtain, 0);
+                    if (message != null) {
+                        _data.writeInt(1);
+                        message.writeToParcel(_data, 0);
                     } else {
-                        obtain.writeInt(0);
+                        _data.writeInt(0);
                     }
-                    if (!this.mRemote.transact(5, obtain, obtain2, 0) && Stub.getDefaultImpl() != null) {
-                        return Stub.getDefaultImpl().sendNetworkMessage(i, str, nsdNetworkCapabilities, nsdNetworkMessage);
+                    if (!this.mRemote.transact(5, _data, _reply, 0) && Stub.getDefaultImpl() != null) {
+                        return Stub.getDefaultImpl().sendNetworkMessage(hashCode, deviceId, capabilities, message);
                     }
-                    obtain2.readException();
-                    if (obtain2.readInt() == 0) {
-                        z = false;
+                    _reply.readException();
+                    if (_reply.readInt() == 0) {
+                        _result = false;
                     }
-                    obtain2.recycle();
-                    obtain.recycle();
-                    return z;
+                    _reply.recycle();
+                    _data.recycle();
+                    return _result;
                 } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
+                    _reply.recycle();
+                    _data.recycle();
                 }
             }
         }
 
-        public static boolean setDefaultImpl(INsdService iNsdService) {
-            if (Proxy.sDefaultImpl != null || iNsdService == null) {
+        public static boolean setDefaultImpl(INsdService impl) {
+            if (Proxy.sDefaultImpl != null || impl == null) {
                 return false;
             }
-            Proxy.sDefaultImpl = iNsdService;
+            Proxy.sDefaultImpl = impl;
             return true;
         }
 

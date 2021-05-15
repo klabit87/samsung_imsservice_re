@@ -41,7 +41,7 @@ public final class SendImdnParams {
         }
 
         public String toString() {
-            return "ImdnData [mStatus=" + this.mStatus + ", mImdnId=" + this.mImdnId + ", mImdnDate=" + this.mImdnDate + ", mImdnRecRouteList=" + this.mImdnRecRouteList + ", mImdnOriginalTo=" + IMSLog.numberChecker(this.mImdnOriginalTo) + "]";
+            return "ImdnData [mStatus=" + this.mStatus + ", mImdnId=" + this.mImdnId + ", mImdnDate=" + this.mImdnDate + ", mImdnRecRouteList=" + this.mImdnRecRouteList + ", mImdnOriginalTo=" + IMSLog.checker(this.mImdnOriginalTo) + "]";
         }
     }
 
@@ -69,6 +69,6 @@ public final class SendImdnParams {
     }
 
     public String toString() {
-        return "SendImdnParams [mRawHandle=" + this.mRawHandle + ", mUri=" + IMSLog.numberChecker(this.mUri) + ", mChatId=" + this.mChatId + ", mConversationId=" + this.mConversationId + ", mContributionId=" + this.mContributionId + ", mImdnDataList=" + this.mImdnDataList + ", mDeviceId=" + IMSLog.checker(this.mDeviceId) + ", mImExtensionMNOHeaders=" + this.mImExtensionMNOHeaders + ", mCallback=" + this.mCallback + ", mIsGroupChat=" + this.mIsGroupChat + ", mCpimDate=" + this.mCpimDate + "]";
+        return "SendImdnParams [mRawHandle=" + this.mRawHandle + ", mUri=" + IMSLog.checker(this.mUri) + ", mChatId=" + this.mChatId + ", mConversationId=" + this.mConversationId + ", mContributionId=" + this.mContributionId + ", mImdnDataList=" + this.mImdnDataList + ", mDeviceId=" + IMSLog.checker(this.mDeviceId) + ", mImExtensionMNOHeaders=" + this.mImExtensionMNOHeaders + ", mCallback=" + this.mCallback + ", mIsGroupChat=" + this.mIsGroupChat + ", mCpimDate=" + this.mCpimDate + "]";
     }
 }

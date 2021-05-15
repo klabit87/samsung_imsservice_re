@@ -34,8 +34,7 @@ public final class SoftphoneAuthUtils {
         mProdAppKeyMap.put(SoftphoneNamespaces.SoftphoneModels.S2, SoftphoneNamespaces.SoftphoneSettings.PROD_APP_KEY_S2);
         mProdAppKeyMap.put(SoftphoneNamespaces.SoftphoneModels.S4, SoftphoneNamespaces.SoftphoneSettings.PROD_APP_KEY_S4);
         mProdAppKeyMap.put(SoftphoneNamespaces.SoftphoneModels.A8, SoftphoneNamespaces.SoftphoneSettings.PROD_APP_KEY_A8);
-        mProdAppKeyMap.put(SoftphoneNamespaces.SoftphoneModels.A4S, "dyp77kwaauqxx6aalgpjjq3ctoq1dzwk");
-        mProdAppKeyMap.put(SoftphoneNamespaces.SoftphoneModels.S7L, "dyp77kwaauqxx6aalgpjjq3ctoq1dzwk");
+        mProdAppKeyMap.put(SoftphoneNamespaces.SoftphoneModels.A4S, SoftphoneNamespaces.SoftphoneSettings.PROD_APP_KEY_A4S);
         HashMap hashMap2 = new HashMap();
         mProdAppSecretMap = hashMap2;
         hashMap2.put(SoftphoneNamespaces.SoftphoneModels.DAVINCI, SoftphoneNamespaces.SoftphoneSettings.PROD_APP_SECRET_DAVINCI);
@@ -45,8 +44,7 @@ public final class SoftphoneAuthUtils {
         mProdAppSecretMap.put(SoftphoneNamespaces.SoftphoneModels.S2, SoftphoneNamespaces.SoftphoneSettings.PROD_APP_SECRET_S2);
         mProdAppSecretMap.put(SoftphoneNamespaces.SoftphoneModels.S4, SoftphoneNamespaces.SoftphoneSettings.PROD_APP_SECRET_S4);
         mProdAppSecretMap.put(SoftphoneNamespaces.SoftphoneModels.A8, SoftphoneNamespaces.SoftphoneSettings.PROD_APP_SECRET_A8);
-        mProdAppSecretMap.put(SoftphoneNamespaces.SoftphoneModels.A4S, "tuqlgat1pdra8x1mjxdnawt7psgxzsgo");
-        mProdAppSecretMap.put(SoftphoneNamespaces.SoftphoneModels.S7L, "tuqlgat1pdra8x1mjxdnawt7psgxzsgo");
+        mProdAppSecretMap.put(SoftphoneNamespaces.SoftphoneModels.A4S, SoftphoneNamespaces.SoftphoneSettings.PROD_APP_SECRET_A4S);
     }
 
     private SoftphoneAuthUtils() {

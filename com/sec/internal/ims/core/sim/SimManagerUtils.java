@@ -11,6 +11,7 @@ import com.sec.ims.settings.ImsProfile;
 import com.sec.internal.constants.Mno;
 import com.sec.internal.constants.ims.ImsConstants;
 import com.sec.internal.constants.ims.os.IccCardConstants;
+import com.sec.internal.constants.ims.util.CscParserConstants;
 import com.sec.internal.helper.CollectionUtils;
 import com.sec.internal.helper.OmcCode;
 import com.sec.internal.helper.os.ITelephonyManager;
@@ -20,7 +21,9 @@ import com.sec.internal.log.IMSLog;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -200,44 +203,77 @@ class SimManagerUtils {
         return rcsSettings;
     }
 
+    static String getSimEmergencyDomain(ContentValues mnoInfo) {
+        Integer imsSwitchType = mnoInfo.getAsInteger(ISimManager.KEY_IMSSWITCH_TYPE);
+        if (imsSwitchType == null || imsSwitchType.intValue() == 0) {
+            return "";
+        }
+        return mnoInfo.getAsString(CscParserConstants.CustomerSettingTable.VoLTE.DOMAIN_EMERGENCY_CALL);
+    }
+
     static String convertMnoInfoToString(ContentValues mnoInfo) {
         String str;
         String str2;
         String str3;
         String str4;
+        String str5;
         StringBuilder summary = new StringBuilder();
         summary.append(CollectionUtils.getStringValue(mnoInfo, ISimManager.KEY_NW_NAME, "?"));
         summary.append("|");
-        String str5 = "T";
-        summary.append(CollectionUtils.getBooleanValue(mnoInfo, ImsServiceSwitch.ImsSwitch.DeviceManagement.ENABLE_IMS, false) ? str5 : "F");
-        if (CollectionUtils.getBooleanValue(mnoInfo, ImsServiceSwitch.ImsSwitch.VoLTE.ENABLE_VOLTE, false)) {
-            str = str5;
+        String str6 = "T";
+        summary.append(CollectionUtils.getBooleanValue(mnoInfo, CscParserConstants.CustomerSettingTable.DeviceManagement.ENABLE_IMS, false) ? str6 : "F");
+        if (CollectionUtils.getBooleanValue(mnoInfo, CscParserConstants.CustomerSettingTable.VoLTE.ENABLE_VOLTE, false)) {
+            str = str6;
         } else {
             str = "F";
         }
         summary.append(str);
-        if (CollectionUtils.getBooleanValue(mnoInfo, ImsServiceSwitch.ImsSwitch.DeviceManagement.ENABLE_VOWIFI, false)) {
-            str2 = str5;
+        if (CollectionUtils.getBooleanValue(mnoInfo, CscParserConstants.CustomerSettingTable.DeviceManagement.SUPPORT_VOWIFI, false)) {
+            str2 = str6;
         } else {
             str2 = "F";
         }
         summary.append(str2);
-        if (CollectionUtils.getBooleanValue(mnoInfo, ImsServiceSwitch.ImsSwitch.VoLTE.ENABLE_SMS_IP, false)) {
-            str3 = str5;
+        if (CollectionUtils.getBooleanValue(mnoInfo, CscParserConstants.CustomerSettingTable.VoLTE.ENABLE_SMS_IP, false)) {
+            str3 = str6;
         } else {
             str3 = "F";
         }
         summary.append(str3);
-        if (CollectionUtils.getBooleanValue(mnoInfo, ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS, false)) {
-            str4 = str5;
+        if (CollectionUtils.getBooleanValue(mnoInfo, CscParserConstants.CustomerSettingTable.VoLTE.SS_CSFB_IMS_ERROR, false)) {
+            str4 = str6;
         } else {
             str4 = "F";
         }
         summary.append(str4);
-        if (!CollectionUtils.getBooleanValue(mnoInfo, ImsServiceSwitch.ImsSwitch.RCS.ENABLE_RCS_CHAT_SERVICE, false)) {
+        if (CollectionUtils.getBooleanValue(mnoInfo, CscParserConstants.CustomerSettingTable.RCS.ENABLE_RCS, false)) {
+            str5 = str6;
+        } else {
             str5 = "F";
         }
         summary.append(str5);
+        if (!CollectionUtils.getBooleanValue(mnoInfo, CscParserConstants.CustomerSettingTable.RCS.ENABLE_RCS_CHAT_SERVICE, false)) {
+            str6 = "F";
+        }
+        summary.append(str6);
+        summary.append((String) CscParserConstants.CustomerSettingTable.VoLTE.MAP_DOMAIN_VOICE_EUTRAN.entrySet().stream().filter(new Predicate(mnoInfo) {
+            public final /* synthetic */ ContentValues f$0;
+
+            {
+                this.f$0 = r1;
+            }
+
+            public final boolean test(Object obj) {
+                return ((String) ((Map.Entry) obj).getKey()).equalsIgnoreCase(CollectionUtils.getStringValue(this.f$0, CscParserConstants.CustomerSettingTable.VoLTE.DOMAIN_VOICE_EUTRAN, ""));
+            }
+        }).map($$Lambda$etDQhIA8H5hI6BDqsFIFQkLL9Nc.INSTANCE).findFirst().orElse("?"));
+        String eDomain = CollectionUtils.getStringValue(mnoInfo, CscParserConstants.CustomerSettingTable.VoLTE.DOMAIN_EMERGENCY_CALL, "");
+        if (TextUtils.isEmpty(eDomain)) {
+            eDomain = CollectionUtils.getStringValue(mnoInfo, CscParserConstants.CustomerSettingTable.VoLTE.DOMAIN_EMERGENCY_CALL_FIX_TYPO, "");
+        }
+        summary.append((String) Optional.ofNullable(CscParserConstants.CustomerSettingTable.VoLTE.MAP_DOMAIN_EMERGENCY_CALL.get(eDomain)).orElse("?"));
+        summary.append((String) Optional.ofNullable(CscParserConstants.CustomerSettingTable.VoLTE.MAP_DOMAINS_PSCS.get(CollectionUtils.getStringValue(mnoInfo, CscParserConstants.CustomerSettingTable.VoLTE.DOMAIN_SS, ""))).orElse("?"));
+        summary.append((String) Optional.ofNullable(CscParserConstants.CustomerSettingTable.VoLTE.MAP_DOMAINS_PSCS.get(CollectionUtils.getStringValue(mnoInfo, CscParserConstants.CustomerSettingTable.VoLTE.DOMAIN_USSD, ""))).orElse("?"));
         return summary.toString();
     }
 }

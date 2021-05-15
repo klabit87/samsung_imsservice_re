@@ -261,18 +261,14 @@ public class ResipRegistrationManager extends RegistrationHandler {
 
     public void deregisterInternal(IRegisterTask task, boolean local) {
         int phoneId = task.getPhoneId();
-        UserAgent ua = (UserAgent) task.getUserAgent();
         SimpleEventLog simpleEventLog = this.mEventLog;
         simpleEventLog.logAndAdd(phoneId, task, "deregisterInternal : " + task.getReason() + "(" + task.getDeregiReason() + ")");
         IMSLog.c(LogClass.REGI_DEREGISTER_INTERNAL, task.getPhoneId() + ",DEREGI:" + task.getReason() + ":" + task.getDeregiReason());
         configureRCS(task, this.mSimManagers.get(phoneId).getSimMno(), false, task.getPhoneId());
+        UserAgent ua = (UserAgent) task.getUserAgent();
         boolean isRcsRegistered = false;
         if (task.getImsRegistration() != null) {
             isRcsRegistered = task.getImsRegistration().hasRcsService();
-        }
-        if (ua == null) {
-            IMSLog.e(LOG_TAG, phoneId, "deregisterInternal: UserAgent is null, can't deregister");
-            return;
         }
         ua.deregister(local, isRcsRegistered);
         if ((task.getState() == RegistrationConstants.RegisterTaskState.EMERGENCY && !task.needKeepEmergencyTask()) || (task.getMno() != Mno.KDDI && task.getProfile().hasEmergencySupport() && task.getState() == RegistrationConstants.RegisterTaskState.REGISTERING)) {
@@ -431,7 +427,7 @@ public class ResipRegistrationManager extends RegistrationHandler {
         int regExpires = profile.getRegExpire();
         int mssPacketSize = profile.getMssSize();
         String pdnName = getPdnName(pdn2);
-        boolean isGcfConfigEnable2 = DeviceUtil.getGcfMode();
+        boolean isGcfConfigEnable2 = DeviceUtil.getGcfMode().booleanValue();
         int sipMobility = profile.getSipMobility();
         boolean isEnableGruu = profile.isEnableGruu() != 0;
         int sipMobility2 = sipMobility;
@@ -631,30 +627,30 @@ public class ResipRegistrationManager extends RegistrationHandler {
             realm = realm2;
         }
         IMSLog.i(LOG_TAG, phoneId, "###set profile id, id = " + profile3.getId());
-        int textMode2 = ttyType;
-        int textMode3 = textMode2;
-        if (textMode2 == 4) {
+        int ttyType2 = ttyType;
+        int textMode2 = ttyType2;
+        if (ttyType2 == 4) {
             if (SlotBasedConfig.getInstance(phoneId).getRTTMode()) {
                 textMode = 3;
             } else {
                 textMode = 2;
             }
-        } else if (textMode2 != 3) {
-            textMode = textMode3;
+        } else if (ttyType2 != 3) {
+            textMode = textMode2;
         } else if (SlotBasedConfig.getInstance(phoneId).getRTTMode()) {
             textMode = 3;
         } else {
             textMode = 0;
         }
-        int textMode4 = isEmergency;
+        int textMode3 = isEmergency;
         StringBuilder sb6 = new StringBuilder();
         String str17 = password;
         sb6.append("TTY Type ");
-        sb6.append(textMode2);
+        sb6.append(ttyType2);
         sb6.append(" convert to TextMode ");
         sb6.append(textMode);
         IMSLog.i(LOG_TAG, phoneId, sb6.toString());
-        int i2 = textMode2;
+        int i2 = ttyType2;
         int srvccVersion = this.mImsFramework.getInt(phoneId, GlobalSettingsConstants.Call.SRVCC_VERSION, 0);
         IImsFramework iImsFramework = this.mImsFramework;
         String str18 = LOG_TAG;
@@ -667,9 +663,9 @@ public class ResipRegistrationManager extends RegistrationHandler {
         boolean isSubscribeReg2 = isSubscribeReg;
         boolean z2 = isSubscribeReg2;
         UaProfile.Builder timer2 = subscriberTimer.setSubscribeReg(isSubscribeReg2).setUseKeepAlive(useKeepAlive2).setSelfPort(profile3.getSelfPort()).setScmVersion(profile3.getScmVersion()).setMsrpTransType(msrpTransType4).setIsFullCodecOfferRequired(profile3.getFullCodecOfferRequired()).setIsRcsTelephonyFeatureTagRequired(profile3.getRcsTelephonyFeatureTagRequired()).setRcsProfile(rcsProfile).setIsTransportNeeded(profile3.getIsTransportNeeded()).setRat(rat2).setDbrTimer(profile3.getDbrTimer()).setIsTcpGracefulShutdownEnabled(profile3.isTcpGracefulShutdownEnabled()).setTcpRstUacErrorcode(profile3.getTcpRstUacErrorcode()).setTcpRstUasErrorcode(profile3.getTcpRstUasErrorcode()).setPrivacyHeaderRestricted(profile3.getPrivacyHeaderRestricted()).setUsePemHeader(profile3.getUsePemHeader()).setSupportEct(profile3.getSupportEct()).setEarlyMediaRtpTimeoutTimer(profile3.getEarlyMediaRtpTimeoutTimer()).setAddHistinfo(profile3.getAddHistinfo()).setSupportedGeolocationPhase(profile3.getSupportedGeolocationPhase()).setNeedPidfSipMsg(profile3.getNeedPidfSipMsg()).setUseSubcontactWhenResub(profile3.getUseSubcontactWhenResub()).setUseProvisionalResponse100rel(profile3.getUseProvisionalResponse100rel()).setUse183OnProgressIncoming(profile3.getUse183OnProgressIncoming()).setUseQ850causeOn480(profile3.getUseQ850causeOn480()).setSupport183ForIr92v9Precondition(profile3.getSupport183ForIr92v9Precondition()).setSupportImsNotAvailable(profile3.getSupportImsNotAvailable()).setSupportLtePreferred(profile3.getSupportLtePreferred()).setSupportUpgradePrecondition(isSupportUpgradePrecondition3).setSupportReplaceMerge(profile3.getSupportReplaceMerge()).setSupportAccessType(profile3.getSupportAccessType()).setLastPaniHeader(profile3.getLastPaniHeader()).setSelectTransportAfterTcpReset(profile3.getSelectTransportAfterTcpReset()).setSrvccVersion(srvccVersion).setIsSimMobility(Boolean.valueOf(isSimMobility)).setCmcType(profile3.getCmcType()).setVideoCrbtSupportType(profile3.getVideoCrbtSupportType()).setRetryInviteOnTcpReset(profile3.getRetryInviteOnTcpReset()).setEanbleVerstat(profile3.getEnableVerstat()).setTimer1(timerT12).setTimer2(timerT2);
-        int timerT23 = timerT4;
-        int i3 = timerT23;
-        UaProfile.Builder timerK = timer2.setTimer4(timerT23).setTimerA(profile3.getTimerA()).setTimerB(profile3.getTimerB()).setTimerC(profile3.getTimerC()).setTimerD(profile3.getTimerD()).setTimerE(profile3.getTimerE()).setTimerF(profile3.getTimerF()).setTimerG(profile3.getTimerG()).setTimerH(profile3.getTimerH()).setTimerI(profile3.getTimerI()).setTimerJ(profile3.getTimerJ()).setTimerK(profile3.getTimerK());
+        int timerT43 = timerT4;
+        int i3 = timerT43;
+        UaProfile.Builder timerK = timer2.setTimer4(timerT43).setTimerA(profile3.getTimerA()).setTimerB(profile3.getTimerB()).setTimerC(profile3.getTimerC()).setTimerD(profile3.getTimerD()).setTimerE(profile3.getTimerE()).setTimerF(profile3.getTimerF()).setTimerG(profile3.getTimerG()).setTimerH(profile3.getTimerH()).setTimerI(profile3.getTimerI()).setTimerJ(profile3.getTimerJ()).setTimerK(profile3.getTimerK());
         int regRetryBaseTime3 = regRetryBaseTime;
         UaProfile.Builder regRetryBaseTime4 = timerK.setRegRetryBaseTime(regRetryBaseTime3);
         int i4 = regRetryBaseTime3;

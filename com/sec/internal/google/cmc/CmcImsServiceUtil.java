@@ -371,38 +371,41 @@ public class CmcImsServiceUtil {
     }
 
     public void getPendingCallSession(int phoneId, ImsCallProfile profile, IImsCallSession session) throws RemoteException {
-        ImsCallProfile imsCallProfile = profile;
         Log.i(LOG_TAG, "getPendingCallSession()");
+        int cmcLineSlotIndex = 0;
         if (this.mVolteServiceModule.getCmcServiceHelper().isCmcRegExist(phoneId)) {
             Bundle extras = new Bundle();
             int cmcType = session.getCmcType();
-            int sessionId = session.getSessionId();
-            if (isCmcPrimaryType(cmcType)) {
-                cmcType = 1;
-            } else if (isCmcSecondaryType(cmcType)) {
-                cmcType = 2;
-            }
-            String str = LOG_TAG;
-            Log.i(str, "getPendingCallSession(), SEM_EXTRA_CMC_TYPE: (" + session.getCmcType() + " -> " + cmcType + ")");
-            extras.putInt("com.samsung.telephony.extra.CMC_SESSION_ID", sessionId);
+            extras.putInt("com.samsung.telephony.extra.CMC_SESSION_ID", session.getSessionId());
             extras.putInt("com.samsung.telephony.extra.CMC_TYPE", cmcType);
             if (isCmcPrimaryType(cmcType)) {
-                int cmcLineSlotIndex = ImsRegistry.getRegistrationManager().getCmcLineSlotIndex();
-                extras.putInt("com.samsung.telephony.extra.CMC_PHONE_ID", cmcLineSlotIndex == -1 ? 0 : cmcLineSlotIndex);
+                int cmcLineSlotIndex2 = ImsRegistry.getRegistrationManager().getCmcLineSlotIndex();
+                if (cmcLineSlotIndex2 != -1) {
+                    cmcLineSlotIndex = cmcLineSlotIndex2;
+                }
+                extras.putInt("com.samsung.telephony.extra.CMC_PHONE_ID", cmcLineSlotIndex);
             }
-            imsCallProfile.mCallExtras.putBundle("android.telephony.ims.extra.OEM_EXTRAS", extras);
+            profile.mCallExtras.putBundle("android.telephony.ims.extra.OEM_EXTRAS", extras);
         } else if (this.mConnectivityController.isEnabledWifiDirectFeature() && this.mConnectivityController.getDeviceType() == CmcConnectivityController.DeviceType.PDevice) {
             Bundle extras2 = new Bundle();
-            int sessionId2 = session.getSessionId();
+            int cmcType2 = session.getCmcType();
+            int sessionId = session.getSessionId();
+            String str = LOG_TAG;
+            Log.e(str, "set BoundSessionId: " + sessionId);
             String str2 = LOG_TAG;
-            Log.i(str2, "getPendingCallSession(), SEM_EXTRA_CMC_TYPE: (" + session.getCmcType() + " -> " + 1 + ")");
-            extras2.putInt("com.samsung.telephony.extra.CMC_SESSION_ID", sessionId2);
-            extras2.putInt("com.samsung.telephony.extra.CMC_TYPE", 1);
-            if (1 == 7) {
-                int cmcLineSlotIndex2 = ImsRegistry.getRegistrationManager().getCmcLineSlotIndex();
-                extras2.putInt("com.samsung.telephony.extra.CMC_PHONE_ID", cmcLineSlotIndex2 == -1 ? 0 : cmcLineSlotIndex2);
+            Log.e(str2, "put cmc sessionId: " + sessionId);
+            extras2.putInt("com.samsung.telephony.extra.CMC_SESSION_ID", sessionId);
+            String str3 = LOG_TAG;
+            Log.d(str3, "put cmc type: " + cmcType2);
+            extras2.putInt("com.samsung.telephony.extra.CMC_TYPE", cmcType2);
+            if (cmcType2 == 7) {
+                int cmcLineSlotIndex3 = ImsRegistry.getRegistrationManager().getCmcLineSlotIndex();
+                if (cmcLineSlotIndex3 != -1) {
+                    cmcLineSlotIndex = cmcLineSlotIndex3;
+                }
+                extras2.putInt("com.samsung.telephony.extra.CMC_PHONE_ID", cmcLineSlotIndex);
             }
-            imsCallProfile.mCallExtras.putBundle("android.telephony.ims.extra.OEM_EXTRAS", extras2);
+            profile.mCallExtras.putBundle("android.telephony.ims.extra.OEM_EXTRAS", extras2);
         }
     }
 
@@ -423,12 +426,9 @@ public class CmcImsServiceUtil {
                 int cmcType = secCallSession.getCmcType();
                 int sessionId = secCallSession.getSessionId();
                 if (isCmcPrimaryType(cmcType)) {
+                    Log.d(LOG_TAG, "onIncomingCall: overwrite P2P PRIMARY to CMC PRIMARY");
                     cmcType = 1;
-                } else if (isCmcSecondaryType(cmcType)) {
-                    cmcType = 2;
                 }
-                String str = LOG_TAG;
-                Log.i(str, "onIncomingCall(), SEM_EXTRA_CMC_TYPE: (" + secCallSession.getCmcType() + " -> " + cmcType + ")");
                 fillIn.putExtra("com.samsung.telephony.extra.CMC_TYPE", cmcType);
                 fillIn.putExtra("com.samsung.telephony.extra.CMC_SESSION_ID", sessionId);
                 if (isCmcPrimaryType(cmcType)) {
@@ -443,9 +443,7 @@ public class CmcImsServiceUtil {
                     fillIn.putExtra("com.samsung.telephony.extra.CMC_PHONE_ID", cmcLineSlotIndex == -1 ? 0 : cmcLineSlotIndex);
                 }
             } else if (this.mConnectivityController.isEnabledWifiDirectFeature() && this.mConnectivityController.getDeviceType() == CmcConnectivityController.DeviceType.PDevice) {
-                String str2 = LOG_TAG;
-                Log.i(str2, "onIncomingCall(), SEM_EXTRA_CMC_TYPE: (" + secCallSession.getCmcType() + " -> " + 1 + ")");
-                fillIn.putExtra("com.samsung.telephony.extra.CMC_TYPE", 1);
+                fillIn.putExtra("com.samsung.telephony.extra.CMC_TYPE", secCallSession.getCmcType());
                 fillIn.putExtra("com.samsung.telephony.extra.CMC_SESSION_ID", secCallSession.getSessionId());
             }
             if (this.mConnectivityController.isEnabledWifiDirectFeature() && this.mConnectivityController.getDeviceType() == CmcConnectivityController.DeviceType.PDevice && getCmcRegHandle(service, 7) == -1) {

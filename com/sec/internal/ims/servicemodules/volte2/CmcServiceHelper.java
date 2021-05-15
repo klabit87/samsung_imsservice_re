@@ -1340,17 +1340,11 @@ public class CmcServiceHelper extends Handler implements ICmcServiceHelper, ICmc
         ImsCallSession extSession;
         String str = LOG_TAG;
         Log.i(str, "forwardCmcRecordingEventToSD, recordEvent: " + event + ", extra: " + extra + ", sessionId: " + sessionId);
-        int recordInfoMsgEvent = ImsCallUtil.convertRecordEventForCmcInfo(event);
-        String str2 = LOG_TAG;
-        StringBuilder sb = new StringBuilder();
-        sb.append("recordInfoMsgEvent : ");
-        sb.append(recordInfoMsgEvent);
-        Log.i(str2, sb.toString());
-        if (isCmcRegExist(phoneId) && recordInfoMsgEvent > 0 && (pdSession = this.mImsCallSessionManager.getSession(sessionId)) != null && pdSession.getCmcType() == 1 && (extSession = this.mImsCallSessionManager.getSession(pdSession.getCallProfile().getCmcBoundSessionId())) != null) {
+        if (isCmcRegExist(phoneId) && (pdSession = this.mImsCallSessionManager.getSession(sessionId)) != null && pdSession.getCmcType() == 1 && (extSession = this.mImsCallSessionManager.getSession(pdSession.getCallProfile().getCmcBoundSessionId())) != null) {
             Log.i(LOG_TAG, "send CmcRecordingEvent to SD during cmc call relay");
             String extSipCallId = extSession.getCallProfile().getSipCallId();
             Bundle cmcInfoData = new Bundle();
-            cmcInfoData.putInt("record_event", recordInfoMsgEvent);
+            cmcInfoData.putInt("record_event", event);
             cmcInfoData.putInt("extra", extra);
             cmcInfoData.putString("sip_call_id", extSipCallId);
             this.mVolteSvcIntf.sendCmcInfo(sessionId, cmcInfoData);

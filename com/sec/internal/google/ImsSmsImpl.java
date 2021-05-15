@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import org.xbill.DNS.Type;
 
 public final class ImsSmsImpl {
@@ -94,7 +94,7 @@ public final class ImsSmsImpl {
     /* access modifiers changed from: private */
     public final Handler mHandler;
     private final HandlerThread mHandlerThread;
-    private Map<Integer, ImsSmsTracker> mImsSmsTrackers = new ConcurrentHashMap();
+    private Map<Integer, ImsSmsTracker> mImsSmsTrackers = new ConcurrentSkipListMap();
     private int mLastRetryCount;
     private int mLastRxStatusMsgId;
     /* access modifiers changed from: private */
@@ -1410,10 +1410,5 @@ public final class ImsSmsImpl {
         map.put(MAP_KEY_RETRY_COUNT, Integer.valueOf(retryCount));
         map.put(MAP_KEY_STATUS_REPORT, Boolean.valueOf(statusReportRequest));
         return map;
-    }
-
-    /* access modifiers changed from: protected */
-    public void setSmsListener(IImsSmsListener listener) {
-        this.mSmsListener = listener;
     }
 }

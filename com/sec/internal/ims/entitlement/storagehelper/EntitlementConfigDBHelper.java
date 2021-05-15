@@ -78,17 +78,18 @@ public class EntitlementConfigDBHelper extends NSDSDatabaseHelper {
     public static void updateDeviceConfig(Context context, String xmlDeviceConfig, String version, String imsi) {
         String str = LOG_TAG;
         IMSLog.i(str, "updateDeviceConfig: version:" + version);
+        Context ceContext = context.createCredentialProtectedStorageContext();
+        ContentValues values = null;
         if (!TextUtils.isEmpty(xmlDeviceConfig)) {
-            Context ceContext = context.createCredentialProtectedStorageContext();
-            ContentValues values = new ContentValues();
+            values = new ContentValues();
             if (version != null) {
                 values.put("version", version);
             }
             values.put("device_config", xmlDeviceConfig);
-            if (ceContext.getContentResolver().update(EntitlementConfigContract.DeviceConfig.CONTENT_URI, values, "imsi = ?", new String[]{imsi}) > 0) {
-                String str2 = LOG_TAG;
-                IMSLog.i(str2, "updated device config in device config successfully with version:" + version);
-            }
+        }
+        if (ceContext.getContentResolver().update(EntitlementConfigContract.DeviceConfig.CONTENT_URI, values, "imsi = ?", new String[]{imsi}) > 0) {
+            String str2 = LOG_TAG;
+            IMSLog.i(str2, "updated device config in device config successfully with version:" + version);
         }
     }
 

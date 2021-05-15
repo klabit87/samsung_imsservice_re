@@ -40,7 +40,7 @@ public class TelephonyAdapterPrimaryDeviceVzw extends TelephonyAdapterPrimaryDev
         } else if (((String) msg.obj).contains(SMS_CONFIGURATION_REQUEST)) {
             Log.d(LOG_TAG, "force configuration request");
             IMSLog.c(LogClass.TAPDV_RECEIVED_PORTSMS, this.mPhoneId + ",REVPO");
-            this.mModuleHandler.sendMessage(obtainMessage(21, Integer.valueOf(this.mPhoneId)));
+            this.mModuleHandler.sendEmptyMessage(21);
         } else {
             String str2 = LOG_TAG;
             Log.d(str2, "invalid sms configuration request: " + ((String) msg.obj));

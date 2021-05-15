@@ -99,184 +99,198 @@ public class CmcMediaController implements ICmcMediaController {
         this.mCmcMediaIntf.registerForCmcMediaEvent(this.mCmcMediaEventHandler, 11, (Object) null);
     }
 
-    /* JADX WARNING: Code restructure failed: missing block: B:30:0x00b7, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:14:0x0061, code lost:
         return;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:36:0x00d3, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:39:0x00e1, code lost:
         return;
      */
-    /* JADX WARNING: Unknown top exception splitter block from list: {B:38:0x00d5=Splitter:B:38:0x00d5, B:55:0x017c=Splitter:B:55:0x017c} */
+    /* JADX WARNING: Code restructure failed: missing block: B:45:0x00fd, code lost:
+        return;
+     */
     /* Code decompiled incorrectly, please refer to instructions dump. */
-    private synchronized void onRelayStreamEvent(com.sec.internal.constants.ims.servicemodules.volte2.IMSMediaEvent r10) {
+    private synchronized void onRelayStreamEvent(com.sec.internal.constants.ims.servicemodules.volte2.IMSMediaEvent r10, int r11) {
         /*
             r9 = this;
             monitor-enter(r9)
-            java.lang.String r0 = LOG_TAG     // Catch:{ all -> 0x0185 }
-            java.lang.StringBuilder r1 = new java.lang.StringBuilder     // Catch:{ all -> 0x0185 }
-            r1.<init>()     // Catch:{ all -> 0x0185 }
+            java.lang.String r0 = LOG_TAG     // Catch:{ all -> 0x01a6 }
+            java.lang.StringBuilder r1 = new java.lang.StringBuilder     // Catch:{ all -> 0x01a6 }
+            r1.<init>()     // Catch:{ all -> 0x01a6 }
             java.lang.String r2 = "onRelayStreamEvent : "
-            r1.append(r2)     // Catch:{ all -> 0x0185 }
-            int r2 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x0185 }
-            r1.append(r2)     // Catch:{ all -> 0x0185 }
+            r1.append(r2)     // Catch:{ all -> 0x01a6 }
+            int r2 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x01a6 }
+            r1.append(r2)     // Catch:{ all -> 0x01a6 }
             java.lang.String r2 = " phoneId : "
-            r1.append(r2)     // Catch:{ all -> 0x0185 }
-            int r2 = r10.getPhoneId()     // Catch:{ all -> 0x0185 }
-            r1.append(r2)     // Catch:{ all -> 0x0185 }
-            java.lang.String r1 = r1.toString()     // Catch:{ all -> 0x0185 }
-            android.util.Log.i(r0, r1)     // Catch:{ all -> 0x0185 }
-            int r0 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x0185 }
+            r1.append(r2)     // Catch:{ all -> 0x01a6 }
+            int r2 = r10.getPhoneId()     // Catch:{ all -> 0x01a6 }
+            r1.append(r2)     // Catch:{ all -> 0x01a6 }
+            java.lang.String r1 = r1.toString()     // Catch:{ all -> 0x01a6 }
+            android.util.Log.i(r0, r1)     // Catch:{ all -> 0x01a6 }
+            int r0 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x01a6 }
             r1 = 3
-            if (r0 == r1) goto L_0x017c
-            int r0 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x0185 }
-            r1 = 4
-            if (r0 != r1) goto L_0x0038
-            goto L_0x017c
-        L_0x0038:
-            int r0 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x0185 }
-            r1 = 5
-            if (r0 != r1) goto L_0x004a
-            com.sec.internal.constants.ims.servicemodules.volte2.IMSMediaEvent$AudioRtpStats r0 = r10.getRelayRtpStats()     // Catch:{ all -> 0x0185 }
-            com.sec.internal.interfaces.ims.core.handler.ICmcMediaServiceInterface r1 = r9.mCmcMediaIntf     // Catch:{ all -> 0x0185 }
-            r1.sendRtpStatsToStack(r0)     // Catch:{ all -> 0x0185 }
+            if (r0 != r1) goto L_0x0040
+            com.sec.internal.interfaces.ims.core.handler.ICmcMediaServiceInterface r0 = r9.mCmcMediaIntf     // Catch:{ all -> 0x01a6 }
+            int r1 = r10.getPhoneId()     // Catch:{ all -> 0x01a6 }
+            int r2 = r10.getSessionID()     // Catch:{ all -> 0x01a6 }
+            r3 = 28
+            r0.sendMediaEvent(r1, r2, r3, r11)     // Catch:{ all -> 0x01a6 }
             monitor-exit(r9)
             return
-        L_0x004a:
-            int r0 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x0185 }
+        L_0x0040:
+            int r0 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x01a6 }
+            r1 = 4
+            if (r0 != r1) goto L_0x0062
+            int r0 = r10.getSessionID()     // Catch:{ all -> 0x01a6 }
+            com.sec.internal.ims.servicemodules.volte2.ImsCallSession r0 = r9.getSession(r0)     // Catch:{ all -> 0x01a6 }
+            if (r0 == 0) goto L_0x0060
+            com.sec.internal.interfaces.ims.core.handler.ICmcMediaServiceInterface r1 = r9.mCmcMediaIntf     // Catch:{ all -> 0x01a6 }
+            int r2 = r10.getPhoneId()     // Catch:{ all -> 0x01a6 }
+            int r3 = r10.getSessionID()     // Catch:{ all -> 0x01a6 }
+            r4 = 61
+            r1.sendMediaEvent(r2, r3, r4, r11)     // Catch:{ all -> 0x01a6 }
+        L_0x0060:
+            monitor-exit(r9)
+            return
+        L_0x0062:
+            int r0 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x01a6 }
+            r1 = 5
+            if (r0 != r1) goto L_0x0074
+            com.sec.internal.constants.ims.servicemodules.volte2.IMSMediaEvent$AudioRtpStats r0 = r10.getRelayRtpStats()     // Catch:{ all -> 0x01a6 }
+            com.sec.internal.interfaces.ims.core.handler.ICmcMediaServiceInterface r1 = r9.mCmcMediaIntf     // Catch:{ all -> 0x01a6 }
+            r1.sendRtpStatsToStack(r0)     // Catch:{ all -> 0x01a6 }
+            monitor-exit(r9)
+            return
+        L_0x0074:
+            int r0 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x01a6 }
             r1 = 12
             r2 = 11
             r3 = 10
-            if (r0 == r3) goto L_0x00d4
-            int r0 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x0185 }
-            if (r0 == r2) goto L_0x00d4
-            int r0 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x0185 }
-            if (r0 != r1) goto L_0x0063
-            goto L_0x00d4
-        L_0x0063:
-            int r0 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x0185 }
+            if (r0 == r3) goto L_0x00fe
+            int r0 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x01a6 }
+            if (r0 == r2) goto L_0x00fe
+            int r0 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x01a6 }
+            if (r0 != r1) goto L_0x008d
+            goto L_0x00fe
+        L_0x008d:
+            int r0 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x01a6 }
             r1 = 1
-            if (r0 != r1) goto L_0x00b8
-            r9.resetCreateRelayChannelParams()     // Catch:{ all -> 0x0185 }
-            int r0 = r10.getStreamId()     // Catch:{ all -> 0x0185 }
-            android.util.SparseArray<com.sec.internal.ims.servicemodules.volte2.data.RelayStreams> r1 = r9.mRelayStreamMap     // Catch:{ all -> 0x0185 }
-            java.lang.Object r1 = r1.get(r0)     // Catch:{ all -> 0x0185 }
-            com.sec.internal.ims.servicemodules.volte2.data.RelayStreams r1 = (com.sec.internal.ims.servicemodules.volte2.data.RelayStreams) r1     // Catch:{ all -> 0x0185 }
-            android.util.SparseArray<com.sec.internal.ims.servicemodules.volte2.data.RelayStreams> r2 = r9.mRelayStreamMap     // Catch:{ all -> 0x0185 }
-            r2.delete(r0)     // Catch:{ all -> 0x0185 }
-            if (r1 == 0) goto L_0x00b6
-            int r2 = r1.getBoundStreamId()     // Catch:{ all -> 0x0185 }
+            if (r0 != r1) goto L_0x00e2
+            r9.resetCreateRelayChannelParams()     // Catch:{ all -> 0x01a6 }
+            int r0 = r10.getStreamId()     // Catch:{ all -> 0x01a6 }
+            android.util.SparseArray<com.sec.internal.ims.servicemodules.volte2.data.RelayStreams> r1 = r9.mRelayStreamMap     // Catch:{ all -> 0x01a6 }
+            java.lang.Object r1 = r1.get(r0)     // Catch:{ all -> 0x01a6 }
+            com.sec.internal.ims.servicemodules.volte2.data.RelayStreams r1 = (com.sec.internal.ims.servicemodules.volte2.data.RelayStreams) r1     // Catch:{ all -> 0x01a6 }
+            android.util.SparseArray<com.sec.internal.ims.servicemodules.volte2.data.RelayStreams> r2 = r9.mRelayStreamMap     // Catch:{ all -> 0x01a6 }
+            r2.delete(r0)     // Catch:{ all -> 0x01a6 }
+            if (r1 == 0) goto L_0x00e0
+            int r2 = r1.getBoundStreamId()     // Catch:{ all -> 0x01a6 }
             r3 = -1
-            if (r2 <= r3) goto L_0x00b6
-            android.util.SparseArray<com.sec.internal.ims.servicemodules.volte2.data.RelayStreams> r2 = r9.mRelayStreamMap     // Catch:{ all -> 0x0185 }
-            int r4 = r1.getBoundStreamId()     // Catch:{ all -> 0x0185 }
-            java.lang.Object r2 = r2.get(r4)     // Catch:{ all -> 0x0185 }
-            com.sec.internal.ims.servicemodules.volte2.data.RelayStreams r2 = (com.sec.internal.ims.servicemodules.volte2.data.RelayStreams) r2     // Catch:{ all -> 0x0185 }
-            if (r2 == 0) goto L_0x00b6
-            java.lang.String r4 = LOG_TAG     // Catch:{ all -> 0x0185 }
-            java.lang.StringBuilder r5 = new java.lang.StringBuilder     // Catch:{ all -> 0x0185 }
-            r5.<init>()     // Catch:{ all -> 0x0185 }
+            if (r2 <= r3) goto L_0x00e0
+            android.util.SparseArray<com.sec.internal.ims.servicemodules.volte2.data.RelayStreams> r2 = r9.mRelayStreamMap     // Catch:{ all -> 0x01a6 }
+            int r4 = r1.getBoundStreamId()     // Catch:{ all -> 0x01a6 }
+            java.lang.Object r2 = r2.get(r4)     // Catch:{ all -> 0x01a6 }
+            com.sec.internal.ims.servicemodules.volte2.data.RelayStreams r2 = (com.sec.internal.ims.servicemodules.volte2.data.RelayStreams) r2     // Catch:{ all -> 0x01a6 }
+            if (r2 == 0) goto L_0x00e0
+            java.lang.String r4 = LOG_TAG     // Catch:{ all -> 0x01a6 }
+            java.lang.StringBuilder r5 = new java.lang.StringBuilder     // Catch:{ all -> 0x01a6 }
+            r5.<init>()     // Catch:{ all -> 0x01a6 }
             java.lang.String r6 = "reset bound stream "
-            r5.append(r6)     // Catch:{ all -> 0x0185 }
-            int r6 = r2.getStreamId()     // Catch:{ all -> 0x0185 }
-            r5.append(r6)     // Catch:{ all -> 0x0185 }
-            java.lang.String r5 = r5.toString()     // Catch:{ all -> 0x0185 }
-            android.util.Log.i(r4, r5)     // Catch:{ all -> 0x0185 }
-            r2.setRelayChannelId(r3)     // Catch:{ all -> 0x0185 }
-            r2.setBoundStreamId(r3)     // Catch:{ all -> 0x0185 }
-        L_0x00b6:
+            r5.append(r6)     // Catch:{ all -> 0x01a6 }
+            int r6 = r2.getStreamId()     // Catch:{ all -> 0x01a6 }
+            r5.append(r6)     // Catch:{ all -> 0x01a6 }
+            java.lang.String r5 = r5.toString()     // Catch:{ all -> 0x01a6 }
+            android.util.Log.i(r4, r5)     // Catch:{ all -> 0x01a6 }
+            r2.setRelayChannelId(r3)     // Catch:{ all -> 0x01a6 }
+            r2.setBoundStreamId(r3)     // Catch:{ all -> 0x01a6 }
+        L_0x00e0:
             monitor-exit(r9)
             return
-        L_0x00b8:
-            com.sec.internal.ims.servicemodules.volte2.data.RelayStreams r0 = new com.sec.internal.ims.servicemodules.volte2.data.RelayStreams     // Catch:{ all -> 0x0185 }
-            r0.<init>(r10)     // Catch:{ all -> 0x0185 }
-            android.util.SparseArray<com.sec.internal.ims.servicemodules.volte2.data.RelayStreams> r1 = r9.mRelayStreamMap     // Catch:{ all -> 0x0185 }
-            int r2 = r10.getStreamId()     // Catch:{ all -> 0x0185 }
-            r1.put(r2, r0)     // Catch:{ all -> 0x0185 }
-            android.util.SparseArray<com.sec.internal.ims.servicemodules.volte2.data.RelayStreams> r1 = r9.mRelayStreamMap     // Catch:{ all -> 0x0185 }
-            int r1 = r1.size()     // Catch:{ all -> 0x0185 }
+        L_0x00e2:
+            com.sec.internal.ims.servicemodules.volte2.data.RelayStreams r0 = new com.sec.internal.ims.servicemodules.volte2.data.RelayStreams     // Catch:{ all -> 0x01a6 }
+            r0.<init>(r10)     // Catch:{ all -> 0x01a6 }
+            android.util.SparseArray<com.sec.internal.ims.servicemodules.volte2.data.RelayStreams> r1 = r9.mRelayStreamMap     // Catch:{ all -> 0x01a6 }
+            int r2 = r10.getStreamId()     // Catch:{ all -> 0x01a6 }
+            r1.put(r2, r0)     // Catch:{ all -> 0x01a6 }
+            android.util.SparseArray<com.sec.internal.ims.servicemodules.volte2.data.RelayStreams> r1 = r9.mRelayStreamMap     // Catch:{ all -> 0x01a6 }
+            int r1 = r1.size()     // Catch:{ all -> 0x01a6 }
             r2 = 2
-            if (r1 < r2) goto L_0x00d2
-            r9.handleRelayChannel()     // Catch:{ all -> 0x0185 }
-        L_0x00d2:
+            if (r1 < r2) goto L_0x00fc
+            r9.handleRelayChannel()     // Catch:{ all -> 0x01a6 }
+        L_0x00fc:
             monitor-exit(r9)
             return
-        L_0x00d4:
+        L_0x00fe:
             r0 = 0
-        L_0x00d5:
-            android.util.SparseArray<com.sec.internal.ims.servicemodules.volte2.data.RelayStreams> r4 = r9.mRelayStreamMap     // Catch:{ all -> 0x0185 }
-            int r4 = r4.size()     // Catch:{ all -> 0x0185 }
-            if (r0 >= r4) goto L_0x017a
-            android.util.SparseArray<com.sec.internal.ims.servicemodules.volte2.data.RelayStreams> r4 = r9.mRelayStreamMap     // Catch:{ all -> 0x0185 }
-            java.lang.Object r4 = r4.valueAt(r0)     // Catch:{ all -> 0x0185 }
-            com.sec.internal.ims.servicemodules.volte2.data.RelayStreams r4 = (com.sec.internal.ims.servicemodules.volte2.data.RelayStreams) r4     // Catch:{ all -> 0x0185 }
-            int r5 = r4.getSessionId()     // Catch:{ all -> 0x0185 }
-            int r6 = r10.getSessionID()     // Catch:{ all -> 0x0185 }
-            if (r5 != r6) goto L_0x0176
-            int r5 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x0185 }
-            if (r5 != r3) goto L_0x0119
-            java.lang.String r5 = LOG_TAG     // Catch:{ all -> 0x0185 }
-            java.lang.StringBuilder r6 = new java.lang.StringBuilder     // Catch:{ all -> 0x0185 }
-            r6.<init>()     // Catch:{ all -> 0x0185 }
+        L_0x00ff:
+            android.util.SparseArray<com.sec.internal.ims.servicemodules.volte2.data.RelayStreams> r4 = r9.mRelayStreamMap     // Catch:{ all -> 0x01a6 }
+            int r4 = r4.size()     // Catch:{ all -> 0x01a6 }
+            if (r0 >= r4) goto L_0x01a4
+            android.util.SparseArray<com.sec.internal.ims.servicemodules.volte2.data.RelayStreams> r4 = r9.mRelayStreamMap     // Catch:{ all -> 0x01a6 }
+            java.lang.Object r4 = r4.valueAt(r0)     // Catch:{ all -> 0x01a6 }
+            com.sec.internal.ims.servicemodules.volte2.data.RelayStreams r4 = (com.sec.internal.ims.servicemodules.volte2.data.RelayStreams) r4     // Catch:{ all -> 0x01a6 }
+            int r5 = r4.getSessionId()     // Catch:{ all -> 0x01a6 }
+            int r6 = r10.getSessionID()     // Catch:{ all -> 0x01a6 }
+            if (r5 != r6) goto L_0x01a0
+            int r5 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x01a6 }
+            if (r5 != r3) goto L_0x0143
+            java.lang.String r5 = LOG_TAG     // Catch:{ all -> 0x01a6 }
+            java.lang.StringBuilder r6 = new java.lang.StringBuilder     // Catch:{ all -> 0x01a6 }
+            r6.<init>()     // Catch:{ all -> 0x01a6 }
             java.lang.String r7 = "hold relay channel : "
-            r6.append(r7)     // Catch:{ all -> 0x0185 }
-            int r7 = r4.getRelayChannelId()     // Catch:{ all -> 0x0185 }
-            r6.append(r7)     // Catch:{ all -> 0x0185 }
-            java.lang.String r6 = r6.toString()     // Catch:{ all -> 0x0185 }
-            android.util.Log.i(r5, r6)     // Catch:{ all -> 0x0185 }
-            com.sec.internal.interfaces.ims.core.handler.ICmcMediaServiceInterface r5 = r9.mCmcMediaIntf     // Catch:{ all -> 0x0185 }
-            int r6 = r4.getRelayChannelId()     // Catch:{ all -> 0x0185 }
-            r5.sreHoldRelayChannel(r6)     // Catch:{ all -> 0x0185 }
-            goto L_0x0176
-        L_0x0119:
-            int r5 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x0185 }
-            if (r5 != r2) goto L_0x0144
-            java.lang.String r5 = LOG_TAG     // Catch:{ all -> 0x0185 }
-            java.lang.StringBuilder r6 = new java.lang.StringBuilder     // Catch:{ all -> 0x0185 }
-            r6.<init>()     // Catch:{ all -> 0x0185 }
+            r6.append(r7)     // Catch:{ all -> 0x01a6 }
+            int r7 = r4.getRelayChannelId()     // Catch:{ all -> 0x01a6 }
+            r6.append(r7)     // Catch:{ all -> 0x01a6 }
+            java.lang.String r6 = r6.toString()     // Catch:{ all -> 0x01a6 }
+            android.util.Log.i(r5, r6)     // Catch:{ all -> 0x01a6 }
+            com.sec.internal.interfaces.ims.core.handler.ICmcMediaServiceInterface r5 = r9.mCmcMediaIntf     // Catch:{ all -> 0x01a6 }
+            int r6 = r4.getRelayChannelId()     // Catch:{ all -> 0x01a6 }
+            r5.sreHoldRelayChannel(r6)     // Catch:{ all -> 0x01a6 }
+            goto L_0x01a0
+        L_0x0143:
+            int r5 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x01a6 }
+            if (r5 != r2) goto L_0x016e
+            java.lang.String r5 = LOG_TAG     // Catch:{ all -> 0x01a6 }
+            java.lang.StringBuilder r6 = new java.lang.StringBuilder     // Catch:{ all -> 0x01a6 }
+            r6.<init>()     // Catch:{ all -> 0x01a6 }
             java.lang.String r7 = "resume relay channel : "
-            r6.append(r7)     // Catch:{ all -> 0x0185 }
-            int r7 = r4.getRelayChannelId()     // Catch:{ all -> 0x0185 }
-            r6.append(r7)     // Catch:{ all -> 0x0185 }
-            java.lang.String r6 = r6.toString()     // Catch:{ all -> 0x0185 }
-            android.util.Log.i(r5, r6)     // Catch:{ all -> 0x0185 }
-            com.sec.internal.interfaces.ims.core.handler.ICmcMediaServiceInterface r5 = r9.mCmcMediaIntf     // Catch:{ all -> 0x0185 }
-            int r6 = r4.getRelayChannelId()     // Catch:{ all -> 0x0185 }
-            r5.sreResumeRelayChannel(r6)     // Catch:{ all -> 0x0185 }
-            goto L_0x0176
-        L_0x0144:
-            int r5 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x0185 }
-            if (r5 != r1) goto L_0x0176
-            java.lang.String r5 = LOG_TAG     // Catch:{ all -> 0x0185 }
-            java.lang.StringBuilder r6 = new java.lang.StringBuilder     // Catch:{ all -> 0x0185 }
-            r6.<init>()     // Catch:{ all -> 0x0185 }
+            r6.append(r7)     // Catch:{ all -> 0x01a6 }
+            int r7 = r4.getRelayChannelId()     // Catch:{ all -> 0x01a6 }
+            r6.append(r7)     // Catch:{ all -> 0x01a6 }
+            java.lang.String r6 = r6.toString()     // Catch:{ all -> 0x01a6 }
+            android.util.Log.i(r5, r6)     // Catch:{ all -> 0x01a6 }
+            com.sec.internal.interfaces.ims.core.handler.ICmcMediaServiceInterface r5 = r9.mCmcMediaIntf     // Catch:{ all -> 0x01a6 }
+            int r6 = r4.getRelayChannelId()     // Catch:{ all -> 0x01a6 }
+            r5.sreResumeRelayChannel(r6)     // Catch:{ all -> 0x01a6 }
+            goto L_0x01a0
+        L_0x016e:
+            int r5 = r10.getRelayStreamEvent()     // Catch:{ all -> 0x01a6 }
+            if (r5 != r1) goto L_0x01a0
+            java.lang.String r5 = LOG_TAG     // Catch:{ all -> 0x01a6 }
+            java.lang.StringBuilder r6 = new java.lang.StringBuilder     // Catch:{ all -> 0x01a6 }
+            r6.<init>()     // Catch:{ all -> 0x01a6 }
             java.lang.String r7 = "start record relay channel : "
-            r6.append(r7)     // Catch:{ all -> 0x0185 }
-            int r7 = r4.getRelayChannelId()     // Catch:{ all -> 0x0185 }
-            r6.append(r7)     // Catch:{ all -> 0x0185 }
-            java.lang.String r6 = r6.toString()     // Catch:{ all -> 0x0185 }
-            android.util.Log.i(r5, r6)     // Catch:{ all -> 0x0185 }
-            com.sec.internal.interfaces.ims.core.handler.ICmcMediaServiceInterface r5 = r9.mCmcMediaIntf     // Catch:{ all -> 0x0185 }
-            int r6 = r10.getSessionID()     // Catch:{ all -> 0x0185 }
-            int r7 = r4.getStreamId()     // Catch:{ all -> 0x0185 }
-            int r8 = r4.getRelayChannelId()     // Catch:{ all -> 0x0185 }
-            r5.sreStartRecordingChannel(r6, r7, r8)     // Catch:{ all -> 0x0185 }
-        L_0x0176:
+            r6.append(r7)     // Catch:{ all -> 0x01a6 }
+            int r7 = r4.getRelayChannelId()     // Catch:{ all -> 0x01a6 }
+            r6.append(r7)     // Catch:{ all -> 0x01a6 }
+            java.lang.String r6 = r6.toString()     // Catch:{ all -> 0x01a6 }
+            android.util.Log.i(r5, r6)     // Catch:{ all -> 0x01a6 }
+            com.sec.internal.interfaces.ims.core.handler.ICmcMediaServiceInterface r5 = r9.mCmcMediaIntf     // Catch:{ all -> 0x01a6 }
+            int r6 = r10.getSessionID()     // Catch:{ all -> 0x01a6 }
+            int r7 = r4.getStreamId()     // Catch:{ all -> 0x01a6 }
+            int r8 = r4.getRelayChannelId()     // Catch:{ all -> 0x01a6 }
+            r5.sreStartRecordingChannel(r6, r7, r8)     // Catch:{ all -> 0x01a6 }
+        L_0x01a0:
             int r0 = r0 + 1
-            goto L_0x00d5
-        L_0x017a:
+            goto L_0x00ff
+        L_0x01a4:
             monitor-exit(r9)
             return
-        L_0x017c:
-            java.lang.String r0 = LOG_TAG     // Catch:{ all -> 0x0185 }
-            java.lang.String r1 = "Ignore RTP/RTCP_TIMEOUT for CMC at PD"
-            android.util.Log.i(r0, r1)     // Catch:{ all -> 0x0185 }
-            monitor-exit(r9)
-            return
-        L_0x0185:
+        L_0x01a6:
             r10 = move-exception
             monitor-exit(r9)
             throw r10
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.sec.internal.ims.servicemodules.volte2.CmcMediaController.onRelayStreamEvent(com.sec.internal.constants.ims.servicemodules.volte2.IMSMediaEvent):void");
+        throw new UnsupportedOperationException("Method not decompiled: com.sec.internal.ims.servicemodules.volte2.CmcMediaController.onRelayStreamEvent(com.sec.internal.constants.ims.servicemodules.volte2.IMSMediaEvent, int):void");
     }
 
     private void handleRelayChannel() {
@@ -376,7 +390,7 @@ public class CmcMediaController implements ICmcMediaController {
             event.setSessionID(session.getSessionId());
             event.setPhoneId(session.getPhoneId());
             if (event.isRelayStreamEvent()) {
-                onRelayStreamEvent(event);
+                onRelayStreamEvent(event, session.getRegistration().getHandle());
             } else if (event.isCmcRecordingEvent()) {
                 onCmcRecordingEvent(event);
             }
@@ -402,33 +416,18 @@ public class CmcMediaController implements ICmcMediaController {
 
     private void onCmcRecordingEvent(IMSMediaEvent event) {
         int recordEvent;
-        String str = LOG_TAG;
-        Log.i(str, "onCmcRecordingEvent: event " + event.getCmcRecordingEvent());
         int cmcRecordingEvent = event.getCmcRecordingEvent();
         if (cmcRecordingEvent != 0) {
-            if (cmcRecordingEvent != 5) {
-                switch (cmcRecordingEvent) {
-                    case 7:
-                        recordEvent = 801;
-                        break;
-                    case 8:
-                        recordEvent = 900;
-                        break;
-                    case 9:
-                        recordEvent = Id.REQUEST_ALARM_WAKE_UP;
-                        break;
-                    case 10:
-                        recordEvent = 701;
-                        break;
-                    case 11:
-                        recordEvent = Id.REQUEST_PRESENCE_UNPUBLISH;
-                        break;
-                    default:
-                        recordEvent = 1;
-                        break;
-                }
-            } else {
+            if (cmcRecordingEvent == 5) {
                 recordEvent = 800;
+            } else if (cmcRecordingEvent == 7) {
+                recordEvent = 801;
+            } else if (cmcRecordingEvent == 8) {
+                recordEvent = 900;
+            } else if (cmcRecordingEvent != 9) {
+                recordEvent = 1;
+            } else {
+                recordEvent = Id.REQUEST_ALARM_WAKE_UP;
             }
             this.mVolteServiceModule.notifyOnCmcRecordingEvent(event.getPhoneId(), recordEvent, event.getCmcRecordingArg(), event.getSessionID());
         }

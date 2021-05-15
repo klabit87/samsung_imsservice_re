@@ -1098,7 +1098,7 @@ public class WorkflowVzw extends WorkflowUpBase {
                 WorkflowVzw.this.mSharedInfo.addHttpParam("terminal_sw_version", WorkflowVzw.this.mParamHandler.getModelInfoFromBuildVersion(ConfigUtil.getModelName(WorkflowVzw.this.mPhoneId), ConfigConstants.PVALUE.TERMINAL_SW_VERSION, 8, true));
                 WorkflowVzw.this.mSharedInfo.addHttpParam(ConfigConstants.PNAME.CLIENT_VENDOR, ConfigConstants.PVALUE.CLIENT_VENDOR);
                 SharedInfo sharedInfo = WorkflowVzw.this.mSharedInfo;
-                sharedInfo.addHttpParam(ConfigConstants.PNAME.CLIENT_VERSION, ConfigConstants.PVALUE.CLIENT_VERSION_NAME + WorkflowVzw.this.mClientVersion);
+                sharedInfo.addHttpParam(ConfigConstants.PNAME.CLIENT_VERSION, WorkflowVzw.this.mClientPlatform + WorkflowVzw.this.mClientVersion);
                 WorkflowVzw.this.mSharedInfo.addHttpParam("rcs_version", WorkflowVzw.this.mRcsVersion);
                 Log.d(WorkflowVzw.LOG_TAG, "set rcs_profile to UP_1.0");
                 WorkflowVzw.this.mSharedInfo.addHttpParam(ConfigConstants.PNAME.RCS_PROFILE, "UP_1.0");

@@ -37,6 +37,11 @@ public class RegistrationGovernorIR92 extends RegistrationGovernorBase {
         return services;
     }
 
+    /* access modifiers changed from: protected */
+    public boolean checkVolteSetting(int rat) {
+        return true;
+    }
+
     public Set<String> filterService(Set<String> services, int network) {
         return super.filterService(applyMmtelUserSettings(services, network), network);
     }

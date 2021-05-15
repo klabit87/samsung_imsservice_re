@@ -876,10 +876,10 @@ public class ImProcessor extends Handler implements ImMessageListener {
     }
 
     /* access modifiers changed from: protected */
-    /* JADX WARNING: Removed duplicated region for block: B:29:0x0109  */
-    /* JADX WARNING: Removed duplicated region for block: B:30:0x0126  */
-    /* JADX WARNING: Removed duplicated region for block: B:48:0x01db  */
-    /* JADX WARNING: Removed duplicated region for block: B:49:0x01de  */
+    /* JADX WARNING: Removed duplicated region for block: B:29:0x00f1  */
+    /* JADX WARNING: Removed duplicated region for block: B:30:0x010e  */
+    /* JADX WARNING: Removed duplicated region for block: B:48:0x01c3  */
+    /* JADX WARNING: Removed duplicated region for block: B:49:0x01c6  */
     /* Code decompiled incorrectly, please refer to instructions dump. */
     public void onIncomingMessageReceived(com.sec.internal.constants.ims.servicemodules.im.event.ImIncomingMessageEvent r14) {
         /*
@@ -909,17 +909,9 @@ public class ImProcessor extends Handler implements ImMessageListener {
             com.sec.internal.ims.servicemodules.im.ImDump r2 = r2.getImDump()
             java.lang.StringBuilder r3 = new java.lang.StringBuilder
             r3.<init>()
-            java.lang.String r4 = "onIncomingMessageReceived: chatId="
-            r3.append(r4)
-            java.lang.String r4 = r0.getChatId()
-            r3.append(r4)
-            java.lang.String r4 = ", convId="
+            java.lang.String r4 = "onIncomingMessageReceived: conversationId="
             r3.append(r4)
             java.lang.String r4 = r0.getConversationId()
-            r3.append(r4)
-            java.lang.String r4 = ", contId="
-            r3.append(r4)
-            java.lang.String r4 = r0.getContributionId()
             r3.append(r4)
             java.lang.String r4 = ", imdnId="
             r3.append(r4)
@@ -928,49 +920,49 @@ public class ImProcessor extends Handler implements ImMessageListener {
             java.lang.String r3 = r3.toString()
             r2.addEventLogs(r3)
             boolean r2 = r13.isDuplicateMessage(r1, r0, r14)
-            if (r2 == 0) goto L_0x007e
+            if (r2 == 0) goto L_0x0066
             return
-        L_0x007e:
+        L_0x0066:
             com.sec.internal.constants.ims.servicemodules.im.ChatData r2 = r0.getChatData()
             boolean r2 = r2.isMuted()
-            if (r2 == 0) goto L_0x0090
+            if (r2 == 0) goto L_0x0078
             java.lang.String r2 = LOG_TAG
             java.lang.String r3 = "onIncomingMessageReceived, user reject GC text."
             android.util.Log.i(r2, r3)
             return
-        L_0x0090:
+        L_0x0078:
             java.lang.String r2 = r0.getDeviceId()
             r14.mDeviceId = r2
             r13.updateMessageSenderAlias(r1, r0, r14)
             boolean r2 = r0.isGroupChat()
             r10 = 0
-            if (r2 != 0) goto L_0x00bd
+            if (r2 != 0) goto L_0x00a5
             boolean r2 = r0.isChatbotRole()
-            if (r2 == 0) goto L_0x00ac
+            if (r2 == 0) goto L_0x0094
             com.sec.ims.util.ImsUri r2 = r14.mSender
             com.sec.internal.ims.util.ChatbotUriUtil.removeUriParameters(r2)
-            goto L_0x00bd
-        L_0x00ac:
+            goto L_0x00a5
+        L_0x0094:
             com.sec.internal.ims.servicemodules.im.ImSessionProcessor r2 = r13.mImSessionProcessor
             com.sec.ims.util.ImsUri r3 = r0.getRemoteUri()
             com.sec.internal.constants.ims.servicemodules.im.ChatData r4 = r0.getChatData()
             java.lang.String r4 = r4.getOwnIMSI()
             r2.setLegacyLatching(r3, r10, r4)
-        L_0x00bd:
+        L_0x00a5:
             r2 = 0
             java.lang.String r3 = r14.mBody
             boolean r3 = android.text.TextUtils.isEmpty(r3)
-            if (r3 != 0) goto L_0x00fa
+            if (r3 != 0) goto L_0x00e2
             java.lang.String r3 = r14.mContentType
             boolean r3 = com.sec.internal.ims.servicemodules.im.ImMultipart.isMultipart(r3)
-            if (r3 == 0) goto L_0x00fa
+            if (r3 == 0) goto L_0x00e2
             com.sec.internal.ims.servicemodules.im.ImMultipart r3 = new com.sec.internal.ims.servicemodules.im.ImMultipart
             java.lang.String r4 = r14.mBody
             java.lang.String r5 = r14.mContentType
             r3.<init>(r4, r5)
             java.lang.String r4 = r3.getSuggestion()
             boolean r4 = android.text.TextUtils.isEmpty(r4)
-            if (r4 != 0) goto L_0x00fa
+            if (r4 != 0) goto L_0x00e2
             java.lang.String r4 = LOG_TAG
             java.lang.String r5 = "onIncomingMessageReceived: message includes suggestion"
             android.util.Log.i(r4, r5)
@@ -980,16 +972,16 @@ public class ImProcessor extends Handler implements ImMessageListener {
             r14.mContentType = r4
             java.lang.String r2 = r3.getSuggestion()
             r12 = r2
-            goto L_0x00fb
-        L_0x00fa:
+            goto L_0x00e3
+        L_0x00e2:
             r12 = r2
-        L_0x00fb:
+        L_0x00e3:
             java.lang.String r2 = r14.mContentType
-            if (r2 == 0) goto L_0x0126
+            if (r2 == 0) goto L_0x010e
             java.lang.String r2 = r14.mContentType
             java.lang.String r3 = "application/vnd.gsma.rcs-ft-http+xml"
             boolean r2 = r2.startsWith(r3)
-            if (r2 == 0) goto L_0x0126
+            if (r2 == 0) goto L_0x010e
             com.sec.internal.ims.servicemodules.im.ImCache r2 = r13.mCache
             java.lang.String r3 = r0.getOwnImsi()
             com.sec.internal.ims.servicemodules.im.ImModule r4 = r13.mImModule
@@ -1000,10 +992,10 @@ public class ImProcessor extends Handler implements ImMessageListener {
             r5 = r14
             r7 = r12
             com.sec.internal.ims.servicemodules.im.FtHttpIncomingMessage r2 = r2.makeNewIncomingFtHttpMessage((java.lang.String) r3, (com.sec.internal.ims.servicemodules.im.ImSession) r4, (com.sec.internal.constants.ims.servicemodules.im.event.ImIncomingMessageEvent) r5, (android.net.Network) r6, (java.lang.String) r7)
-            goto L_0x0198
-        L_0x0126:
+            goto L_0x0180
+        L_0x010e:
             boolean r2 = r14.mIsRoutingMsg
-            if (r2 == 0) goto L_0x014f
+            if (r2 == 0) goto L_0x0137
             com.sec.internal.ims.servicemodules.im.ImModule r3 = r13.mImModule
             com.sec.ims.util.ImsUri r4 = r14.mRequestUri
             com.sec.ims.util.ImsUri r5 = r14.mPAssertedId
@@ -1015,12 +1007,12 @@ public class ImProcessor extends Handler implements ImMessageListener {
             r14.mRoutingType = r2
             com.sec.internal.constants.ims.servicemodules.im.RoutingType r2 = r14.mRoutingType
             com.sec.internal.constants.ims.servicemodules.im.RoutingType r3 = com.sec.internal.constants.ims.servicemodules.im.RoutingType.SENT
-            if (r2 != r3) goto L_0x014f
+            if (r2 != r3) goto L_0x0137
             boolean r2 = r0.isGroupChat()
-            if (r2 != 0) goto L_0x014f
+            if (r2 != 0) goto L_0x0137
             com.sec.ims.util.ImsUri r2 = r14.mReceiver
             r14.mSender = r2
-        L_0x014f:
+        L_0x0137:
             com.sec.internal.ims.servicemodules.im.ImCache r2 = r13.mCache
             java.lang.String r3 = r0.getOwnImsi()
             com.sec.internal.ims.servicemodules.im.ImModule r4 = r13.mImModule
@@ -1030,12 +1022,12 @@ public class ImProcessor extends Handler implements ImMessageListener {
             r7 = r12
             com.sec.internal.ims.servicemodules.im.ImMessage r2 = r2.makeNewIncomingMessage((java.lang.String) r3, (com.sec.internal.ims.servicemodules.im.ImSession) r4, (com.sec.internal.constants.ims.servicemodules.im.event.ImIncomingMessageEvent) r5, (android.net.Network) r6, (java.lang.String) r7)
             boolean r3 = r0.isGroupChat()
-            if (r3 == 0) goto L_0x0198
+            if (r3 == 0) goto L_0x0180
             java.util.List<com.sec.ims.util.ImsUri> r3 = r14.mCcParticipants
-            if (r3 == 0) goto L_0x0198
+            if (r3 == 0) goto L_0x0180
             java.util.List<com.sec.ims.util.ImsUri> r3 = r14.mCcParticipants
             boolean r3 = r3.isEmpty()
-            if (r3 != 0) goto L_0x0198
+            if (r3 != 0) goto L_0x0180
             com.sec.internal.ims.servicemodules.im.ImModule r3 = r13.mImModule
             java.util.List<com.sec.ims.util.ImsUri> r4 = r14.mCcParticipants
             java.util.Set r3 = r3.normalizeUri((int) r1, (java.util.Collection<com.sec.ims.util.ImsUri>) r4)
@@ -1050,7 +1042,7 @@ public class ImProcessor extends Handler implements ImMessageListener {
             r5.append(r3)
             java.lang.String r5 = r5.toString()
             android.util.Log.i(r4, r5)
-        L_0x0198:
+        L_0x0180:
             com.sec.internal.ims.servicemodules.im.ImModule r3 = r13.mImModule
             com.sec.internal.ims.servicemodules.im.ImDump r3 = r3.getImDump()
             boolean r4 = r0.isGroupChat()
@@ -1069,16 +1061,16 @@ public class ImProcessor extends Handler implements ImMessageListener {
             com.sec.internal.ims.servicemodules.im.ImBigDataProcessor r3 = r3.getBigDataProcessor()
             com.sec.internal.constants.ims.servicemodules.im.ImDirection r5 = com.sec.internal.constants.ims.servicemodules.im.ImDirection.INCOMING
             boolean r4 = r0.isGroupChat()
-            if (r4 != 0) goto L_0x01de
+            if (r4 != 0) goto L_0x01c6
             java.util.Set r4 = r0.getParticipantsUri()
             boolean r4 = com.sec.internal.ims.util.ChatbotUriUtil.hasChatbotUri(r4, r1)
-            if (r4 == 0) goto L_0x01de
+            if (r4 == 0) goto L_0x01c6
             r4 = 1
             r6 = r4
-            goto L_0x01df
-        L_0x01de:
+            goto L_0x01c7
+        L_0x01c6:
             r6 = r10
-        L_0x01df:
+        L_0x01c7:
             r7 = 0
             r8 = 0
             r9 = 0
@@ -1093,8 +1085,8 @@ public class ImProcessor extends Handler implements ImMessageListener {
     }
 
     /* access modifiers changed from: protected */
-    /* JADX WARNING: Removed duplicated region for block: B:28:0x014e  */
-    /* JADX WARNING: Removed duplicated region for block: B:30:0x0156  */
+    /* JADX WARNING: Removed duplicated region for block: B:28:0x0136  */
+    /* JADX WARNING: Removed duplicated region for block: B:30:0x013e  */
     /* Code decompiled incorrectly, please refer to instructions dump. */
     public void onIncomingSlmMessage(com.sec.internal.constants.ims.servicemodules.im.event.SlmIncomingMessageEvent r24) {
         /*
@@ -1152,17 +1144,9 @@ public class ImProcessor extends Handler implements ImMessageListener {
             com.sec.internal.ims.servicemodules.im.ImDump r1 = r1.getImDump()
             java.lang.StringBuilder r2 = new java.lang.StringBuilder
             r2.<init>()
-            java.lang.String r3 = "onIncomingSlmMessageReceived: chatId="
-            r2.append(r3)
-            java.lang.String r3 = r9.getChatId()
-            r2.append(r3)
-            java.lang.String r3 = ", convId="
+            java.lang.String r3 = "onIncomingSlmMessageReceived: conversationId="
             r2.append(r3)
             java.lang.String r3 = r9.getConversationId()
-            r2.append(r3)
-            java.lang.String r3 = ", contId="
-            r2.append(r3)
-            java.lang.String r3 = r9.getContributionId()
             r2.append(r3)
             java.lang.String r3 = ", imdnId="
             r2.append(r3)
@@ -1171,13 +1155,13 @@ public class ImProcessor extends Handler implements ImMessageListener {
             java.lang.String r2 = r2.toString()
             r1.addEventLogs(r2)
             boolean r1 = r9.isGroupChat()
-            if (r1 != 0) goto L_0x00b5
+            if (r1 != 0) goto L_0x009d
             com.sec.internal.ims.servicemodules.im.ImSessionProcessor r1 = r0.mImSessionProcessor
             com.sec.ims.util.ImsUri r2 = r9.getRemoteUri()
             com.sec.internal.constants.ims.servicemodules.im.ChatData r3 = r9.getChatData()
             java.lang.String r3 = r3.getOwnIMSI()
             r1.setLegacyLatching(r2, r13, r3)
-        L_0x00b5:
+        L_0x009d:
             java.lang.String r1 = r7.mContributionId
             r9.setContributionId(r1)
             java.lang.String r1 = r7.mConversationId
@@ -1199,12 +1183,12 @@ public class ImProcessor extends Handler implements ImMessageListener {
             com.sec.internal.ims.servicemodules.im.MessageBase r18 = r1.getMessage(r2, r10, r3, r4)
             r1 = 0
             java.lang.String r2 = r7.mBody
-            if (r2 == 0) goto L_0x0146
+            if (r2 == 0) goto L_0x012e
             java.lang.String r2 = r7.mContentType
-            if (r2 == 0) goto L_0x0146
+            if (r2 == 0) goto L_0x012e
             java.lang.String r2 = r7.mContentType
             boolean r2 = com.sec.internal.ims.servicemodules.im.ImMultipart.isMultipart(r2)
-            if (r2 == 0) goto L_0x0146
+            if (r2 == 0) goto L_0x012e
             java.lang.String r2 = LOG_TAG
             java.lang.String r3 = "onIncomingSlmMessage: isMultipart"
             android.util.Log.i(r2, r3)
@@ -1214,7 +1198,7 @@ public class ImProcessor extends Handler implements ImMessageListener {
             r2.<init>(r3, r4)
             java.lang.String r3 = r2.getSuggestion()
             boolean r3 = android.text.TextUtils.isEmpty(r3)
-            if (r3 != 0) goto L_0x0146
+            if (r3 != 0) goto L_0x012e
             java.lang.String r3 = LOG_TAG
             java.lang.String r4 = "onIncomingSlmMessage: message includes suggestion"
             android.util.Log.i(r3, r4)
@@ -1232,24 +1216,24 @@ public class ImProcessor extends Handler implements ImMessageListener {
             java.lang.String r4 = r4.toString()
             android.util.Log.i(r3, r4)
             r19 = r1
-            goto L_0x0148
-        L_0x0146:
+            goto L_0x0130
+        L_0x012e:
             r19 = r1
-        L_0x0148:
-            if (r18 == 0) goto L_0x0156
+        L_0x0130:
+            if (r18 == 0) goto L_0x013e
             boolean r1 = r7.mIsPublicAccountMsg
-            if (r1 != 0) goto L_0x0156
+            if (r1 != 0) goto L_0x013e
             java.lang.String r1 = LOG_TAG
             java.lang.String r2 = "duplicate message, ignore"
             android.util.Log.e(r1, r2)
             return
-        L_0x0156:
+        L_0x013e:
             java.lang.String r1 = r7.mContentType
-            if (r1 == 0) goto L_0x018d
+            if (r1 == 0) goto L_0x0175
             java.lang.String r1 = r7.mContentType
             java.lang.String r2 = "application/vnd.gsma.rcs-ft-http+xml"
             boolean r1 = r1.startsWith(r2)
-            if (r1 == 0) goto L_0x018d
+            if (r1 == 0) goto L_0x0175
             com.sec.internal.ims.servicemodules.im.ImCache r1 = r0.mCache
             java.lang.String r2 = r9.getOwnImsi()
             com.sec.internal.ims.servicemodules.im.ImModule r3 = r0.mImModule
@@ -1266,10 +1250,10 @@ public class ImProcessor extends Handler implements ImMessageListener {
             r16 = r13
             r22 = r14
             r14 = r9
-            goto L_0x01e2
-        L_0x018d:
+            goto L_0x01ca
+        L_0x0175:
             boolean r1 = r7.mIsRoutingMsg
-            if (r1 == 0) goto L_0x01c6
+            if (r1 == 0) goto L_0x01ae
             com.sec.internal.ims.servicemodules.im.ImModule r8 = r0.mImModule
             com.sec.ims.util.ImsUri r1 = r7.mRequestUri
             com.sec.ims.util.ImsUri r2 = r7.mPAssertedId
@@ -1292,20 +1276,20 @@ public class ImProcessor extends Handler implements ImMessageListener {
             r7.mRoutingType = r1
             com.sec.internal.constants.ims.servicemodules.im.RoutingType r1 = r7.mRoutingType
             com.sec.internal.constants.ims.servicemodules.im.RoutingType r2 = com.sec.internal.constants.ims.servicemodules.im.RoutingType.SENT
-            if (r1 != r2) goto L_0x01d0
+            if (r1 != r2) goto L_0x01b8
             boolean r1 = r6.isGroupChat()
-            if (r1 != 0) goto L_0x01d0
+            if (r1 != 0) goto L_0x01b8
             com.sec.ims.util.ImsUri r1 = r7.mReceiver
             r7.mSender = r1
-            goto L_0x01d0
-        L_0x01c6:
+            goto L_0x01b8
+        L_0x01ae:
             r6 = r9
             r20 = r10
             r21 = r11
             r3 = r12
             r16 = r13
             r22 = r14
-        L_0x01d0:
+        L_0x01b8:
             com.sec.internal.ims.servicemodules.im.ImCache r1 = r0.mCache
             java.lang.String r2 = r6.getOwnImsi()
             r5 = 0
@@ -1315,29 +1299,29 @@ public class ImProcessor extends Handler implements ImMessageListener {
             r14 = r6
             r6 = r19
             com.sec.internal.ims.servicemodules.im.ImMessage r1 = r1.makeNewIncomingMessage((java.lang.String) r2, (com.sec.internal.ims.servicemodules.im.ImSession) r3, (com.sec.internal.constants.ims.servicemodules.im.event.SlmIncomingMessageEvent) r4, (android.net.Network) r5, (java.lang.String) r6)
-        L_0x01e2:
+        L_0x01ca:
             boolean r2 = r14.isGroupChat()
-            if (r2 != 0) goto L_0x01f4
+            if (r2 != 0) goto L_0x01dc
             boolean r2 = r7.mIsChatbotRole
-            if (r2 == 0) goto L_0x01f4
+            if (r2 == 0) goto L_0x01dc
             com.sec.internal.constants.ims.servicemodules.im.ImConstants$ChatbotMessagingTech r2 = com.sec.internal.constants.ims.servicemodules.im.ImConstants.ChatbotMessagingTech.STANDALONE_MESSAGING
             r1.setChatbotMessagingTech(r2)
             r14.updateIsChatbotRole(r8)
-        L_0x01f4:
+        L_0x01dc:
             r14.receiveSlmMessage(r1)
             com.sec.internal.ims.servicemodules.im.ImSessionProcessor r2 = r0.mImSessionProcessor
             com.sec.internal.ims.servicemodules.im.ImBigDataProcessor r2 = r2.getBigDataProcessor()
             com.sec.internal.constants.ims.servicemodules.im.ImDirection r10 = com.sec.internal.constants.ims.servicemodules.im.ImDirection.INCOMING
             boolean r3 = r14.isGroupChat()
-            if (r3 != 0) goto L_0x0211
+            if (r3 != 0) goto L_0x01f9
             java.util.Set r3 = r14.getParticipantsUri()
             boolean r3 = com.sec.internal.ims.util.ChatbotUriUtil.hasChatbotUri(r3, r15)
-            if (r3 == 0) goto L_0x0211
+            if (r3 == 0) goto L_0x01f9
             r11 = r8
-            goto L_0x0213
-        L_0x0211:
+            goto L_0x01fb
+        L_0x01f9:
             r11 = r16
-        L_0x0213:
+        L_0x01fb:
             r12 = 0
             r13 = 0
             r3 = 0
@@ -1416,7 +1400,7 @@ public class ImProcessor extends Handler implements ImMessageListener {
             return true;
         }
         ImDump imDump = this.mImModule.getImDump();
-        imDump.addEventLogs("sendDeliveredNotification: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", imdnId=" + event.mImdnMessageId);
+        imDump.addEventLogs("sendDeliveredNotification: conversationId=" + session.getConversationId() + ", imdnId=" + event.mImdnMessageId);
         session.sendDeliveredNotification(msg);
         return true;
     }

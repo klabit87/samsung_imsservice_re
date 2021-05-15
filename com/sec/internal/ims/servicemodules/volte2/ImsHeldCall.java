@@ -146,7 +146,7 @@ public class ImsHeldCall extends CallState {
                 }
             }
             this.mCsm.notifyOnError(1109, "Call switch failed", 10);
-        } else if (srvccVersion >= 9 || DeviceUtil.getGcfMode()) {
+        } else if (srvccVersion >= 9 || DeviceUtil.getGcfMode().booleanValue()) {
             Log.i("CallStateMachine", "mid-call sRVCC supported [during held state]");
             int cause = bundle.getInt("cause");
             if (cause == 100) {

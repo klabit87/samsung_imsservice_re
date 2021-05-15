@@ -16,7 +16,6 @@ public class Mno {
     public static Mno A1_SVN = new Mno("A1_SI", "SIM", Region.EUROPE, Country.SLOVENIA);
     public static Mno AIRBUS_MEXICO = new Mno("Airbus_MX", "MXO", Region.SOUTH_AMERICA, Country.MEXICO);
     public static Mno AIRTEL = new Mno("AIRTEL_IN", "", Region.SOUTH_WEST_ASIA, Country.INDIA);
-    public static Mno AIRTEL_LK = new Mno("AIRTEL_LK", "", Region.SOUTH_WEST_ASIA, Country.SRILANKA);
     public static Mno AIS = new Mno("AIS_TH", "THL", Region.SOUTH_EAST_ASIA, Country.THAILAND);
     public static Mno ALFA = new Mno("Alfa_LB", "MID", Region.MIDDLE_EAST, Country.LEBANON);
     public static Mno ALIV_BAHAMAS = new Mno("Aliv_BS", "BAA,TTT", Region.SOUTH_AMERICA, Country.BAHAMAS);
@@ -183,7 +182,6 @@ public class Mno {
     public static Mno ORANGE = new Mno("Orange_FR", "FTM", Region.EUROPE, Country.FRANCE);
     public static Mno ORANGE_BELGIUM = new Mno("Orange_BE", "MST", Region.EUROPE, Country.BELGIUM);
     public static Mno ORANGE_DOMINICANA = new Mno("Orange_DO", "DOR,DOO", Region.SOUTH_AMERICA, Country.DOMINICAN);
-    public static Mno ORANGE_EG = new Mno("Orange_EG", "", Region.MIDDLE_EAST, Country.EGYPT);
     public static Mno ORANGE_LUXEMBOURG = new Mno("Orange_LU", "", Region.EUROPE, Country.LUXEMBOURG);
     public static Mno ORANGE_MOLDOVA = new Mno("Orange_MD", "SEK", Region.EUROPE, Country.MOLDOVA);
     public static Mno ORANGE_MOROCCO = new Mno("Orange_MA", "", Region.AFRICA, Country.MOROCO);
@@ -339,7 +337,6 @@ public class Mno {
     public static Mno WIND_GREECE = new Mno("Wind_GR", "EUR", Region.EUROPE, Country.GREECE);
     public static Mno WOM_CHILE = new Mno("Wom_CL", "CHX,CHO,CHH,CHP,CHQ,CHK", Region.SOUTH_AMERICA, Country.CHILE);
     public static Mno XL_ID = new Mno("XL_ID", "", Region.SOUTH_EAST_ASIA, Country.INDONESIA);
-    public static Mno XPLORE = new Mno("Xplore_CA", "XPL", Region.NORTH_AMERICA, Country.CANADA);
     public static Mno YTL = new Mno("YTL_MY", "", Region.SOUTH_EAST_ASIA, Country.MALAYSIA);
     public static Mno ZAIN_BAHRAIN = new Mno("Zain_BH", "", Region.MIDDLE_EAST, Country.BAHRAIN);
     public static Mno ZAIN_JO = new Mno("Zain_JO", "", Region.MIDDLE_EAST, Country.JORDAN);
@@ -643,21 +640,15 @@ public class Mno {
     }
 
     public static Country getCountryFromMnomap(String mnoname) {
-        if (TextUtils.isEmpty(mnoname)) {
+        int delimiterPos = mnoname.indexOf("_");
+        if (delimiterPos == -1) {
             return Country.END_OF_COUNTRY;
         }
-        int beginIndex = mnoname.indexOf("_");
-        if (beginIndex != -1) {
-            int endIndex = mnoname.indexOf(MVNO_DELIMITER);
-            if (endIndex == -1) {
-                endIndex = mnoname.length();
-            }
-            String countryCode = mnoname.substring(beginIndex + 1, endIndex);
-            Log.d(LOG_TAG, "getCountryFromMnomap: countryCode = " + countryCode);
-            for (Country c : Country.values()) {
-                if (TextUtils.equals(c.getCountryIso(), countryCode)) {
-                    return c;
-                }
+        String countryCode = mnoname.substring(delimiterPos + 1, delimiterPos + 3);
+        Log.d(LOG_TAG, "getCountryFromMnomap: countryCode = " + countryCode);
+        for (Country c : Country.values()) {
+            if (TextUtils.equals(c.getCountryIso(), countryCode)) {
+                return c;
             }
         }
         return Country.END_OF_COUNTRY;

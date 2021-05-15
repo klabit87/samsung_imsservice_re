@@ -643,11 +643,8 @@ public class ResipImResponseHandler extends BaseHandler {
         event.mIsSendOnly = imSessionParam.isSendOnly();
         event.mIsChatbotRole = baseSessionData.isChatbotParticipant();
         event.mInitiator = ImsUri.parse(imSessionParam.sender());
-        if (!(!event.mIsChatbotRole || event.mInitiator == null || event.mInitiator.getParam("tk") == null)) {
-            if (event.mInitiator.getParam("tk").equals("on")) {
-                isTokenUsed = true;
-            }
-            event.mInitiator.removeParam("tk");
+        if (event.mIsChatbotRole && event.mInitiator != null && event.mInitiator.getParam("tk") != null && event.mInitiator.getParam("tk").equals("on")) {
+            isTokenUsed = true;
         }
         event.mIsTokenUsed = isTokenUsed;
         if (!event.mIsDeferred || baseSessionData.isConference()) {
@@ -819,7 +816,7 @@ public class ResipImResponseHandler extends BaseHandler {
         if (referredBy != null) {
             referredBy = referredBy.replaceAll("\\<|\\>", "");
             String str = this.LOG_TAG;
-            IMSLog.s(str, "handleImSessionClosedNotify() Referred By =" + IMSLog.numberChecker(referredBy));
+            IMSLog.s(str, "handleImSessionClosedNotify() Referred By =" + IMSLog.checker(referredBy));
             referredByUri = ImsUri.parse(referredBy);
         }
         ResipImHandler.ImSession session = this.mResipImHandler.mSessions.get(Integer.valueOf(sessionHandle2));
@@ -1957,9 +1954,7 @@ public class ResipImResponseHandler extends BaseHandler {
             subjectData = null;
         }
         Icon icon = imConferenceInfo.iconData();
-        if (icon == null || icon.icontype() == ImIconData.IconType.ICON_TYPE_NONE.ordinal()) {
-            iconData = null;
-        } else {
+        if (icon != null) {
             ImsUri participant2 = ImsUri.parse(icon.participant());
             String iconlocation = icon.iconLocation();
             int icon_type = icon.icontype();
@@ -1982,6 +1977,8 @@ public class ResipImResponseHandler extends BaseHandler {
             }
             int i = icon_type;
             iconData = new ImIconData(iconType, participant2, timestamp, iconlocation, iconUri);
+        } else {
+            iconData = null;
         }
         ArrayList arrayList = new ArrayList();
         if (imConferenceInfo.usersLength() > 0) {

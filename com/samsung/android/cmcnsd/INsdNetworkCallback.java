@@ -10,229 +10,200 @@ import com.samsung.android.cmcnsd.network.NsdNetworkCapabilities;
 import com.samsung.android.cmcnsd.network.NsdNetworkMessage;
 
 public interface INsdNetworkCallback extends IInterface {
-
-    public static class Default implements INsdNetworkCallback {
-        public IBinder asBinder() {
-            return null;
-        }
-
-        public void onWifiApConnectionChanged(NsdNetwork nsdNetwork) throws RemoteException {
-        }
-
-        public void onWifiApNetworkMessageReceived(NsdNetworkCapabilities nsdNetworkCapabilities, NsdNetworkMessage nsdNetworkMessage) throws RemoteException {
-        }
-
-        public void onWifiDirectConnectionChanged(NsdNetwork nsdNetwork) throws RemoteException {
-        }
-    }
-
     void onWifiApConnectionChanged(NsdNetwork nsdNetwork) throws RemoteException;
 
     void onWifiApNetworkMessageReceived(NsdNetworkCapabilities nsdNetworkCapabilities, NsdNetworkMessage nsdNetworkMessage) throws RemoteException;
 
     void onWifiDirectConnectionChanged(NsdNetwork nsdNetwork) throws RemoteException;
 
-    public static abstract class Stub extends Binder implements INsdNetworkCallback {
-        public static final String DESCRIPTOR = "com.samsung.android.cmcnsd.INsdNetworkCallback";
-        public static final int TRANSACTION_onWifiApConnectionChanged = 1;
-        public static final int TRANSACTION_onWifiApNetworkMessageReceived = 3;
-        public static final int TRANSACTION_onWifiDirectConnectionChanged = 2;
+    public static class Default implements INsdNetworkCallback {
+        public void onWifiApConnectionChanged(NsdNetwork network) throws RemoteException {
+        }
+
+        public void onWifiDirectConnectionChanged(NsdNetwork network) throws RemoteException {
+        }
+
+        public void onWifiApNetworkMessageReceived(NsdNetworkCapabilities capabilities, NsdNetworkMessage message) throws RemoteException {
+        }
 
         public IBinder asBinder() {
-            return this;
+            return null;
         }
+    }
+
+    public static abstract class Stub extends Binder implements INsdNetworkCallback {
+        private static final String DESCRIPTOR = "com.samsung.android.cmcnsd.INsdNetworkCallback";
+        static final int TRANSACTION_onWifiApConnectionChanged = 1;
+        static final int TRANSACTION_onWifiApNetworkMessageReceived = 3;
+        static final int TRANSACTION_onWifiDirectConnectionChanged = 2;
 
         public Stub() {
             attachInterface(this, DESCRIPTOR);
         }
 
-        public static INsdNetworkCallback asInterface(IBinder iBinder) {
-            if (iBinder == null) {
+        public static INsdNetworkCallback asInterface(IBinder obj) {
+            if (obj == null) {
                 return null;
             }
-            IInterface queryLocalInterface = iBinder.queryLocalInterface(DESCRIPTOR);
-            if (queryLocalInterface == null || !(queryLocalInterface instanceof INsdNetworkCallback)) {
-                return new Proxy(iBinder);
+            IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
+            if (iin == null || !(iin instanceof INsdNetworkCallback)) {
+                return new Proxy(obj);
             }
-            return (INsdNetworkCallback) queryLocalInterface;
+            return (INsdNetworkCallback) iin;
         }
 
-        /* JADX DEBUG: Multi-variable search result rejected for TypeSearchVarInfo{r0v1, resolved type: com.samsung.android.cmcnsd.network.NsdNetwork} */
-        /* JADX DEBUG: Multi-variable search result rejected for TypeSearchVarInfo{r0v4, resolved type: com.samsung.android.cmcnsd.network.NsdNetwork} */
-        /* JADX DEBUG: Multi-variable search result rejected for TypeSearchVarInfo{r0v7, resolved type: com.samsung.android.cmcnsd.network.NsdNetworkMessage} */
-        /* JADX WARNING: type inference failed for: r0v0 */
-        /* JADX WARNING: type inference failed for: r0v10 */
-        /* JADX WARNING: type inference failed for: r0v11 */
-        /* JADX WARNING: type inference failed for: r0v12 */
-        /* JADX WARNING: Multi-variable type inference failed */
-        /* Code decompiled incorrectly, please refer to instructions dump. */
-        public boolean onTransact(int r5, android.os.Parcel r6, android.os.Parcel r7, int r8) throws android.os.RemoteException {
-            /*
-                r4 = this;
-                r0 = 0
-                r1 = 1
-                java.lang.String r2 = "com.samsung.android.cmcnsd.INsdNetworkCallback"
-                if (r5 == r1) goto L_0x0060
-                r3 = 2
-                if (r5 == r3) goto L_0x0045
-                r3 = 3
-                if (r5 == r3) goto L_0x001a
-                r0 = 1598968902(0x5f4e5446, float:1.4867585E19)
-                if (r5 == r0) goto L_0x0016
-                boolean r5 = super.onTransact(r5, r6, r7, r8)
-                return r5
-            L_0x0016:
-                r7.writeString(r2)
-                return r1
-            L_0x001a:
-                r6.enforceInterface(r2)
-                int r5 = r6.readInt()
-                if (r5 == 0) goto L_0x002c
-                android.os.Parcelable$Creator<com.samsung.android.cmcnsd.network.NsdNetworkCapabilities> r5 = com.samsung.android.cmcnsd.network.NsdNetworkCapabilities.CREATOR
-                java.lang.Object r5 = r5.createFromParcel(r6)
-                com.samsung.android.cmcnsd.network.NsdNetworkCapabilities r5 = (com.samsung.android.cmcnsd.network.NsdNetworkCapabilities) r5
-                goto L_0x002d
-            L_0x002c:
-                r5 = r0
-            L_0x002d:
-                int r8 = r6.readInt()
-                if (r8 == 0) goto L_0x003d
-                android.os.Parcelable$Creator<com.samsung.android.cmcnsd.network.NsdNetworkMessage> r8 = com.samsung.android.cmcnsd.network.NsdNetworkMessage.CREATOR
-                java.lang.Object r6 = r8.createFromParcel(r6)
-                r0 = r6
-                com.samsung.android.cmcnsd.network.NsdNetworkMessage r0 = (com.samsung.android.cmcnsd.network.NsdNetworkMessage) r0
-                goto L_0x003e
-            L_0x003d:
-            L_0x003e:
-                r4.onWifiApNetworkMessageReceived(r5, r0)
-                r7.writeNoException()
-                return r1
-            L_0x0045:
-                r6.enforceInterface(r2)
-                int r5 = r6.readInt()
-                if (r5 == 0) goto L_0x0058
-                android.os.Parcelable$Creator<com.samsung.android.cmcnsd.network.NsdNetwork> r5 = com.samsung.android.cmcnsd.network.NsdNetwork.CREATOR
-                java.lang.Object r5 = r5.createFromParcel(r6)
-                r0 = r5
-                com.samsung.android.cmcnsd.network.NsdNetwork r0 = (com.samsung.android.cmcnsd.network.NsdNetwork) r0
-                goto L_0x0059
-            L_0x0058:
-            L_0x0059:
-                r4.onWifiDirectConnectionChanged(r0)
-                r7.writeNoException()
-                return r1
-            L_0x0060:
-                r6.enforceInterface(r2)
-                int r5 = r6.readInt()
-                if (r5 == 0) goto L_0x0073
-                android.os.Parcelable$Creator<com.samsung.android.cmcnsd.network.NsdNetwork> r5 = com.samsung.android.cmcnsd.network.NsdNetwork.CREATOR
-                java.lang.Object r5 = r5.createFromParcel(r6)
-                r0 = r5
-                com.samsung.android.cmcnsd.network.NsdNetwork r0 = (com.samsung.android.cmcnsd.network.NsdNetwork) r0
-                goto L_0x0074
-            L_0x0073:
-            L_0x0074:
-                r4.onWifiApConnectionChanged(r0)
-                r7.writeNoException()
-                return r1
-            */
-            throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.cmcnsd.INsdNetworkCallback.Stub.onTransact(int, android.os.Parcel, android.os.Parcel, int):boolean");
+        public IBinder asBinder() {
+            return this;
         }
 
-        public static class Proxy implements INsdNetworkCallback {
+        public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
+            NsdNetwork _arg0;
+            NsdNetwork _arg02;
+            NsdNetworkCapabilities _arg03;
+            NsdNetworkMessage _arg1;
+            if (code == 1) {
+                data.enforceInterface(DESCRIPTOR);
+                if (data.readInt() != 0) {
+                    _arg0 = NsdNetwork.CREATOR.createFromParcel(data);
+                } else {
+                    _arg0 = null;
+                }
+                onWifiApConnectionChanged(_arg0);
+                reply.writeNoException();
+                return true;
+            } else if (code == 2) {
+                data.enforceInterface(DESCRIPTOR);
+                if (data.readInt() != 0) {
+                    _arg02 = NsdNetwork.CREATOR.createFromParcel(data);
+                } else {
+                    _arg02 = null;
+                }
+                onWifiDirectConnectionChanged(_arg02);
+                reply.writeNoException();
+                return true;
+            } else if (code == 3) {
+                data.enforceInterface(DESCRIPTOR);
+                if (data.readInt() != 0) {
+                    _arg03 = NsdNetworkCapabilities.CREATOR.createFromParcel(data);
+                } else {
+                    _arg03 = null;
+                }
+                if (data.readInt() != 0) {
+                    _arg1 = NsdNetworkMessage.CREATOR.createFromParcel(data);
+                } else {
+                    _arg1 = null;
+                }
+                onWifiApNetworkMessageReceived(_arg03, _arg1);
+                reply.writeNoException();
+                return true;
+            } else if (code != 1598968902) {
+                return super.onTransact(code, data, reply, flags);
+            } else {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
+        }
+
+        private static class Proxy implements INsdNetworkCallback {
             public static INsdNetworkCallback sDefaultImpl;
-            public IBinder mRemote;
+            private IBinder mRemote;
 
-            public String getInterfaceDescriptor() {
-                return Stub.DESCRIPTOR;
-            }
-
-            public Proxy(IBinder iBinder) {
-                this.mRemote = iBinder;
+            Proxy(IBinder remote) {
+                this.mRemote = remote;
             }
 
             public IBinder asBinder() {
                 return this.mRemote;
             }
 
-            public void onWifiApConnectionChanged(NsdNetwork nsdNetwork) throws RemoteException {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
+            public String getInterfaceDescriptor() {
+                return Stub.DESCRIPTOR;
+            }
+
+            public void onWifiApConnectionChanged(NsdNetwork network) throws RemoteException {
+                Parcel _data = Parcel.obtain();
+                Parcel _reply = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (nsdNetwork != null) {
-                        obtain.writeInt(1);
-                        nsdNetwork.writeToParcel(obtain, 0);
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    if (network != null) {
+                        _data.writeInt(1);
+                        network.writeToParcel(_data, 0);
                     } else {
-                        obtain.writeInt(0);
+                        _data.writeInt(0);
                     }
-                    if (this.mRemote.transact(1, obtain, obtain2, 0) || Stub.getDefaultImpl() == null) {
-                        obtain2.readException();
-                    } else {
-                        Stub.getDefaultImpl().onWifiApConnectionChanged(nsdNetwork);
+                    if (this.mRemote.transact(1, _data, _reply, 0) || Stub.getDefaultImpl() == null) {
+                        _reply.readException();
+                        _reply.recycle();
+                        _data.recycle();
+                        return;
                     }
+                    Stub.getDefaultImpl().onWifiApConnectionChanged(network);
                 } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
+                    _reply.recycle();
+                    _data.recycle();
                 }
             }
 
-            public void onWifiDirectConnectionChanged(NsdNetwork nsdNetwork) throws RemoteException {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
+            public void onWifiDirectConnectionChanged(NsdNetwork network) throws RemoteException {
+                Parcel _data = Parcel.obtain();
+                Parcel _reply = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (nsdNetwork != null) {
-                        obtain.writeInt(1);
-                        nsdNetwork.writeToParcel(obtain, 0);
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    if (network != null) {
+                        _data.writeInt(1);
+                        network.writeToParcel(_data, 0);
                     } else {
-                        obtain.writeInt(0);
+                        _data.writeInt(0);
                     }
-                    if (this.mRemote.transact(2, obtain, obtain2, 0) || Stub.getDefaultImpl() == null) {
-                        obtain2.readException();
-                    } else {
-                        Stub.getDefaultImpl().onWifiDirectConnectionChanged(nsdNetwork);
+                    if (this.mRemote.transact(2, _data, _reply, 0) || Stub.getDefaultImpl() == null) {
+                        _reply.readException();
+                        _reply.recycle();
+                        _data.recycle();
+                        return;
                     }
+                    Stub.getDefaultImpl().onWifiDirectConnectionChanged(network);
                 } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
+                    _reply.recycle();
+                    _data.recycle();
                 }
             }
 
-            public void onWifiApNetworkMessageReceived(NsdNetworkCapabilities nsdNetworkCapabilities, NsdNetworkMessage nsdNetworkMessage) throws RemoteException {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
+            public void onWifiApNetworkMessageReceived(NsdNetworkCapabilities capabilities, NsdNetworkMessage message) throws RemoteException {
+                Parcel _data = Parcel.obtain();
+                Parcel _reply = Parcel.obtain();
                 try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (nsdNetworkCapabilities != null) {
-                        obtain.writeInt(1);
-                        nsdNetworkCapabilities.writeToParcel(obtain, 0);
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    if (capabilities != null) {
+                        _data.writeInt(1);
+                        capabilities.writeToParcel(_data, 0);
                     } else {
-                        obtain.writeInt(0);
+                        _data.writeInt(0);
                     }
-                    if (nsdNetworkMessage != null) {
-                        obtain.writeInt(1);
-                        nsdNetworkMessage.writeToParcel(obtain, 0);
+                    if (message != null) {
+                        _data.writeInt(1);
+                        message.writeToParcel(_data, 0);
                     } else {
-                        obtain.writeInt(0);
+                        _data.writeInt(0);
                     }
-                    if (this.mRemote.transact(3, obtain, obtain2, 0) || Stub.getDefaultImpl() == null) {
-                        obtain2.readException();
-                    } else {
-                        Stub.getDefaultImpl().onWifiApNetworkMessageReceived(nsdNetworkCapabilities, nsdNetworkMessage);
+                    if (this.mRemote.transact(3, _data, _reply, 0) || Stub.getDefaultImpl() == null) {
+                        _reply.readException();
+                        _reply.recycle();
+                        _data.recycle();
+                        return;
                     }
+                    Stub.getDefaultImpl().onWifiApNetworkMessageReceived(capabilities, message);
                 } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
+                    _reply.recycle();
+                    _data.recycle();
                 }
             }
         }
 
-        public static boolean setDefaultImpl(INsdNetworkCallback iNsdNetworkCallback) {
-            if (Proxy.sDefaultImpl != null || iNsdNetworkCallback == null) {
+        public static boolean setDefaultImpl(INsdNetworkCallback impl) {
+            if (Proxy.sDefaultImpl != null || impl == null) {
                 return false;
             }
-            Proxy.sDefaultImpl = iNsdNetworkCallback;
+            Proxy.sDefaultImpl = impl;
             return true;
         }
 

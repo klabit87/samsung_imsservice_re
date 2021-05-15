@@ -42,7 +42,6 @@ import com.sec.internal.constants.ims.servicemodules.im.result.Result;
 import com.sec.internal.helper.BlockedNumberUtil;
 import com.sec.internal.helper.CollectionUtils;
 import com.sec.internal.helper.SimUtil;
-import com.sec.internal.helper.os.DeviceUtil;
 import com.sec.internal.helper.os.ImsGateConfig;
 import com.sec.internal.ims.rcs.RcsPolicyManager;
 import com.sec.internal.ims.registry.ImsRegistry;
@@ -230,16 +229,21 @@ public class ImSessionProcessor extends Handler implements ImSessionListener {
 
     public void onAddParticipantsFailed(String chatId, List<ImsUri> participants, ImErrorReason reason) {
         ImSession session = this.mCache.getImSession(chatId);
-        if (session != null) {
-            int phoneId = session.getPhoneId();
-            ImDump imDump = this.mImModule.getImDump();
-            imDump.addEventLogs("onAddParticipantsFailed: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", " + IMSLog.numberChecker((Collection<ImsUri>) participants) + ", error=" + reason);
-            List<String> dumps = new ArrayList<>();
-            dumps.add(reason.toString());
-            ImsUtil.listToDumpFormat(LogClass.IM_ADD_PARTICIPANT_RES, phoneId, chatId, dumps);
-            for (IChatEventListener listener : this.mChatEventListeners) {
-                listener.onAddParticipantsFailed(chatId, participants, reason);
-            }
+        int phoneId = session != null ? session.getPhoneId() : 0;
+        ImDump imDump = this.mImModule.getImDump();
+        StringBuilder sb = new StringBuilder();
+        sb.append("onAddParticipantsFailed: ");
+        sb.append(session != null ? session.getConversationId() : "");
+        sb.append(", ");
+        sb.append(participants);
+        sb.append(", error=");
+        sb.append(reason);
+        imDump.addEventLogs(sb.toString());
+        List<String> dumps = new ArrayList<>();
+        dumps.add(reason.toString());
+        ImsUtil.listToDumpFormat(LogClass.IM_ADD_PARTICIPANT_RES, phoneId, chatId, dumps);
+        for (IChatEventListener listener : this.mChatEventListeners) {
+            listener.onAddParticipantsFailed(chatId, participants, reason);
         }
     }
 
@@ -251,16 +255,21 @@ public class ImSessionProcessor extends Handler implements ImSessionListener {
 
     public void onRemoveParticipantsFailed(String chatId, List<ImsUri> participants, ImErrorReason reason) {
         ImSession session = this.mCache.getImSession(chatId);
-        if (session != null) {
-            int phoneId = session.getPhoneId();
-            ImDump imDump = this.mImModule.getImDump();
-            imDump.addEventLogs("onRemoveParticipantsFailed: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", " + IMSLog.numberChecker((Collection<ImsUri>) participants) + ", error=" + reason);
-            List<String> dumps = new ArrayList<>();
-            dumps.add(reason.toString());
-            ImsUtil.listToDumpFormat(LogClass.IM_REMOVE_PARTICIPANT_RES, phoneId, chatId, dumps);
-            for (IChatEventListener listener : this.mChatEventListeners) {
-                listener.onRemoveParticipantsFailed(chatId, participants, reason);
-            }
+        int phoneId = session != null ? session.getPhoneId() : 0;
+        ImDump imDump = this.mImModule.getImDump();
+        StringBuilder sb = new StringBuilder();
+        sb.append("onRemoveParticipantsFailed: ");
+        sb.append(session != null ? session.getConversationId() : "");
+        sb.append(", ");
+        sb.append(participants);
+        sb.append(", error=");
+        sb.append(reason);
+        imDump.addEventLogs(sb.toString());
+        List<String> dumps = new ArrayList<>();
+        dumps.add(reason.toString());
+        ImsUtil.listToDumpFormat(LogClass.IM_REMOVE_PARTICIPANT_RES, phoneId, chatId, dumps);
+        for (IChatEventListener listener : this.mChatEventListeners) {
+            listener.onRemoveParticipantsFailed(chatId, participants, reason);
         }
     }
 
@@ -278,45 +287,61 @@ public class ImSessionProcessor extends Handler implements ImSessionListener {
 
     public void onChangeGroupChatSubjectSucceeded(String chatId, String subject) {
         ImSession session = this.mCache.getImSession(chatId);
-        if (session != null) {
-            ImDump imDump = this.mImModule.getImDump();
-            imDump.addEventLogs("onChangeGroupChatSubjectSucceeded: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", subject=" + IMSLog.checker(subject));
-            for (IChatEventListener listener : this.mChatEventListeners) {
-                listener.onChangeGroupChatSubjectSucceeded(chatId, subject);
-            }
+        ImDump imDump = this.mImModule.getImDump();
+        StringBuilder sb = new StringBuilder();
+        sb.append("onChangeGroupChatSubjectSucceeded: ");
+        sb.append(session != null ? session.getConversationId() : "");
+        sb.append(", subject=");
+        sb.append(IMSLog.checker(subject));
+        imDump.addEventLogs(sb.toString());
+        for (IChatEventListener listener : this.mChatEventListeners) {
+            listener.onChangeGroupChatSubjectSucceeded(chatId, subject);
         }
     }
 
     public void onChangeGroupChatSubjectFailed(String chatId, String subject, ImErrorReason reason) {
         ImSession session = this.mCache.getImSession(chatId);
-        if (session != null) {
-            ImDump imDump = this.mImModule.getImDump();
-            imDump.addEventLogs("onChangeGroupChatSubjectFailed: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", subject=" + IMSLog.checker(subject) + ", error=" + reason);
-            for (IChatEventListener listener : this.mChatEventListeners) {
-                listener.onChangeGroupChatSubjectFailed(chatId, subject, reason);
-            }
+        ImDump imDump = this.mImModule.getImDump();
+        StringBuilder sb = new StringBuilder();
+        sb.append("onChangeGroupChatSubjectFailed: ");
+        sb.append(session != null ? session.getConversationId() : "");
+        sb.append(", subject=");
+        sb.append(IMSLog.checker(subject));
+        sb.append(", error=");
+        sb.append(reason);
+        imDump.addEventLogs(sb.toString());
+        for (IChatEventListener listener : this.mChatEventListeners) {
+            listener.onChangeGroupChatSubjectFailed(chatId, subject, reason);
         }
     }
 
     public void onChangeGroupChatIconSuccess(String chatId, String icon_path) {
         ImSession session = this.mCache.getImSession(chatId);
-        if (session != null) {
-            ImDump imDump = this.mImModule.getImDump();
-            imDump.addEventLogs("onChangeGroupChatIconSuccess: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", icon_path=" + icon_path);
-            for (IChatEventListener listener : this.mChatEventListeners) {
-                listener.onChangeGroupChatIconSuccess(chatId, icon_path);
-            }
+        ImDump imDump = this.mImModule.getImDump();
+        StringBuilder sb = new StringBuilder();
+        sb.append("onChangeGroupChatIconSuccess: ");
+        sb.append(session != null ? session.getConversationId() : "");
+        sb.append(", icon_path=");
+        sb.append(icon_path);
+        imDump.addEventLogs(sb.toString());
+        for (IChatEventListener listener : this.mChatEventListeners) {
+            listener.onChangeGroupChatIconSuccess(chatId, icon_path);
         }
     }
 
     public void onChangeGroupChatIconFailed(String chatId, String icon_path, ImErrorReason reason) {
         ImSession session = this.mCache.getImSession(chatId);
-        if (session != null) {
-            ImDump imDump = this.mImModule.getImDump();
-            imDump.addEventLogs("onChangeGroupChatIconFailed: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", icon_path=" + icon_path + ", error=" + reason);
-            for (IChatEventListener listener : this.mChatEventListeners) {
-                listener.onChangeGroupChatIconFailed(chatId, icon_path, reason);
-            }
+        ImDump imDump = this.mImModule.getImDump();
+        StringBuilder sb = new StringBuilder();
+        sb.append("onChangeGroupChatIconFailed: ");
+        sb.append(session != null ? session.getConversationId() : "");
+        sb.append(", icon_path=");
+        sb.append(icon_path);
+        sb.append(", error=");
+        sb.append(reason);
+        imDump.addEventLogs(sb.toString());
+        for (IChatEventListener listener : this.mChatEventListeners) {
+            listener.onChangeGroupChatIconFailed(chatId, icon_path, reason);
         }
     }
 
@@ -333,42 +358,36 @@ public class ImSessionProcessor extends Handler implements ImSessionListener {
     }
 
     public void onParticipantsInserted(ImSession session, Collection<ImParticipant> participants) {
-        if (session != null) {
-            String str = LOG_TAG;
-            Log.i(str, "onParticipantsInserted: " + session.getChatId() + ", " + IMSLog.checker(participants));
-            ImDump imDump = this.mImModule.getImDump();
-            imDump.addEventLogs("onParticipantsInserted: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", " + participants);
-            this.mCache.addParticipant(participants);
-            session.addParticipant(participants);
-        }
+        String str = LOG_TAG;
+        Log.i(str, "onParticipantsInserted: " + session.getChatId() + ", " + participants);
+        ImDump imDump = this.mImModule.getImDump();
+        imDump.addEventLogs("onParticipantsInserted: " + session.getConversationId() + ", " + participants);
+        this.mCache.addParticipant(participants);
+        session.addParticipant(participants);
     }
 
     public void onParticipantsUpdated(ImSession session, Collection<ImParticipant> participants) {
-        if (session != null) {
-            String str = LOG_TAG;
-            Log.i(str, "onParticipantsUpdated: " + session.getChatId() + ", " + participants);
-            ImDump imDump = this.mImModule.getImDump();
-            imDump.addEventLogs("onParticipantsUpdated: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", participants= " + participants);
-            this.mCache.updateParticipant(participants);
-        }
+        String str = LOG_TAG;
+        Log.i(str, "onParticipantsUpdated: " + session.getChatId() + ", " + participants);
+        ImDump imDump = this.mImModule.getImDump();
+        imDump.addEventLogs("onParticipantsUpdated: " + session.getConversationId() + ", " + participants);
+        this.mCache.updateParticipant(participants);
     }
 
     public void onParticipantsDeleted(ImSession session, Collection<ImParticipant> participants) {
-        if (session != null) {
-            String str = LOG_TAG;
-            Log.i(str, "onParticipantsDeleted: " + session.getChatId() + ", " + participants);
-            ImDump imDump = this.mImModule.getImDump();
-            imDump.addEventLogs("onParticipantsDeleted: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", participants= " + participants);
-            this.mCache.deleteParticipant(participants);
-            session.deleteParticipant(participants);
-        }
+        String str = LOG_TAG;
+        Log.i(str, "onParticipantsDeleted: " + session.getChatId() + ", " + participants);
+        ImDump imDump = this.mImModule.getImDump();
+        imDump.addEventLogs("onParticipantsDeleted: " + session.getConversationId() + ", " + participants);
+        this.mCache.deleteParticipant(participants);
+        session.deleteParticipant(participants);
     }
 
     public void onNotifyParticipantsAdded(ImSession session, Map<ImParticipant, Date> participants) {
         String str = LOG_TAG;
         Log.i(str, "onNotifyParticipantsAdded: " + session.getChatId() + ", " + participants);
         ImDump imDump = this.mImModule.getImDump();
-        imDump.addEventLogs("onNotifyParticipantsAdded: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", participants= " + participants);
+        imDump.addEventLogs("onNotifyParticipantsAdded: " + session.getConversationId() + ", " + participants);
         makeNewSystemUserMessage(session, participants, ImConstants.Type.SYSTEM_USER_JOINED);
         for (IChatEventListener listener : this.mChatEventListeners) {
             listener.onParticipantsAdded(session, participants.keySet());
@@ -376,60 +395,52 @@ public class ImSessionProcessor extends Handler implements ImSessionListener {
     }
 
     public void onNotifyParticipantsJoined(ImSession session, Map<ImParticipant, Date> participants) {
-        if (session != null) {
-            String str = LOG_TAG;
-            Log.i(str, "onNotifyParticipantsJoined: " + session.getChatId() + ", " + participants);
-            ImDump imDump = this.mImModule.getImDump();
-            imDump.addEventLogs("onNotifyParticipantsJoined: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", participants= " + participants);
-            makeNewSystemUserMessage(session, participants, ImConstants.Type.SYSTEM_USER_JOINED);
-            for (IChatEventListener listener : this.mChatEventListeners) {
-                listener.onParticipantsJoined(session, participants.keySet());
-            }
+        String str = LOG_TAG;
+        Log.i(str, "onNotifyParticipantsJoined: " + session.getChatId() + ", " + participants);
+        ImDump imDump = this.mImModule.getImDump();
+        imDump.addEventLogs("onNotifyParticipantsJoined: " + session.getConversationId() + ", " + participants);
+        makeNewSystemUserMessage(session, participants, ImConstants.Type.SYSTEM_USER_JOINED);
+        for (IChatEventListener listener : this.mChatEventListeners) {
+            listener.onParticipantsJoined(session, participants.keySet());
         }
     }
 
     public void onNotifyParticipantsLeft(ImSession session, Map<ImParticipant, Date> participants) {
-        if (session != null) {
-            String str = LOG_TAG;
-            Log.i(str, "onNotifyParticipantsLeft: " + session.getChatId() + ", " + participants);
-            ImDump imDump = this.mImModule.getImDump();
-            imDump.addEventLogs("onNotifyParticipantsJoined: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", participants= " + participants);
-            makeNewSystemUserMessage(session, participants, ImConstants.Type.SYSTEM_USER_LEFT);
-            for (IChatEventListener listener : this.mChatEventListeners) {
-                listener.onParticipantsLeft(session, participants.keySet());
-            }
+        String str = LOG_TAG;
+        Log.i(str, "onNotifyParticipantsLeft: " + session.getChatId() + ", " + participants);
+        ImDump imDump = this.mImModule.getImDump();
+        imDump.addEventLogs("onNotifyParticipantsLeft: " + session.getConversationId() + ", " + participants);
+        makeNewSystemUserMessage(session, participants, ImConstants.Type.SYSTEM_USER_LEFT);
+        for (IChatEventListener listener : this.mChatEventListeners) {
+            listener.onParticipantsLeft(session, participants.keySet());
         }
     }
 
     public void onNotifyParticipantsKickedOut(ImSession session, Map<ImParticipant, Date> participants) {
-        if (session != null) {
-            String str = LOG_TAG;
-            Log.i(str, "onNotifyParticipantsKickedOut: " + session.getChatId() + ", " + participants);
-            ImDump imDump = this.mImModule.getImDump();
-            imDump.addEventLogs("onNotifyParticipantsKickedOut: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", participants= " + participants);
-            makeNewSystemUserMessage(session, participants, ImConstants.Type.SYSTEM_USER_KICKOUT);
-            for (IChatEventListener listener : this.mChatEventListeners) {
-                listener.onParticipantsLeft(session, participants.keySet());
-            }
+        String str = LOG_TAG;
+        Log.i(str, "onNotifyParticipantsKickedOut: " + session.getChatId() + ", " + participants);
+        ImDump imDump = this.mImModule.getImDump();
+        imDump.addEventLogs("onNotifyParticipantsKickedOut: " + session.getConversationId() + ", " + participants);
+        makeNewSystemUserMessage(session, participants, ImConstants.Type.SYSTEM_USER_KICKOUT);
+        for (IChatEventListener listener : this.mChatEventListeners) {
+            listener.onParticipantsLeft(session, participants.keySet());
         }
     }
 
     public void onGroupChatLeaderChanged(ImSession session, String leaderParticipants) {
-        if (session != null) {
-            String str = LOG_TAG;
-            Log.i(str, "onGroupChatLeaderChanged: " + session.getChatId() + ", " + leaderParticipants);
-            ImDump imDump = this.mImModule.getImDump();
-            imDump.addEventLogs("onGroupChatLeaderChanged: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", leader= " + leaderParticipants);
-            this.mCache.makeNewSystemUserMessage(session, leaderParticipants, ImConstants.Type.SYSTEM_LEADER_CHANGED);
-            for (IChatEventListener listener : this.mChatEventListeners) {
-                listener.onGroupChatLeaderUpdated(session.getChatId(), leaderParticipants);
-            }
+        String str = LOG_TAG;
+        Log.i(str, "onGroupChatLeaderChanged: " + IMSLog.checker(leaderParticipants));
+        ImDump imDump = this.mImModule.getImDump();
+        imDump.addEventLogs("onGroupChatLeaderChanged: " + session.getConversationId() + ", " + leaderParticipants);
+        this.mCache.makeNewSystemUserMessage(session, leaderParticipants, ImConstants.Type.SYSTEM_LEADER_CHANGED);
+        for (IChatEventListener listener : this.mChatEventListeners) {
+            listener.onGroupChatLeaderUpdated(session.getChatId(), leaderParticipants);
         }
     }
 
     public void onGroupChatLeaderInformed(ImSession session, String leaderParticipants) {
         String str = LOG_TAG;
-        Log.i(str, "onGroupChatLeaderInformed: " + IMSLog.numberChecker(leaderParticipants));
+        Log.i(str, "onGroupChatLeaderInformed: " + IMSLog.checker(leaderParticipants));
         this.mCache.makeNewSystemUserMessage(session, leaderParticipants, ImConstants.Type.SYSTEM_LEADER_INFORMED);
     }
 
@@ -510,34 +521,39 @@ public class ImSessionProcessor extends Handler implements ImSessionListener {
 
     public void onChatSubjectUpdated(String chatId, ImSubjectData subjectData) {
         ImSession session = this.mCache.getImSession(chatId);
-        if (session != null) {
-            ImDump imDump = this.mImModule.getImDump();
-            imDump.addEventLogs("onChatSubjectUpdated: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", subject=" + IMSLog.checker(subjectData.getSubject()));
-            for (IChatEventListener listener : this.mChatEventListeners) {
-                listener.onChatSubjectUpdated(chatId, subjectData);
-            }
+        ImDump imDump = this.mImModule.getImDump();
+        StringBuilder sb = new StringBuilder();
+        sb.append("onChatSubjectUpdated: ");
+        sb.append(session != null ? session.getConversationId() : "");
+        sb.append(", subject=");
+        sb.append(IMSLog.checker(subjectData.getSubject()));
+        imDump.addEventLogs(sb.toString());
+        for (IChatEventListener listener : this.mChatEventListeners) {
+            listener.onChatSubjectUpdated(chatId, subjectData);
         }
     }
 
     public void onGroupChatIconUpdated(String chatId, ImIconData iconData) {
         ImSession session = this.mCache.getImSession(chatId);
-        if (session != null) {
-            ImDump imDump = this.mImModule.getImDump();
-            imDump.addEventLogs("onGroupChatIconUpdated: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId());
-            for (IChatEventListener listener : this.mChatEventListeners) {
-                listener.onGroupChatIconUpdated(chatId, iconData);
-            }
+        ImDump imDump = this.mImModule.getImDump();
+        StringBuilder sb = new StringBuilder();
+        sb.append("onGroupChatIconUpdated: ");
+        sb.append(session != null ? session.getConversationId() : "");
+        imDump.addEventLogs(sb.toString());
+        for (IChatEventListener listener : this.mChatEventListeners) {
+            listener.onGroupChatIconUpdated(chatId, iconData);
         }
     }
 
     public void onGroupChatIconDeleted(String chatId) {
         ImSession session = this.mCache.getImSession(chatId);
-        if (session != null) {
-            ImDump imDump = this.mImModule.getImDump();
-            imDump.addEventLogs("onGroupChatIconDeleted: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId());
-            for (IChatEventListener listener : this.mChatEventListeners) {
-                listener.onGroupChatIconDeleted(chatId);
-            }
+        ImDump imDump = this.mImModule.getImDump();
+        StringBuilder sb = new StringBuilder();
+        sb.append("onGroupChatIconDeleted: ");
+        sb.append(session != null ? session.getConversationId() : "");
+        imDump.addEventLogs(sb.toString());
+        for (IChatEventListener listener : this.mChatEventListeners) {
+            listener.onGroupChatIconDeleted(chatId);
         }
     }
 
@@ -636,7 +652,7 @@ public class ImSessionProcessor extends Handler implements ImSessionListener {
             r3.<init>()
             java.lang.String r4 = "createChat: participants="
             r3.append(r4)
-            java.lang.String r4 = com.sec.internal.log.IMSLog.numberChecker((java.util.Collection<com.sec.ims.util.ImsUri>) r24)
+            java.lang.String r4 = com.sec.internal.log.IMSLog.checker(r24)
             r3.append(r4)
             java.lang.String r4 = " subject="
             r3.append(r4)
@@ -1525,7 +1541,7 @@ public class ImSessionProcessor extends Handler implements ImSessionListener {
             return;
         }
         ImDump imDump = this.mImModule.getImDump();
-        imDump.addEventLogs("onSessionEstablished: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId());
+        imDump.addEventLogs("onSessionEstablished: " + session.getConversationId());
         dumps.add(session.getConversationId() != null ? session.getConversationId() : MessageContextValues.none);
         session.receiveSessionEstablished(event);
         ImsUtil.listToDumpFormat(LogClass.IM_SESSION_ESTABLISHED, session.getPhoneId(), event.mChatId, dumps);
@@ -1546,7 +1562,7 @@ public class ImSessionProcessor extends Handler implements ImSessionListener {
             return;
         }
         ImDump imDump = this.mImModule.getImDump();
-        imDump.addEventLogs("onSessionClosed: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + event.mResult.toString());
+        imDump.addEventLogs("onSessionClosed: " + session.getConversationId() + event.mResult.toString());
         List<String> dumps = new ArrayList<>();
         dumps.add(String.valueOf(event.mResult.getType().ordinal()));
         ImsUtil.listToDumpFormat(LogClass.IM_SESSION_CLOSED, session.getPhoneId(), event.mChatId, dumps);
@@ -1577,7 +1593,7 @@ public class ImSessionProcessor extends Handler implements ImSessionListener {
             return;
         }
         Log.i(LOG_TAG, "onIncomingSessionReceived: " + imIncomingSessionEvent);
-        this.mImModule.getImDump().addEventLogs("onIncomingSessionReceived: convId=" + imIncomingSessionEvent.mConversationId + ", contId=" + imIncomingSessionEvent.mContributionId);
+        this.mImModule.getImDump().addEventLogs("onIncomingSessionReceived: conversationId=" + imIncomingSessionEvent.mConversationId);
         int phoneId = this.mImModule.getPhoneIdByIMSI(imIncomingSessionEvent.mOwnImsi);
         IMnoStrategy mnoStrategy = RcsPolicyManager.getRcsStrategy(phoneId);
         Set<ImsUri> normalizedParticipants = getNormalizedParticipants(phoneId, imIncomingSessionEvent.mRecipients, imIncomingSessionEvent.mInitiator);
@@ -1646,7 +1662,7 @@ public class ImSessionProcessor extends Handler implements ImSessionListener {
                 if (isGroupChat2) {
                     session.setInitiator(this.mImModule.normalizeUri(phoneId, imIncomingSessionEvent.mInitiator));
                 } else if (imIncomingSessionEvent.mIsChatbotRole) {
-                    Log.i(LOG_TAG, "onIncomingSessionReceived: event.mIsChatbotRole=true, event.mInitiator=" + IMSLog.numberChecker(imIncomingSessionEvent.mInitiator));
+                    Log.i(LOG_TAG, "onIncomingSessionReceived: event.mIsChatbotRole=true, event.mInitiator=" + IMSLog.checker(imIncomingSessionEvent.mInitiator));
                     ChatbotUriUtil.removeUriParameters(imIncomingSessionEvent.mInitiator);
                     session.setInitiator(imIncomingSessionEvent.mInitiator);
                     int delayForA2P = RcsPolicyManager.getRcsStrategy(phoneId).intSetting(RcsPolicySettings.RcsPolicy.DELAY_TO_DEREGI_FOR_A2P_SESSION);
@@ -1727,7 +1743,7 @@ public class ImSessionProcessor extends Handler implements ImSessionListener {
             return;
         }
         ImDump imDump = this.mImModule.getImDump();
-        imDump.addEventLogs("onMessageSendingSucceeded: type= " + msg.getType() + ", chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", imdnId=" + msg.getImdnId());
+        imDump.addEventLogs("onMessageSendingSucceeded: type= " + msg.getType() + ", conversationId=" + session.getConversationId() + ", imdnId=" + msg.getImdnId());
         if (!isReportMsg(msg)) {
             for (IMessageEventListener listener : this.mImProcessor.getMessageEventListener(msg.getType())) {
                 listener.onMessageSendingSucceeded(msg);
@@ -1793,12 +1809,8 @@ public class ImSessionProcessor extends Handler implements ImSessionListener {
                 StringBuilder sb = new StringBuilder();
                 sb.append("onMessageSendingFailed: type=");
                 sb.append(msg.getType());
-                sb.append("chatId=");
-                sb.append(session.getChatId());
-                sb.append(", convId=");
+                sb.append(", conversationId=");
                 sb.append(session.getConversationId());
-                sb.append(", contId=");
-                sb.append(session.getContributionId());
                 sb.append(", imdnId=");
                 sb.append(msg.getImdnId());
                 sb.append("result=");
@@ -2145,14 +2157,11 @@ public class ImSessionProcessor extends Handler implements ImSessionListener {
         } else if (mnoStrategy.checkMainSwitchOff(this.mContext, phoneId)) {
             Log.e(LOG_TAG, "checkForRejectIncomingSession: main Switch Off");
             return isGroupChat ? ImSessionRejectReason.INVOLUNTARILY : ImSessionRejectReason.TEMPORARILY_UNAVAILABLE;
-        } else if (isCGC && !RcsPolicyManager.getRcsStrategy(phoneId).boolSetting(RcsPolicySettings.RcsPolicy.PARTICIPANTBASED_CLOSED_GROUPCHAT)) {
-            Log.e(LOG_TAG, "checkForRejectIncomingSession: group chat type mismatched");
-            return ImSessionRejectReason.VOLUNTARILY;
-        } else if (!DeviceUtil.getGcfMode() || !mnoStrategy.boolSetting(RcsPolicySettings.RcsPolicy.AUTH_BASED_SESSION_CONTROL) || this.mImModule.getImConfig(phoneId).getGroupChatEnabled()) {
+        } else if (!isCGC || RcsPolicyManager.getRcsStrategy(phoneId).boolSetting(RcsPolicySettings.RcsPolicy.PARTICIPANTBASED_CLOSED_GROUPCHAT)) {
             return null;
         } else {
-            Log.e(LOG_TAG, "GroupChatAuth is disabled");
-            return ImSessionRejectReason.NOT_ACCEPTABLE_HERE;
+            Log.e(LOG_TAG, "checkForRejectIncomingSession: group chat type mismatched");
+            return ImSessionRejectReason.VOLUNTARILY;
         }
     }
 
@@ -2167,7 +2176,7 @@ public class ImSessionProcessor extends Handler implements ImSessionListener {
         }
         if (session == null) {
             if (this.mImModule.getImConfig(phoneId).getImMsgTech() == ImConstants.ImMsgTech.CPM) {
-                session = this.mCache.getImSessionByConversationId(ownImsi, conversationId, isGroupChat);
+                session = this.mCache.getImSessionByConversationId(conversationId, isGroupChat);
             } else {
                 session = this.mCache.getImSessionByContributionId(ownImsi, contributionId, isGroupChat);
             }

@@ -192,7 +192,7 @@ public class WorkflowCmcc extends WorkflowBase {
             if (this.mServerId < this.mSharedInfoList.size()) {
                 this.mSharedInfo = this.mSharedInfoList.get(this.mServerId);
             } else {
-                this.mSharedInfo = new SharedInfo(this.mContext, this.mSm, this.mRcsProfile, this.mRcsVersion, this.mClientVersion);
+                this.mSharedInfo = new SharedInfo(this.mContext, this.mSm, this.mRcsProfile, this.mRcsVersion, this.mClientPlatform, this.mClientVersion);
                 this.mSharedInfoList.add(this.mSharedInfo);
             }
         } else {
@@ -500,7 +500,7 @@ public class WorkflowCmcc extends WorkflowBase {
             WorkflowCmcc.this.mCookieHandler.handleCookie(WorkflowCmcc.this.mSharedInfo.getHttpResponse());
             WorkflowCmcc.this.mSharedInfo.addHttpParam(ConfigConstants.PNAME.CLIENT_VENDOR, ConfigConstants.PVALUE.CLIENT_VENDOR);
             SharedInfo sharedInfo = WorkflowCmcc.this.mSharedInfo;
-            sharedInfo.addHttpParam(ConfigConstants.PNAME.CLIENT_VERSION, ConfigConstants.PVALUE.CLIENT_VERSION_NAME + WorkflowCmcc.this.mClientVersion);
+            sharedInfo.addHttpParam(ConfigConstants.PNAME.CLIENT_VERSION, WorkflowCmcc.this.mClientPlatform + WorkflowCmcc.this.mClientVersion);
             WorkflowCmcc.this.mSharedInfo.addHttpParam("IMSI", WorkflowCmcc.this.mTelephony.getImsi());
             WorkflowCmcc.this.mSharedInfo.addHttpParam(ConfigConstants.PNAME.IMEI, WorkflowCmcc.this.mTelephony.getImei());
             WorkflowCmcc.this.mSharedInfo.addHttpParam("terminal_vendor", ConfigConstants.PVALUE.CLIENT_VENDOR);

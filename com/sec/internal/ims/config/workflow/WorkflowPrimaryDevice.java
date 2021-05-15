@@ -501,13 +501,13 @@ public class WorkflowPrimaryDevice extends WorkflowBase {
                     userAccept = WorkflowPrimaryDevice.this.mParamHandler.getUserAcceptWithDialog(msg);
                 }
             }
-            int tcpopupinput = userAccept;
+            boolean workingConfigurationAvailable2 = userAccept;
             WorkflowPrimaryDevice.this.mParamHandler.setOpModeWithUserAccept(userAccept, WorkflowPrimaryDevice.this.mSharedInfo.getParsedXml(), WorkflowBase.OpMode.DISABLE);
             if (WorkflowPrimaryDevice.this.getOpMode() == WorkflowBase.OpMode.ACTIVE) {
                 WorkflowPrimaryDevice workflowPrimaryDevice3 = WorkflowPrimaryDevice.this;
                 workflowPrimaryDevice3.setValidityTimer(workflowPrimaryDevice3.getValidity());
             }
-            WorkflowPrimaryDevice.this.setTcUserAccept((int) tcpopupinput);
+            WorkflowPrimaryDevice.this.setTcUserAccept(workingConfigurationAvailable2 ? 1 : 0);
             return new Finish();
         }
     }

@@ -6,11 +6,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.HandlerThread;
+import android.os.IBinder;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.provider.Settings;
-import android.telephony.ims.aidl.IImsRegistrationCallback;
 import android.text.TextUtils;
 import android.util.Log;
 import com.samsung.android.ims.ISemEpdgListener;
@@ -47,6 +47,7 @@ import com.sec.internal.log.IMSLog;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -58,8 +59,8 @@ public class SemImsServiceStub extends SemImsService.Stub {
     private static final String PERMISSION = "com.sec.imsservice.PERMISSION";
     public static final String RCS_AUTOCONFIG_URI = "com.samsung.rcs.autoconfigurationprovider";
     private static SemImsServiceStub sInstance = null;
-    private Map<Integer, RemoteCallbackList<SemAutoConfigListener>> mAutoCofigListeners = new ConcurrentHashMap();
-    private Map<Integer, Map<SemAutoConfigListener, AutoConfigCallBack>> mAutoConfigCallbacks = new ConcurrentHashMap();
+    /* access modifiers changed from: private */
+    public Map<String, IBinder> mCallbacks = new ConcurrentHashMap();
     private Context mContext;
     private final HandlerThread mCoreThread;
     private ImsDmConfigCallBack mDmConfigCallbacks;
@@ -69,16 +70,11 @@ public class SemImsServiceStub extends SemImsService.Stub {
     public boolean[] mEpdgAvailable = new boolean[SimUtil.getPhoneCount()];
     private EpdgListenerCallback mEpdgHandoverCallback;
     /* access modifiers changed from: private */
-    public RemoteCallbackList<ISemEpdgListener> mEpdgListeners = new RemoteCallbackList<>();
+    public Map<String, SemEpdgCallBack> mEpdgListeners = new ConcurrentHashMap();
     private ImsOngoingFtEventCallBack mOngoingFtEventCallback;
     /* access modifiers changed from: private */
-    public RemoteCallbackList<SemImsFtListener> mOngoingFtEventListeners = new RemoteCallbackList<>();
+    public Map<String, SemImsFtCallBack> mOngoingFtEventListeners = new ConcurrentHashMap();
     private int mRcsConfigVers = 0;
-    private Map<Integer, Map<SemImsRegiListener, ImsRegistrationCallBack>> mRegCallbacks = new ConcurrentHashMap();
-    private Map<Integer, RemoteCallbackList<SemImsRegiListener>> mRegListeners = new ConcurrentHashMap();
-    private final Map<Integer, RemoteCallbackList<IImsRegistrationCallback>> mRegistrationCallbacks = new ConcurrentHashMap();
-    private Map<Integer, Map<SemSimMobStatusListener, SimMobilityStatusCallBack>> mSimMobilityStatusCallbacks = new ConcurrentHashMap();
-    private Map<Integer, RemoteCallbackList<SemSimMobStatusListener>> mSimMobilityStatusListeners = new ConcurrentHashMap();
 
     /* JADX WARNING: type inference failed for: r2v0, types: [com.sec.internal.ims.imsservice.SemImsServiceStub, java.lang.Object, android.os.IBinder] */
     private SemImsServiceStub(Context context) {
@@ -185,138 +181,133 @@ public class SemImsServiceStub extends SemImsService.Stub {
         return buildSemImsRegistration(ImsServiceStub.getInstance().getRegistrationInfoByServiceType(serviceType, phoneId));
     }
 
-    public void registerImsRegistrationListenerForSlot(SemImsRegiListener listener, int phoneId) throws RemoteException {
-        IMSLog.d(LOG_TAG, phoneId, "SemRegisterImsOngoingFtListener");
-        if (listener != null) {
-            if (!this.mRegCallbacks.containsKey(Integer.valueOf(phoneId)) || !this.mRegCallbacks.get(Integer.valueOf(phoneId)).containsKey(listener)) {
-                ImsRegistrationCallBack regCallback = new ImsRegistrationCallBack(listener);
-                if (!this.mRegCallbacks.containsKey(Integer.valueOf(phoneId))) {
-                    this.mRegCallbacks.put(Integer.valueOf(phoneId), new ConcurrentHashMap());
-                }
-                this.mRegCallbacks.get(Integer.valueOf(phoneId)).put(listener, regCallback);
-                ImsServiceStub.getInstance().registerImsRegistrationListener(regCallback, false, phoneId);
-                if (!this.mRegListeners.containsKey(Integer.valueOf(phoneId))) {
-                    this.mRegListeners.put(Integer.valueOf(phoneId), new RemoteCallbackList());
-                }
-                this.mRegListeners.get(Integer.valueOf(phoneId)).register(listener);
-                ImsRegistration[] registrations = ImsServiceStub.getInstance().getRegistrationInfoByPhoneId(phoneId);
-                if (registrations != null) {
-                    for (ImsRegistration registration : registrations) {
-                        if (registration.hasVolteService() && !registration.getImsProfile().hasEmergencySupport()) {
-                            try {
-                                listener.onRegistered(buildSemImsRegistration(registration));
-                            } catch (RemoteException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    return;
-                }
-                return;
-            }
-            IMSLog.d(LOG_TAG, phoneId, "registerImsRegistrationListenerForSlot : listener has already registered");
+    public String registerImsRegistrationListenerForSlot(SemImsRegiListener listener, int phoneId) throws RemoteException {
+        IMSLog.i(LOG_TAG, phoneId, "SemRegisterImsRegistrationListener " + listener);
+        if (listener == null) {
+            return null;
         }
+        ImsRegistrationCallBack regCallback = new ImsRegistrationCallBack(listener, phoneId);
+        String token = ImsServiceStub.getInstance().registerImsRegistrationListener(regCallback, false, phoneId);
+        if (!TextUtils.isEmpty(token)) {
+            regCallback.mToken = token;
+            this.mCallbacks.put(token, regCallback);
+        } else {
+            regCallback.reset();
+        }
+        ImsRegistration[] registrations = ImsServiceStub.getInstance().getRegistrationInfoByPhoneId(phoneId);
+        if (registrations != null) {
+            for (ImsRegistration registration : registrations) {
+                if (registration.hasVolteService() && !registration.getImsProfile().hasEmergencySupport()) {
+                    try {
+                        listener.onRegistered(buildSemImsRegistration(registration));
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return token;
     }
 
-    public void unregisterImsRegistrationListenerForSlot(SemImsRegiListener listener, int phoneId) {
-        IMSLog.d(LOG_TAG, phoneId, "SemUnregisterImsRegistrationListenerForSlot");
-        if (listener == null) {
-            String str = LOG_TAG;
-            IMSLog.d(str, phoneId, "unregisterImsRegistrationListenerForSlot: listener " + listener);
+    public void unregisterImsRegistrationListenerForSlot(String token, int phoneId) {
+        IMSLog.d(LOG_TAG, phoneId, "SemUnregisterImsRegistrationListener");
+        if (TextUtils.isEmpty(token)) {
+            IMSLog.d(LOG_TAG, phoneId, "unregisterImsRegistrationListenerForSlot: token is empty.");
             return;
         }
-        if (this.mRegCallbacks.containsKey(Integer.valueOf(phoneId)) && this.mRegCallbacks.get(Integer.valueOf(phoneId)).containsKey(listener)) {
-            ImsServiceStub.getInstance().unregisterImsRegistrationListenerForSlot((ImsRegistrationCallBack) this.mRegCallbacks.get(Integer.valueOf(phoneId)).get(listener), phoneId);
-            this.mRegCallbacks.get(Integer.valueOf(phoneId)).remove(listener);
-        }
-        if (this.mRegListeners.containsKey(Integer.valueOf(phoneId))) {
-            this.mRegListeners.get(Integer.valueOf(phoneId)).unregister(listener);
+        ImsServiceStub.getInstance().unregisterImsRegistrationListenerForSlot(token, phoneId);
+        ImsRegistrationCallBack regCallback = (ImsRegistrationCallBack) this.mCallbacks.remove(token);
+        if (regCallback != null) {
+            regCallback.reset();
         }
     }
 
-    public void registerImsOngoingFtEventListener(SemImsFtListener listener) throws RemoteException {
+    public synchronized String registerImsOngoingFtEventListener(SemImsFtListener listener) throws RemoteException {
         IMSLog.d(LOG_TAG, "SemRegisterImsOngoingFtListener");
-        this.mOngoingFtEventCallback = new ImsOngoingFtEventCallBack();
-        ImsServiceStub.getInstance().registerImsOngoingFtListener(this.mOngoingFtEventCallback);
-        if (listener != null) {
-            IMSLog.d(LOG_TAG, "mOngingFtEventListers register");
-            this.mOngoingFtEventListeners.register(listener);
+        if (listener == null) {
+            return null;
         }
+        if (this.mOngoingFtEventCallback == null) {
+            ImsOngoingFtEventCallBack imsOngoingFtEventCallBack = new ImsOngoingFtEventCallBack();
+            this.mOngoingFtEventCallback = imsOngoingFtEventCallBack;
+            imsOngoingFtEventCallBack.mToken = ImsServiceStub.getInstance().registerImsOngoingFtListener(this.mOngoingFtEventCallback);
+        }
+        String token = ImsServiceStub.getTokenOfListener(listener);
+        this.mOngoingFtEventListeners.put(token, new SemImsFtCallBack(listener, token));
+        return token;
     }
 
-    public void unregisterImsOngoingFtEventListener(SemImsFtListener listener) {
+    public void unregisterImsOngoingFtEventListener(String token) {
         IMSLog.d(LOG_TAG, "SemUnregisterImsOngoingFtListener");
-        if (listener != null) {
-            this.mOngoingFtEventListeners.unregister(listener);
+        if (this.mOngoingFtEventCallback == null || TextUtils.isEmpty(token)) {
+            IMSLog.d(LOG_TAG, "unregisterImsRegistrationListenerForSlot: token is empty or mOngoingFtEventCallback is null.");
+            return;
         }
-        if (this.mOngoingFtEventCallback != null && this.mOngoingFtEventListeners.getRegisteredCallbackCount() == 0) {
-            ImsServiceStub.getInstance().unregisterImsOngoingFtListener(this.mOngoingFtEventCallback);
+        SemImsFtCallBack callback = this.mOngoingFtEventListeners.remove(token);
+        if (callback != null) {
+            callback.reset();
+        }
+        if (this.mOngoingFtEventListeners.size() <= 0) {
+            ImsServiceStub.getInstance().unregisterImsOngoingFtListener(this.mOngoingFtEventCallback.mToken);
+            this.mOngoingFtEventCallback = null;
         }
     }
 
-    public void registerSimMobilityStatusListener(SemSimMobStatusListener listener, int phoneId) throws RemoteException {
+    public String registerSimMobilityStatusListener(SemSimMobStatusListener listener, int phoneId) throws RemoteException {
         IMSLog.d(LOG_TAG, phoneId, "SemRegisterSimMobilityStatusListener");
-        if (listener != null) {
-            if (!this.mSimMobilityStatusCallbacks.containsKey(Integer.valueOf(phoneId)) || !this.mSimMobilityStatusCallbacks.get(Integer.valueOf(phoneId)).containsKey(listener)) {
-                SimMobilityStatusCallBack simMobilityStatusCallBack = new SimMobilityStatusCallBack(listener);
-                if (!this.mSimMobilityStatusCallbacks.containsKey(Integer.valueOf(phoneId))) {
-                    this.mSimMobilityStatusCallbacks.put(Integer.valueOf(phoneId), new ConcurrentHashMap());
-                }
-                this.mSimMobilityStatusCallbacks.get(Integer.valueOf(phoneId)).put(listener, simMobilityStatusCallBack);
-                ImsServiceStub.getInstance().registerSimMobilityStatusListenerByPhoneId(simMobilityStatusCallBack, phoneId);
-                if (!this.mSimMobilityStatusListeners.containsKey(Integer.valueOf(phoneId))) {
-                    this.mSimMobilityStatusListeners.put(Integer.valueOf(phoneId), new RemoteCallbackList());
-                }
-                this.mSimMobilityStatusListeners.get(Integer.valueOf(phoneId)).register(listener);
-                return;
-            }
-            IMSLog.d(LOG_TAG, phoneId, "registerSimMobilityStatusListener : listener has already registered");
+        if (listener == null) {
+            return null;
         }
+        SimMobilityStatusCallBack simMobilityStatusCallBack = new SimMobilityStatusCallBack(listener, phoneId);
+        String token = ImsServiceStub.getInstance().registerSimMobilityStatusListener(simMobilityStatusCallBack, false, phoneId);
+        if (!TextUtils.isEmpty(token)) {
+            simMobilityStatusCallBack.mToken = token;
+            this.mCallbacks.put(token, simMobilityStatusCallBack);
+        } else {
+            simMobilityStatusCallBack.reset();
+        }
+        return token;
     }
 
-    public void unregisterSimMobilityStatusListener(SemSimMobStatusListener listener, int phoneId) {
+    public void unregisterSimMobilityStatusListener(String token, int phoneId) {
         IMSLog.d(LOG_TAG, phoneId, "SemUnregisterSimMobilityStatusListener");
-        if (listener != null) {
-            if (this.mSimMobilityStatusCallbacks.containsKey(Integer.valueOf(phoneId)) && this.mSimMobilityStatusCallbacks.get(Integer.valueOf(phoneId)).containsKey(listener)) {
-                ImsServiceStub.getInstance().unregisterSimMobilityStatusListenerByPhoneId((SimMobilityStatusCallBack) this.mSimMobilityStatusCallbacks.get(Integer.valueOf(phoneId)).get(listener), phoneId);
-                this.mSimMobilityStatusCallbacks.get(Integer.valueOf(phoneId)).remove(listener);
-            }
-            if (this.mSimMobilityStatusListeners.containsKey(Integer.valueOf(phoneId))) {
-                this.mSimMobilityStatusListeners.get(Integer.valueOf(phoneId)).unregister(listener);
-            }
+        if (TextUtils.isEmpty(token)) {
+            IMSLog.d(LOG_TAG, phoneId, "unregisterImsRegistrationListenerForSlot: token is empty.");
+            return;
+        }
+        ImsServiceStub.getInstance().unregisterSimMobilityStatusListenerByPhoneId(token, phoneId);
+        SimMobilityStatusCallBack simMobilityStatusCallBack = (SimMobilityStatusCallBack) this.mCallbacks.remove(token);
+        if (simMobilityStatusCallBack != null) {
+            simMobilityStatusCallBack.reset();
         }
     }
 
-    public void registerAutoConfigurationListener(SemAutoConfigListener listener, int phoneId) {
+    public String registerAutoConfigurationListener(SemAutoConfigListener listener, int phoneId) {
         IMSLog.d(LOG_TAG, phoneId, "registerAutoConfigurationListener");
-        if (listener != null) {
-            if (!this.mAutoConfigCallbacks.containsKey(Integer.valueOf(phoneId)) || !this.mAutoConfigCallbacks.get(Integer.valueOf(phoneId)).containsKey(listener)) {
-                AutoConfigCallBack autoConfigCallback = new AutoConfigCallBack(listener);
-                if (!this.mAutoConfigCallbacks.containsKey(Integer.valueOf(phoneId))) {
-                    this.mAutoConfigCallbacks.put(Integer.valueOf(phoneId), new ConcurrentHashMap());
-                }
-                this.mAutoConfigCallbacks.get(Integer.valueOf(phoneId)).put(listener, autoConfigCallback);
-                ImsServiceStub.getInstance().registerAutoConfigurationListener(autoConfigCallback, phoneId);
-                if (!this.mAutoCofigListeners.containsKey(Integer.valueOf(phoneId))) {
-                    this.mAutoCofigListeners.put(Integer.valueOf(phoneId), new RemoteCallbackList());
-                }
-                this.mAutoCofigListeners.get(Integer.valueOf(phoneId)).register(listener);
-                return;
-            }
-            IMSLog.d(LOG_TAG, phoneId, "registerAutoConfigurationListener : listener has already registered");
+        if (listener == null) {
+            return null;
         }
+        AutoConfigCallBack autoConfigCallback = new AutoConfigCallBack(listener, phoneId);
+        String token = ImsServiceStub.getInstance().registerAutoConfigurationListener(autoConfigCallback, phoneId);
+        if (!TextUtils.isEmpty(token)) {
+            autoConfigCallback.mToken = token;
+            this.mCallbacks.put(token, autoConfigCallback);
+        } else {
+            autoConfigCallback.reset();
+        }
+        return token;
     }
 
-    public void unregisterAutoConfigurationListener(SemAutoConfigListener listener, int phoneId) {
+    public void unregisterAutoConfigurationListener(String token, int phoneId) {
         IMSLog.d(LOG_TAG, phoneId, "unregisterAutoConfigurationListener");
-        if (listener != null) {
-            if (this.mAutoConfigCallbacks.containsKey(Integer.valueOf(phoneId)) && this.mAutoConfigCallbacks.get(Integer.valueOf(phoneId)).containsKey(listener)) {
-                ImsServiceStub.getInstance().unregisterAutoConfigurationListener((AutoConfigCallBack) this.mAutoConfigCallbacks.get(Integer.valueOf(phoneId)).get(listener), phoneId);
-                this.mAutoConfigCallbacks.get(Integer.valueOf(phoneId)).remove(listener);
-            }
-            if (this.mAutoCofigListeners.containsKey(Integer.valueOf(phoneId))) {
-                this.mAutoCofigListeners.get(Integer.valueOf(phoneId)).unregister(listener);
-            }
+        if (TextUtils.isEmpty(token)) {
+            IMSLog.d(LOG_TAG, phoneId, "unregisterImsRegistrationListenerForSlot: token is empty.");
+            return;
+        }
+        AutoConfigCallBack callback = (AutoConfigCallBack) this.mCallbacks.remove(token);
+        if (callback != null) {
+            callback.reset();
+            ImsServiceStub.getInstance().unregisterAutoConfigurationListener(token, phoneId);
         }
     }
 
@@ -486,12 +477,6 @@ public class SemImsServiceStub extends SemImsService.Stub {
         }
     }
 
-    public boolean supportEmergencyCallOnCmc(int phoneId) {
-        String str = LOG_TAG;
-        IMSLog.d(str, phoneId, "supportEmergencyCallOnCmc phoneId : " + phoneId);
-        return false;
-    }
-
     public void sendSemCmcRecordingEvent(SemCmcRecordingInfo info, int event, int phoneId) {
         String str = LOG_TAG;
         IMSLog.d(str, phoneId, "sendSemCmcRecordingEvent : " + event);
@@ -503,29 +488,41 @@ public class SemImsServiceStub extends SemImsService.Stub {
         ImsServiceStub.getInstance().registerCmcRecordingListener(phoneId, listener);
     }
 
-    public void registerEpdgListener(ISemEpdgListener listener) {
-        if (this.mEpdgHandoverCallback == null) {
-            this.mEpdgHandoverCallback = new EpdgListenerCallback();
-            ImsServiceStub.getInstance().registerEpdgListener(this.mEpdgHandoverCallback);
+    public synchronized String registerEpdgListener(ISemEpdgListener listener) {
+        String token;
+        if (listener == null) {
+            return null;
         }
-        this.mEpdgListeners.register(listener);
+        if (this.mEpdgHandoverCallback == null) {
+            EpdgListenerCallback epdgListenerCallback = new EpdgListenerCallback();
+            this.mEpdgHandoverCallback = epdgListenerCallback;
+            epdgListenerCallback.mToken = ImsServiceStub.getInstance().registerEpdgListener(this.mEpdgHandoverCallback);
+        }
+        token = ImsServiceStub.getTokenOfListener(listener);
+        this.mEpdgListeners.put(token, new SemEpdgCallBack(listener, token));
         boolean isWifiConnected = ImsServiceStub.getInstance().getPdnController().isWifiConnected();
-        for (int phoneId = 0; phoneId < SimUtil.getPhoneCount(); phoneId++) {
+        int phoneId = 0;
+        while (phoneId < SimUtil.getPhoneCount()) {
             try {
                 String str = LOG_TAG;
-                Log.d(str, "register epdg listnern onepdg available : " + this.mEpdgAvailable[phoneId] + " wifi connected " + isWifiConnected);
+                Log.d(str, "register epdg listener epdg available : " + this.mEpdgAvailable[phoneId] + " wifi connected " + isWifiConnected);
                 listener.onEpdgAvailable(phoneId, this.mEpdgAvailable[phoneId], isWifiConnected ? 1 : 0);
+                phoneId++;
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         }
+        return token;
     }
 
-    public void unRegisterEpdgListener(ISemEpdgListener listener) {
-        if (this.mEpdgHandoverCallback != null) {
-            this.mEpdgListeners.unregister(listener);
-            if (this.mEpdgListeners.getRegisteredCallbackCount() <= 0) {
-                ImsServiceStub.getInstance().unRegisterEpdgListener(this.mEpdgHandoverCallback);
+    public void unRegisterEpdgListener(String token) {
+        if (this.mEpdgHandoverCallback != null && !TextUtils.isEmpty(token)) {
+            SemEpdgCallBack callback = this.mEpdgListeners.remove(token);
+            if (callback != null) {
+                callback.reset();
+            }
+            if (this.mEpdgListeners.size() <= 0) {
+                ImsServiceStub.getInstance().unRegisterEpdgListener(this.mEpdgHandoverCallback.mToken);
                 this.mEpdgHandoverCallback = null;
             }
         }
@@ -598,11 +595,18 @@ public class SemImsServiceStub extends SemImsService.Stub {
         }
     }
 
-    private class AutoConfigCallBack extends IAutoConfigurationListener.Stub {
+    private class AutoConfigCallBack extends IAutoConfigurationListener.Stub implements IBinder.DeathRecipient {
         SemAutoConfigListener mListener;
+        private int mPhoneId;
+        String mToken;
 
-        public AutoConfigCallBack(SemAutoConfigListener listener) {
+        public AutoConfigCallBack(SemAutoConfigListener listener, int phoneId) {
             this.mListener = listener;
+            this.mPhoneId = phoneId;
+            try {
+                listener.asBinder().linkToDeath(this, 0);
+            } catch (RemoteException e) {
+            }
         }
 
         public void onVerificationCodeNeeded() {
@@ -628,13 +632,34 @@ public class SemImsServiceStub extends SemImsService.Stub {
                 e.printStackTrace();
             }
         }
+
+        public void binderDied() {
+            ImsServiceStub.getInstance().unregisterAutoConfigurationListener(this.mToken, this.mPhoneId);
+            SemImsServiceStub.this.mCallbacks.remove(this.mToken);
+            reset();
+        }
+
+        /* access modifiers changed from: protected */
+        public void reset() {
+            try {
+                this.mListener.asBinder().unlinkToDeath(this, 0);
+            } catch (NoSuchElementException e) {
+            }
+        }
     }
 
-    private class ImsRegistrationCallBack extends IImsRegistrationListener.Stub {
+    private class ImsRegistrationCallBack extends IImsRegistrationListener.Stub implements IBinder.DeathRecipient {
         SemImsRegiListener mListener;
+        private int mPhoneId;
+        String mToken;
 
-        public ImsRegistrationCallBack(SemImsRegiListener listener) {
+        public ImsRegistrationCallBack(SemImsRegiListener listener, int phoneId) {
             this.mListener = listener;
+            this.mPhoneId = phoneId;
+            try {
+                listener.asBinder().linkToDeath(this, 0);
+            } catch (RemoteException e) {
+            }
         }
 
         public void onRegistered(ImsRegistration reg) {
@@ -656,34 +681,52 @@ public class SemImsServiceStub extends SemImsService.Stub {
                 }
             }
         }
-    }
 
-    private class ImsOngoingFtEventCallBack extends IImsOngoingFtEventListener.Stub {
-        private ImsOngoingFtEventCallBack() {
+        public void binderDied() {
+            ImsServiceStub.getInstance().unregisterImsRegistrationListenerForSlot(this.mToken, this.mPhoneId);
+            SemImsServiceStub.this.mCallbacks.remove(this.mToken);
+            reset();
         }
 
-        public void onFtStateChanged(boolean event) {
-            RemoteCallbackList<SemImsFtListener> ftListener = SemImsServiceStub.this.mOngoingFtEventListeners;
-            if (ftListener != null) {
-                int i = ftListener.beginBroadcast();
-                while (i > 0) {
-                    i--;
-                    try {
-                        ftListener.getBroadcastItem(i).onFtStateChanged(event);
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-                ftListener.finishBroadcast();
+        /* access modifiers changed from: protected */
+        public void reset() {
+            try {
+                this.mListener.asBinder().unlinkToDeath(this, 0);
+            } catch (NoSuchElementException e) {
             }
         }
     }
 
-    private class SimMobilityStatusCallBack extends ISimMobilityStatusListener.Stub {
-        SemSimMobStatusListener mListener;
+    private class ImsOngoingFtEventCallBack extends IImsOngoingFtEventListener.Stub {
+        String mToken;
 
-        public SimMobilityStatusCallBack(SemSimMobStatusListener listener) {
+        private ImsOngoingFtEventCallBack() {
+            this.mToken = null;
+        }
+
+        public void onFtStateChanged(boolean event) {
+            for (SemImsFtCallBack callback : SemImsServiceStub.this.mOngoingFtEventListeners.values()) {
+                try {
+                    callback.mListener.onFtStateChanged(event);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private class SimMobilityStatusCallBack extends ISimMobilityStatusListener.Stub implements IBinder.DeathRecipient {
+        SemSimMobStatusListener mListener;
+        private int mPhoneId;
+        String mToken;
+
+        public SimMobilityStatusCallBack(SemSimMobStatusListener listener, int phoneId) {
             this.mListener = listener;
+            this.mPhoneId = phoneId;
+            try {
+                listener.asBinder().linkToDeath(this, 0);
+            } catch (RemoteException e) {
+            }
         }
 
         public void onSimMobilityStateChanged(boolean event) {
@@ -693,44 +736,55 @@ public class SemImsServiceStub extends SemImsService.Stub {
                 e.printStackTrace();
             }
         }
+
+        public void binderDied() {
+            ImsServiceStub.getInstance().unregisterSimMobilityStatusListenerByPhoneId(this.mToken, this.mPhoneId);
+            SemImsServiceStub.this.mCallbacks.remove(this.mToken);
+            reset();
+        }
+
+        /* access modifiers changed from: protected */
+        public void reset() {
+            try {
+                this.mListener.asBinder().unlinkToDeath(this, 0);
+            } catch (NoSuchElementException e) {
+            }
+        }
     }
 
     private class EpdgListenerCallback extends IEpdgListener.Stub {
+        String mToken;
+
         private EpdgListenerCallback() {
+            this.mToken = null;
         }
 
         public void onEpdgAvailable(int phoneId, int isAvailable, int wifiState) {
             if (SemImsServiceStub.this.mEpdgListeners != null) {
-                int i = SemImsServiceStub.this.mEpdgListeners.beginBroadcast();
-                while (i > 0) {
-                    i--;
+                for (SemEpdgCallBack callback : SemImsServiceStub.this.mEpdgListeners.values()) {
                     boolean availability = true;
                     if (isAvailable != 1) {
                         availability = false;
                     }
                     try {
                         SemImsServiceStub.this.mEpdgAvailable[phoneId] = availability;
-                        SemImsServiceStub.this.mEpdgListeners.getBroadcastItem(i).onEpdgAvailable(phoneId, availability, wifiState);
+                        callback.mListener.onEpdgAvailable(phoneId, availability, wifiState);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
                 }
-                SemImsServiceStub.this.mEpdgListeners.finishBroadcast();
             }
         }
 
         public void onEpdgHandoverResult(int phoneId, int isL2WHandover, int result, String apnType) {
             if (SemImsServiceStub.this.mEpdgListeners != null) {
-                int i = SemImsServiceStub.this.mEpdgListeners.beginBroadcast();
-                while (i > 0) {
-                    i--;
+                for (SemEpdgCallBack callback : SemImsServiceStub.this.mEpdgListeners.values()) {
                     try {
-                        SemImsServiceStub.this.mEpdgListeners.getBroadcastItem(i).onHandoverResult(phoneId, isL2WHandover, result, apnType);
+                        callback.mListener.onHandoverResult(phoneId, isL2WHandover, result, apnType);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
                 }
-                SemImsServiceStub.this.mEpdgListeners.finishBroadcast();
             }
         }
 
@@ -739,31 +793,25 @@ public class SemImsServiceStub extends SemImsService.Stub {
 
         public void onEpdgIpsecConnection(int phoneId, String apnType, int ikeError, int throttleCount) {
             if (SemImsServiceStub.this.mEpdgListeners != null) {
-                int i = SemImsServiceStub.this.mEpdgListeners.beginBroadcast();
-                while (i > 0) {
-                    i--;
+                for (SemEpdgCallBack callback : SemImsServiceStub.this.mEpdgListeners.values()) {
                     try {
-                        SemImsServiceStub.this.mEpdgListeners.getBroadcastItem(i).onIpsecConnection(phoneId, apnType, ikeError, throttleCount);
+                        callback.mListener.onIpsecConnection(phoneId, apnType, ikeError, throttleCount);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
                 }
-                SemImsServiceStub.this.mEpdgListeners.finishBroadcast();
             }
         }
 
         public void onEpdgIpsecDisconnection(int phoneId, String apnType) {
             if (SemImsServiceStub.this.mEpdgListeners != null) {
-                int i = SemImsServiceStub.this.mEpdgListeners.beginBroadcast();
-                while (i > 0) {
-                    i--;
+                for (SemEpdgCallBack callback : SemImsServiceStub.this.mEpdgListeners.values()) {
                     try {
-                        SemImsServiceStub.this.mEpdgListeners.getBroadcastItem(i).onIpsecDisconnection(phoneId, apnType);
+                        callback.mListener.onIpsecDisconnection(phoneId, apnType);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
                 }
-                SemImsServiceStub.this.mEpdgListeners.finishBroadcast();
             }
         }
 
@@ -772,20 +820,71 @@ public class SemImsServiceStub extends SemImsService.Stub {
 
         public void onEpdgShowPopup(int phoneId, int popupType) {
             if (SemImsServiceStub.this.mEpdgListeners != null) {
-                int i = SemImsServiceStub.this.mEpdgListeners.beginBroadcast();
-                while (i > 0) {
-                    i--;
+                for (SemEpdgCallBack callback : SemImsServiceStub.this.mEpdgListeners.values()) {
                     try {
-                        SemImsServiceStub.this.mEpdgListeners.getBroadcastItem(i).onEpdgShowPopup(phoneId, popupType);
+                        callback.mListener.onEpdgShowPopup(phoneId, popupType);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
                 }
-                SemImsServiceStub.this.mEpdgListeners.finishBroadcast();
             }
         }
 
         public void onEpdgReleaseCall(int phoneId) {
+        }
+    }
+
+    private class SemEpdgCallBack implements IBinder.DeathRecipient {
+        final ISemEpdgListener mListener;
+        final String mToken;
+
+        public SemEpdgCallBack(ISemEpdgListener listener, String token) {
+            this.mListener = listener;
+            this.mToken = token;
+            try {
+                listener.asBinder().linkToDeath(this, 0);
+            } catch (RemoteException e) {
+            }
+        }
+
+        public void binderDied() {
+            SemImsServiceStub.this.mEpdgListeners.remove(this.mToken);
+            reset();
+        }
+
+        /* access modifiers changed from: protected */
+        public void reset() {
+            try {
+                this.mListener.asBinder().unlinkToDeath(this, 0);
+            } catch (NoSuchElementException e) {
+            }
+        }
+    }
+
+    private class SemImsFtCallBack implements IBinder.DeathRecipient {
+        final SemImsFtListener mListener;
+        final String mToken;
+
+        public SemImsFtCallBack(SemImsFtListener listener, String token) {
+            this.mListener = listener;
+            this.mToken = token;
+            try {
+                listener.asBinder().linkToDeath(this, 0);
+            } catch (RemoteException e) {
+            }
+        }
+
+        public void binderDied() {
+            SemImsServiceStub.this.mOngoingFtEventListeners.remove(this.mToken);
+            reset();
+        }
+
+        /* access modifiers changed from: protected */
+        public void reset() {
+            try {
+                this.mListener.asBinder().unlinkToDeath(this, 0);
+            } catch (NoSuchElementException e) {
+            }
         }
     }
 }

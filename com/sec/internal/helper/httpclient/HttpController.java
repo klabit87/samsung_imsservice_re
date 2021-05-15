@@ -113,7 +113,7 @@ public class HttpController {
 
                     public void onFailure(Request arg0, IOException arg1) {
                         String access$000 = HttpController.TAG;
-                        IMSLog.i(access$000, "HTTP Request " + signature + " " + requestParams.getClass().getSimpleName() + " failed: " + IMSLog.numberChecker(arg0.urlString()) + " with " + arg0.method() + " Reason: " + arg1.getMessage());
+                        IMSLog.i(access$000, "HTTP Request " + signature + " " + requestParams.getClass().getSimpleName() + "  failed: " + IMSLog.numberChecker(arg0.urlString(), 5) + " with " + arg0.method() + " Reason: " + arg1.getMessage());
                         requestParams.getCallback().onFail(arg1);
                     }
                 });

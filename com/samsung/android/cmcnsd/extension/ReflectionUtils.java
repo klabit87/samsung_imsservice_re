@@ -11,30 +11,30 @@ import java.util.List;
 
 public class ReflectionUtils {
     public static List<Field> getAllFields(Class<?> cls) {
-        ArrayList arrayList = new ArrayList();
-        Collections.addAll(arrayList, cls.getDeclaredFields());
+        List<Field> fields = new ArrayList<>();
+        Collections.addAll(fields, cls.getDeclaredFields());
         Class<? super Object> superclass = cls.getSuperclass();
         if (!(superclass == null || superclass == Object.class)) {
-            arrayList.addAll(getAllFields(superclass));
+            fields.addAll(getAllFields(superclass));
         }
-        return arrayList;
+        return fields;
     }
 
-    public static Field getField(Class<?> cls, String str) {
+    public static Field getField(Class<?> cls, String name) {
         Class<? super Object> superclass = cls.getSuperclass();
         try {
-            return cls.getDeclaredField(str);
+            return cls.getDeclaredField(name);
         } catch (NoSuchFieldException e) {
             String simpleName = ReflectionUtils.class.getSimpleName();
-            Log.d(simpleName, "Could not find field " + str + " in " + cls);
+            Log.d(simpleName, "Could not find field " + name + " in " + cls);
             if (superclass != null) {
-                return getField(superclass, str);
+                return getField(superclass, name);
             }
             return null;
         }
     }
 
-    public static <T> T getValueOf(Field field, Object obj) {
+    public static <T> T getValueOf(Field field, Object item) {
         if (field == null) {
             return null;
         }
@@ -42,62 +42,62 @@ public class ReflectionUtils {
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
-            return field.get(obj);
+            return field.get(item);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Could not read value from Field!", e);
         }
     }
 
-    public static <T> T getValueOf(String str, Object obj) {
-        Field field = getField(obj.getClass(), str);
+    public static <T> T getValueOf(String name, Object item) {
+        Field field = getField(item.getClass(), name);
         if (field != null) {
-            return getValueOf(field, obj);
+            return getValueOf(field, item);
         }
         return null;
     }
 
-    public static <T> T getValueOf(String str, Class<?> cls) {
-        Field field = getField(cls, str);
+    public static <T> T getValueOf(String name, Class<?> cls) {
+        Field field = getField(cls, name);
         if (field != null) {
             return getValueOf(field, (Object) null);
         }
         return null;
     }
 
-    public static boolean setValueOf(Field field, Object obj, Object obj2) {
+    public static boolean setValueOf(Field field, Object item, Object value) {
         try {
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
-            field.set(obj, obj2);
+            field.set(item, value);
             return true;
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Could not read value from Field!", e);
         }
     }
 
-    public static <T> Class<T> getClassOf(T t) {
-        return t.getClass();
+    public static <T> Class<T> getClassOf(T obj) {
+        return obj.getClass();
     }
 
     public static Class<?> getGenericType(Field field) {
         return (Class) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
     }
 
-    public static void invoke(Method method, Object obj, Object... objArr) {
+    public static void invoke(Method method, Object receiver, Object... arguments) {
         if (method != null) {
             if (!method.isAccessible()) {
                 method.setAccessible(true);
             }
             try {
-                method.invoke(obj, objArr);
+                method.invoke(receiver, arguments);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new IllegalStateException("Could not invoke method!", e);
             }
         }
     }
 
-    public static <T> T invoke2(Method method, Object obj, Object... objArr) {
+    public static <T> T invoke2(Method method, Object receiver, Object... arguments) {
         if (method == null) {
             return null;
         }
@@ -105,7 +105,7 @@ public class ReflectionUtils {
             method.setAccessible(true);
         }
         try {
-            return method.invoke(obj, objArr);
+            return method.invoke(receiver, arguments);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not invoke method!", e);
         }

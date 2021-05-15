@@ -5,25 +5,22 @@ import android.os.Parcelable;
 
 public class NsdNetworkMessage implements Parcelable {
     public static final Parcelable.Creator<NsdNetworkMessage> CREATOR = new Parcelable.Creator<NsdNetworkMessage>() {
-        public NsdNetworkMessage createFromParcel(Parcel parcel) {
-            return new NsdNetworkMessage(parcel);
+        public NsdNetworkMessage createFromParcel(Parcel in) {
+            return new NsdNetworkMessage(in);
         }
 
-        public NsdNetworkMessage[] newArray(int i) {
-            return new NsdNetworkMessage[i];
+        public NsdNetworkMessage[] newArray(int size) {
+            return new NsdNetworkMessage[size];
         }
     };
+    /* access modifiers changed from: private */
     public int mEvent;
 
-    public int describeContents() {
-        return 0;
+    private NsdNetworkMessage() {
     }
 
-    public NsdNetworkMessage() {
-    }
-
-    public NsdNetworkMessage(Parcel parcel) {
-        readFromParcel(parcel);
+    private NsdNetworkMessage(Parcel in) {
+        readFromParcel(in);
     }
 
     public int getEvent() {
@@ -34,20 +31,24 @@ public class NsdNetworkMessage implements Parcelable {
         return "[event=" + this.mEvent + "]";
     }
 
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(this.mEvent);
+    public int describeContents() {
+        return 0;
     }
 
-    private void readFromParcel(Parcel parcel) {
-        this.mEvent = parcel.readInt();
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.mEvent);
+    }
+
+    private void readFromParcel(Parcel in) {
+        this.mEvent = in.readInt();
     }
 
     public static class Builder {
-        public final NsdNetworkMessage mNsdNetworkMessage = new NsdNetworkMessage();
+        private final NsdNetworkMessage mNsdNetworkMessage = new NsdNetworkMessage();
 
-        public Builder setEvent(int i) {
+        public Builder setEvent(int event) {
             NsdNetworkMessage nsdNetworkMessage = this.mNsdNetworkMessage;
-            int unused = nsdNetworkMessage.mEvent = i | nsdNetworkMessage.mEvent;
+            int unused = nsdNetworkMessage.mEvent = nsdNetworkMessage.mEvent | event;
             return this;
         }
 

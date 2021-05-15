@@ -1410,7 +1410,7 @@ class RegistrationUtils {
             IMSLog.i(LOG_TAG, task.getPhoneId(), "tryRegister: Airplane mode is on");
             task.setRegiFailReason(DiagnosisConstants.REGI_FRSN.FLIGHT_MODE_ON.getCode());
             return false;
-        } else if (task.getGovernor().isThrottled() && !task.getGovernor().isReadyToGetReattach()) {
+        } else if (task.getGovernor().isThrottled()) {
             int phoneId2 = task.getPhoneId();
             IMSLog.i(LOG_TAG, phoneId2, "tryRegister: task " + profile.getName() + " is throttled.");
             if (task.isOneOf(RegistrationConstants.RegisterTaskState.IDLE, RegistrationConstants.RegisterTaskState.CONNECTING, RegistrationConstants.RegisterTaskState.CONNECTED)) {
@@ -1484,7 +1484,7 @@ class RegistrationUtils {
         }
     }
 
-    static boolean needToSkipTryRegister(RegisterTask task, boolean needPendingRcsRegi, boolean hasNoSIM, boolean isDeregistering, ITelephonyManager mTelephonyManager, PdnController mPdnController) {
+    static boolean needToSkipTryRegister(RegisterTask task, boolean needPendingRcsRegi, boolean hasNoSIM, boolean isDeregistering) {
         int phoneId = task.getPhoneId();
         if (!SimConstants.DSDS_SI_DDS.equals(SimUtil.getConfigDualIMS()) || phoneId == SimUtil.getDefaultPhoneId() || task.getProfile().getCmcType() != 0) {
             if (task.isOneOf(RegistrationConstants.RegisterTaskState.CONFIGURING, RegistrationConstants.RegisterTaskState.REGISTERING, RegistrationConstants.RegisterTaskState.REGISTERED, RegistrationConstants.RegisterTaskState.DEREGISTERING, RegistrationConstants.RegisterTaskState.EMERGENCY) || needPendingRcsRegi) {
@@ -1499,13 +1499,10 @@ class RegistrationUtils {
             } else if (task.getProfile().getEnableStatus() == 0) {
                 IMSLog.i(LOG_TAG, phoneId, "tryRegister: profile is disabled. " + task.getProfile());
                 return true;
-            } else if (task.isSuspended()) {
-                IMSLog.i(LOG_TAG, phoneId, "tryRegister: suspened");
-                return true;
-            } else if (!task.isRcsOnly() || !ConfigUtil.isRcsEurNonRjil(task.getMno()) || mTelephonyManager.getCallState(SimUtil.getOppositeSimSlot(phoneId)) == 0 || mPdnController.getDataState(phoneId) != 3) {
+            } else if (!task.isSuspended()) {
                 return false;
             } else {
-                IMSLog.i(LOG_TAG, phoneId, "tryRegister: suspended because other slot is on calling ");
+                IMSLog.i(LOG_TAG, phoneId, "tryRegister: suspened");
                 return true;
             }
         } else {

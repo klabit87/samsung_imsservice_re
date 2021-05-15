@@ -260,8 +260,8 @@ public class ConfigConstants {
         public static final String PUBLIC_USER_IDENTITY = "public_user_identity";
         public static final String REG_RETRY_BASE_TIME = "RegRetryBaseTime";
         public static final String REG_RETRY_MAX_TIME = "RegRetryMaxTime";
-        public static final String SERVICEPROVIDEREXT_CHATBOT_PASSWORD = "chatbot/Password";
-        public static final String SERVICEPROVIDEREXT_CHATBOT_USER_NAME = "chatbot/Username";
+        public static final String SERVICEPROVIDEREXT_CHATBOT_PASSWORD = "Password";
+        public static final String SERVICEPROVIDEREXT_CHATBOT_USER_NAME = "Username";
         public static final String SERVICEPROVIDEREXT_FTHTTPGROUPCHAT = "fthttpGroupChat";
         public static final String SERVICES_ALLOW_RCS_EXTENSIONS = "allowRCSExtensions";
         public static final String SERVICES_CHAT_AUTH = "ChatAuth";

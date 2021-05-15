@@ -149,7 +149,7 @@ public class ImParticipant extends Observable {
     }
 
     public String toString() {
-        return "ImParticipant [mId=" + this.mId + ", mChatId=" + this.mChatId + ", mType=" + this.mType + ", mStatus=" + this.mStatus + ", mUri=" + IMSLog.numberChecker(this.mUri) + ", mUserAlias=" + IMSLog.checker(this.mUserAlias) + "]";
+        return "ImParticipant [mId=" + this.mId + ", mChatId=" + this.mChatId + ", mType=" + this.mType + ", mStatus=" + this.mStatus + ", mUri=" + IMSLog.checker(this.mUri) + ", mUserAlias=" + IMSLog.checker(this.mUserAlias) + "]";
     }
 
     public int hashCode() {

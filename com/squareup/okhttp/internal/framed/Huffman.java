@@ -141,11 +141,11 @@ class Huffman {
                 throw new IllegalStateException("invalid dictionary: prefix not unique");
             }
         }
-        int i2 = 8 - len;
-        int start = (code << i2) & 255;
-        int end = 1 << i2;
-        for (int i3 = start; i3 < start + end; i3++) {
-            current.children[i3] = terminal;
+        int shift = 8 - len;
+        int start = (code << shift) & 255;
+        int end = 1 << shift;
+        for (int i2 = start; i2 < start + end; i2++) {
+            current.children[i2] = terminal;
         }
     }
 

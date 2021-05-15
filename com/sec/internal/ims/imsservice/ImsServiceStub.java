@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.IInterface;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
@@ -122,11 +123,16 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
+    private static final int LISTENER_DEFAULT_INDEX = 100;
     /* access modifiers changed from: private */
     public static final String LOG_TAG = ImsServiceStub.class.getSimpleName();
     private static final String PERMISSION = "com.sec.imsservice.PERMISSION";
@@ -134,6 +140,7 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
     private static boolean mIsExplicitGcCalled = false;
     /* access modifiers changed from: private */
     public static boolean mIsImsAvailable = false;
+    private static final AtomicInteger mListenerIndex = new AtomicInteger(0);
     /* access modifiers changed from: private */
     public static boolean mUserUnlocked = false;
     private static ImsServiceStub sInstance = null;
@@ -185,6 +192,8 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
     private List<IIilManager> mIilManagers = new ArrayList();
     private ImsDiagnosticMonitorNotificationManager mImsDiagMonitor = null;
     private IImsFramework mImsFramework;
+    /* access modifiers changed from: private */
+    public final Map<String, CallBack<? extends IInterface>> mListenerTokenMap = new ConcurrentHashMap();
     private NtpTimeController mNtpTimeController = null;
     private PdnController mPdnController = null;
     private RcsPolicyManager mRcsPolicyManager = null;
@@ -235,6 +244,15 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
         return getInstanceInternal();
     }
 
+    protected static <T extends IInterface> String getTokenOfListener(T listener) {
+        mListenerIndex.compareAndSet(Integer.MAX_VALUE, 100);
+        StringBuilder sb = new StringBuilder();
+        sb.append(listener == null ? "null" : Integer.valueOf(listener.hashCode()));
+        sb.append("$");
+        sb.append(mListenerIndex.incrementAndGet());
+        return sb.toString();
+    }
+
     private static synchronized ImsServiceStub getInstanceInternal() {
         ImsServiceStub imsServiceStub;
         synchronized (ImsServiceStub.class) {
@@ -281,6 +299,17 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
 
     public static boolean isImsAvailable() {
         return mIsImsAvailable;
+    }
+
+    private static void checkUt(Context context) {
+        try {
+            if (context.getPackageManager().getPackageUid("com.salab.issuetracker", 0) == 1000) {
+                Log.i(LOG_TAG, "issueTracker found should be UT device");
+                IMSLog.setIsUt(true);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.i(LOG_TAG, "issueTracker not found");
+        }
     }
 
     public void registerDefaultSmsPackageChangeReceiver() {
@@ -373,7 +402,7 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
                 L_0x0086:
                     return
                 */
-                throw new UnsupportedOperationException("Method not decompiled: com.sec.internal.ims.imsservice.ImsServiceStub.AnonymousClass2.onReceive(android.content.Context, android.content.Intent):void");
+                throw new UnsupportedOperationException("Method not decompiled: com.sec.internal.ims.imsservice.ImsServiceStub.AnonymousClass3.onReceive(android.content.Context, android.content.Intent):void");
             }
         }, intent);
     }
@@ -581,7 +610,7 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
         this.mConnectivityController.tryNsdBind();
     }
 
-    public void registerSimMobilityStatusListener(ISimMobilityStatusListener listener, boolean broadcast, int phoneId) {
+    public String registerSimMobilityStatusListener(ISimMobilityStatusListener listener, boolean broadcast, int phoneId) {
         if (isPermissionGranted()) {
             String str = LOG_TAG;
             IMSLog.d(str, phoneId, "registerSimMobilityStatusListener: broadcast = " + broadcast);
@@ -598,10 +627,12 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
                         ImsServiceStub.this.lambda$registerSimMobilityStatusListener$1$ImsServiceStub(this.f$1, (ISimManager) obj);
                     }
                 });
-                return;
+            } else {
+                this.mRegistrationManager.registerSimMobilityStatusListener(listener, broadcast, phoneId);
             }
-            this.mRegistrationManager.registerSimMobilityStatusListener(listener, broadcast, phoneId);
-            return;
+            String token = getTokenOfListener(listener);
+            this.mListenerTokenMap.put(token, new CallBack(listener, token));
+            return token;
         }
         throw new SecurityException(LOG_TAG + "[" + phoneId + "] Permission denied");
     }
@@ -860,16 +891,19 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
         return this.mRegistrationManager.getAvailableNetworkType(service);
     }
 
-    public void registerImSessionListener(IImSessionListener listener) {
+    public String registerImSessionListener(IImSessionListener listener) {
         this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
         Log.d(LOG_TAG, "registerImSessionListener:");
         IImModule module = this.mServiceModuleManager.getImModule();
         if (module != null) {
             module.registerImSessionListener(listener);
         }
+        String token = getTokenOfListener(listener);
+        this.mListenerTokenMap.put(token, new CallBack(listener, token));
+        return token;
     }
 
-    public void registerImSessionListenerByPhoneId(IImSessionListener listener, int phoneId) {
+    public String registerImSessionListenerByPhoneId(IImSessionListener listener, int phoneId) {
         this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
         String str = LOG_TAG;
         Log.d(str, "registerImSessionListenerByPhoneId: PhoneId " + phoneId);
@@ -877,93 +911,127 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
         if (module != null) {
             module.registerImSessionListenerByPhoneId(listener, phoneId);
         }
+        String token = getTokenOfListener(listener);
+        this.mListenerTokenMap.put(token, new CallBack(listener, token));
+        return token;
     }
 
-    public void unregisterImSessionListener(IImSessionListener listener) {
+    public void unregisterImSessionListener(String token) {
+        IImModule module;
         this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
-        Log.d(LOG_TAG, "unregisterImSessionListener:");
-        IImModule module = this.mServiceModuleManager.getImModule();
-        if (module != null) {
-            module.unregisterImSessionListener(listener);
+        if (!TextUtils.isEmpty(token)) {
+            Log.d(LOG_TAG, "unregisterImSessionListener:");
+            IImSessionListener listener = removeCallback(token);
+            if (listener != null && (module = this.mServiceModuleManager.getImModule()) != null) {
+                module.unregisterImSessionListener(listener);
+            }
         }
     }
 
-    public void unregisterImSessionListenerByPhoneId(IImSessionListener listener, int phoneId) {
+    public void unregisterImSessionListenerByPhoneId(String token, int phoneId) {
+        IImModule module;
         this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
-        String str = LOG_TAG;
-        Log.d(str, "unregisterImSessionListenerByPhoneId: PhoneId " + phoneId);
-        IImModule module = this.mServiceModuleManager.getImModule();
-        if (module != null) {
-            module.unregisterImSessionListenerByPhoneId(listener, phoneId);
+        if (!TextUtils.isEmpty(token)) {
+            String str = LOG_TAG;
+            Log.d(str, "unregisterImSessionListenerByPhoneId: PhoneId " + phoneId);
+            IImSessionListener listener = removeCallback(token);
+            if (listener != null && (module = this.mServiceModuleManager.getImModule()) != null) {
+                module.unregisterImSessionListenerByPhoneId(listener, phoneId);
+            }
         }
     }
 
-    public void registerImsOngoingFtListener(IImsOngoingFtEventListener listener) {
+    public String registerImsOngoingFtListener(IImsOngoingFtEventListener listener) {
         this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
         Log.d(LOG_TAG, "registerImsOngoingFtListener");
+        String token = getTokenOfListener(listener);
+        this.mListenerTokenMap.put(token, new CallBack(listener, token));
         IImModule module = this.mServiceModuleManager.getImModule();
         if (module != null) {
             module.registerImsOngoingFtListener(listener);
         }
+        return token;
     }
 
-    public void registerImsOngoingFtListenerByPhoneId(IImsOngoingFtEventListener listener, int phoneId) {
+    public String registerImsOngoingFtListenerByPhoneId(IImsOngoingFtEventListener listener, int phoneId) {
         this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
         String str = LOG_TAG;
         Log.d(str, "registerImsOngoingFtListenerByPhoneId: PhoneId " + phoneId);
         IImModule module = this.mServiceModuleManager.getImModule();
+        String token = getTokenOfListener(listener);
+        this.mListenerTokenMap.put(token, new CallBack(listener, token));
         if (module != null) {
             module.registerImsOngoingFtListenerByPhoneId(listener, phoneId);
         }
+        return token;
     }
 
-    public void unregisterImsOngoingFtListener(IImsOngoingFtEventListener listener) {
+    public void unregisterImsOngoingFtListener(String token) {
+        IImModule module;
         this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
-        Log.d(LOG_TAG, "unregisterImsOngoingFtListener");
-        IImModule module = this.mServiceModuleManager.getImModule();
-        if (module != null) {
-            module.unregisterImsOngoingListener(listener);
+        if (!TextUtils.isEmpty(token)) {
+            Log.d(LOG_TAG, "unregisterImsOngoingFtListener");
+            IImsOngoingFtEventListener listener = removeCallback(token);
+            if (listener != null && (module = this.mServiceModuleManager.getImModule()) != null) {
+                module.unregisterImsOngoingListener(listener);
+            }
         }
     }
 
-    public void unregisterImsOngoingFtListenerByPhoneId(IImsOngoingFtEventListener listener, int phoneId) {
+    public void unregisterImsOngoingFtListenerByPhoneId(String token, int phoneId) {
         this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
-        String str = LOG_TAG;
-        Log.d(str, "unregisterImsOngoingFtListenerByPhoneId: PhoneId " + phoneId);
-        IImModule module = this.mServiceModuleManager.getImModule();
-        if (module != null) {
-            module.unregisterImsOngoingListenerByPhoneId(listener, phoneId);
+        if (!TextUtils.isEmpty(token)) {
+            String str = LOG_TAG;
+            Log.d(str, "unregisterImsOngoingFtListenerByPhoneId: PhoneId " + phoneId);
+            IImModule module = this.mServiceModuleManager.getImModule();
+            IImsOngoingFtEventListener listener = removeCallback(token);
+            if (listener != null && module != null) {
+                module.unregisterImsOngoingListenerByPhoneId(listener, phoneId);
+            }
         }
     }
 
-    public void registerAutoConfigurationListener(IAutoConfigurationListener listener, int phoneId) {
+    public String registerAutoConfigurationListener(IAutoConfigurationListener listener, int phoneId) {
         this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
         String str = LOG_TAG;
         Log.d(str, "registerAutoConfigurationListener: PhoneId " + phoneId);
         this.mConfigModule.registerAutoConfigurationListener(listener, phoneId);
+        String token = getTokenOfListener(listener);
+        this.mListenerTokenMap.put(token, new CallBack(listener, token));
+        return token;
     }
 
-    public void unregisterAutoConfigurationListener(IAutoConfigurationListener listener, int phoneId) {
-        this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
-        String str = LOG_TAG;
-        Log.d(str, "unregisterAutoConfigurationListener: PhoneId " + phoneId);
-        this.mConfigModule.unregisterAutoConfigurationListener(listener, phoneId);
+    public void unregisterAutoConfigurationListener(String token, int phoneId) {
+        if (!TextUtils.isEmpty(token)) {
+            this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
+            String str = LOG_TAG;
+            Log.d(str, "unregisterAutoConfigurationListener: PhoneId " + phoneId);
+            IAutoConfigurationListener listener = removeCallback(token);
+            if (listener != null) {
+                this.mConfigModule.unregisterAutoConfigurationListener(listener, phoneId);
+            }
+        }
     }
 
-    public void registerSimMobilityStatusListenerByPhoneId(ISimMobilityStatusListener listener, int phoneId) {
+    public String registerSimMobilityStatusListenerByPhoneId(ISimMobilityStatusListener listener, int phoneId) {
         if (isPermissionGranted()) {
             String str = LOG_TAG;
             Log.d(str, "registerSimMobilityStatusListenerByPhoneId: phoneId " + phoneId);
-            registerSimMobilityStatusListener(listener, true, phoneId);
-            return;
+            return registerSimMobilityStatusListener(listener, true, phoneId);
         }
         throw new SecurityException(LOG_TAG + "[" + phoneId + "] Permission denied");
     }
 
-    public void unregisterSimMobilityStatusListenerByPhoneId(ISimMobilityStatusListener listener, int phoneId) {
-        if (isPermissionGranted()) {
+    public void unregisterSimMobilityStatusListenerByPhoneId(String token, int phoneId) {
+        if (!isPermissionGranted()) {
+            throw new SecurityException(LOG_TAG + "[" + phoneId + "] Permission denied");
+        } else if (!TextUtils.isEmpty(token)) {
             String str = LOG_TAG;
             Log.d(str, "unregisterSimMobilityStatusListenerByPhoneId: phoneId " + phoneId);
+            ISimMobilityStatusListener listener = removeCallback(token);
+            if (listener == null) {
+                return;
+            }
             if (phoneId == -1) {
                 this.mSimManagers.forEach(new Consumer(listener) {
                     public final /* synthetic */ ISimMobilityStatusListener f$1;
@@ -979,8 +1047,6 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
             } else {
                 this.mRegistrationManager.unregisterSimMobilityStatusListener(listener, phoneId);
             }
-        } else {
-            throw new SecurityException(LOG_TAG + "[" + phoneId + "] Permission denied");
         }
     }
 
@@ -1123,30 +1189,48 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
         Log.d(LOG_TAG, "ePDN setup failure was changed to onPreciseDataConnectionStateChanged");
     }
 
-    public void registerEpdgListener(IEpdgListener listener) {
+    public String registerEpdgListener(IEpdgListener listener) {
         Log.d(LOG_TAG, "registerEpdgListener");
         this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
         WfcEpdgManager wfcEpdgManager = this.mWfcEpdgManager;
         if (wfcEpdgManager != null) {
             wfcEpdgManager.registerEpdgHandoverListener(listener);
         }
+        String token = getTokenOfListener(listener);
+        this.mListenerTokenMap.put(token, new CallBack(listener, token));
+        return token;
     }
 
-    public void unRegisterEpdgListener(IEpdgListener listener) {
+    public void unRegisterEpdgListener(String token) {
+        IEpdgListener listener;
+        WfcEpdgManager wfcEpdgManager;
         this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
-        WfcEpdgManager wfcEpdgManager = this.mWfcEpdgManager;
-        if (wfcEpdgManager != null) {
+        if (!TextUtils.isEmpty(token) && (listener = removeCallback(token)) != null && (wfcEpdgManager = this.mWfcEpdgManager) != null) {
             wfcEpdgManager.unRegisterEpdgHandoverListener(listener);
         }
     }
 
     public void registerImsRegistrationListener(IImsRegistrationListener listener) {
         if (isPermissionGranted()) {
-            Log.d(LOG_TAG, "registerImsRegistrationListener");
-            registerImsRegistrationListener(listener, true, -1);
+            Log.d(LOG_TAG, "Requested registerListener without phoneId. register it by all phoneId.");
+            this.mSimManagers.forEach(new Consumer(listener) {
+                public final /* synthetic */ IImsRegistrationListener f$1;
+
+                {
+                    this.f$1 = r2;
+                }
+
+                public final void accept(Object obj) {
+                    ImsServiceStub.this.lambda$registerImsRegistrationListener$5$ImsServiceStub(this.f$1, (ISimManager) obj);
+                }
+            });
             return;
         }
         throw new SecurityException(LOG_TAG + " Permission denied");
+    }
+
+    public /* synthetic */ void lambda$registerImsRegistrationListener$5$ImsServiceStub(IImsRegistrationListener listener, ISimManager sm) {
+        this.mRegistrationManager.registerListener(listener, sm.getSimSlotIndex());
     }
 
     public void unregisterImsRegistrationListener(IImsRegistrationListener listener) throws RemoteException {
@@ -1160,7 +1244,7 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
                 }
 
                 public final void accept(Object obj) {
-                    ImsServiceStub.this.lambda$unregisterImsRegistrationListener$5$ImsServiceStub(this.f$1, (ISimManager) obj);
+                    ImsServiceStub.this.lambda$unregisterImsRegistrationListener$6$ImsServiceStub(this.f$1, (ISimManager) obj);
                 }
             });
             return;
@@ -1168,24 +1252,29 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
         throw new SecurityException(LOG_TAG + " Permission denied");
     }
 
-    public /* synthetic */ void lambda$unregisterImsRegistrationListener$5$ImsServiceStub(IImsRegistrationListener listener, ISimManager sm) {
+    public /* synthetic */ void lambda$unregisterImsRegistrationListener$6$ImsServiceStub(IImsRegistrationListener listener, ISimManager sm) {
         this.mRegistrationManager.unregisterListener(listener, sm.getSimSlotIndex());
     }
 
-    public void registerImsRegistrationListenerForSlot(IImsRegistrationListener listener, int phoneId) {
+    public String registerImsRegistrationListenerForSlot(IImsRegistrationListener listener, int phoneId) {
         if (isPermissionGranted()) {
             String str = LOG_TAG;
             Log.d(str, "registerImsRegistrationListenerForSlot: phoneId " + phoneId);
-            registerImsRegistrationListener(listener, true, phoneId);
-            return;
+            return registerImsRegistrationListener(listener, true, phoneId);
         }
         throw new SecurityException(LOG_TAG + "[" + phoneId + "] Permission denied");
     }
 
-    public void unregisterImsRegistrationListenerForSlot(IImsRegistrationListener listener, int phoneId) {
-        if (isPermissionGranted()) {
+    public void unregisterImsRegistrationListenerForSlot(String token, int phoneId) {
+        if (!isPermissionGranted()) {
+            throw new SecurityException(LOG_TAG + "[" + phoneId + "] Permission denied");
+        } else if (!TextUtils.isEmpty(token)) {
             String str = LOG_TAG;
             Log.d(str, "unregisterImsRegistrationListenerForSlot: phoneId " + phoneId);
+            IImsRegistrationListener listener = removeCallback(token);
+            if (listener == null) {
+                return;
+            }
             if (phoneId == -1) {
                 Log.d(LOG_TAG, "Requested unRegisterListener without phoneId. register it by all phoneId.");
                 this.mSimManagers.forEach(new Consumer(listener) {
@@ -1196,39 +1285,42 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
                     }
 
                     public final void accept(Object obj) {
-                        ImsServiceStub.this.lambda$unregisterImsRegistrationListenerForSlot$6$ImsServiceStub(this.f$1, (ISimManager) obj);
+                        ImsServiceStub.this.lambda$unregisterImsRegistrationListenerForSlot$7$ImsServiceStub(this.f$1, (ISimManager) obj);
                     }
                 });
                 return;
             }
             this.mRegistrationManager.unregisterListener(listener, phoneId);
-            return;
         }
-        throw new SecurityException(LOG_TAG + "[" + phoneId + "] Permission denied");
     }
 
-    public /* synthetic */ void lambda$unregisterImsRegistrationListenerForSlot$6$ImsServiceStub(IImsRegistrationListener listener, ISimManager sm) {
+    public /* synthetic */ void lambda$unregisterImsRegistrationListenerForSlot$7$ImsServiceStub(IImsRegistrationListener listener, ISimManager sm) {
         this.mRegistrationManager.unregisterListener(listener, sm.getSimSlotIndex());
     }
 
-    public void registerCmcRegistrationListenerForSlot(IImsRegistrationListener listener, int phoneId) {
+    public String registerCmcRegistrationListenerForSlot(IImsRegistrationListener listener, int phoneId) {
         if (isPermissionGranted()) {
             String str = LOG_TAG;
             Log.d(str, "registerCmcRegistrationListenerForSlot: phoneId " + phoneId);
             this.mRegistrationManager.registerCmcRegiListener(listener, phoneId);
-            return;
+            String token = getTokenOfListener(listener);
+            this.mListenerTokenMap.put(token, new CallBack(listener, token));
+            return token;
         }
         throw new SecurityException(LOG_TAG + "[" + phoneId + "] Permission denied");
     }
 
-    public void unregisterCmcRegistrationListenerForSlot(IImsRegistrationListener listener, int phoneId) {
-        if (isPermissionGranted()) {
+    public void unregisterCmcRegistrationListenerForSlot(String token, int phoneId) {
+        if (!isPermissionGranted()) {
+            throw new SecurityException(LOG_TAG + "[" + phoneId + "] Permission denied");
+        } else if (!TextUtils.isEmpty(token)) {
             String str = LOG_TAG;
             Log.d(str, "unregisterCmcRegistrationListenerForSlot: phoneId " + phoneId);
-            this.mRegistrationManager.unregisterCmcRegiListener(listener, phoneId);
-            return;
+            IImsRegistrationListener listener = removeCallback(token);
+            if (listener != null) {
+                this.mRegistrationManager.unregisterCmcRegiListener(listener, phoneId);
+            }
         }
-        throw new SecurityException(LOG_TAG + "[" + phoneId + "] Permission denied");
     }
 
     public void registerDialogEventListener(int phoneId, IDialogEventListener listener) throws RemoteException {
@@ -1241,6 +1333,26 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
         this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
         Log.d(LOG_TAG, "unregisterDialogEventListener");
         this.mServiceModuleManager.getVolteServiceModule().unregisterDialogEventListener(phoneId, listener);
+    }
+
+    public String registerDialogEventListenerByToken(int phoneId, IDialogEventListener listener) throws RemoteException {
+        this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
+        Log.d(LOG_TAG, "registerDialogEventListener");
+        this.mServiceModuleManager.getVolteServiceModule().registerDialogEventListener(phoneId, listener);
+        String token = getTokenOfListener(listener);
+        this.mListenerTokenMap.put(token, new CallBack(listener, token));
+        return token;
+    }
+
+    public void unregisterDialogEventListenerByToken(int phoneId, String token) throws RemoteException {
+        this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
+        if (!TextUtils.isEmpty(token)) {
+            Log.d(LOG_TAG, "unregisterDialogEventListener");
+            IDialogEventListener listener = removeCallback(token);
+            if (listener != null) {
+                this.mServiceModuleManager.getVolteServiceModule().unregisterDialogEventListener(phoneId, listener);
+            }
+        }
     }
 
     public DialogEvent getLastDialogEvent(int phoneId) {
@@ -1329,7 +1441,7 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
             }
 
             public final boolean test(Object obj) {
-                return ImsServiceStub.lambda$isServiceAvailable$7(this.f$0, this.f$1, (ImsProfile) obj);
+                return ImsServiceStub.lambda$isServiceAvailable$8(this.f$0, this.f$1, (ImsProfile) obj);
             }
         });
         boolean isEnabled = isServiceEnabledByPhoneId(service, phoneId);
@@ -1341,7 +1453,7 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
         return true;
     }
 
-    static /* synthetic */ boolean lambda$isServiceAvailable$7(String service, int rat, ImsProfile p) {
+    static /* synthetic */ boolean lambda$isServiceAvailable$8(String service, int rat, ImsProfile p) {
         return p != null && !p.hasEmergencySupport() && p.hasService(service, rat);
     }
 
@@ -1571,16 +1683,24 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
         this.mServiceModuleManager.getVolteServiceModule().sendRttSessionModifyRequest(callId, mode);
     }
 
-    public void registerRttEventListener(int phoneId, IRttEventListener listener) {
+    public String registerRttEventListener(int phoneId, IRttEventListener listener) {
         this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
         Log.d(LOG_TAG, "registerRttEventListener");
         this.mServiceModuleManager.getVolteServiceModule().registerRttEventListener(phoneId, listener);
+        String token = getTokenOfListener(listener);
+        this.mListenerTokenMap.put(token, new CallBack(listener, token));
+        return token;
     }
 
-    public void unregisterRttEventListener(int phoneId, IRttEventListener listener) {
+    public void unregisterRttEventListener(int phoneId, String token) {
         this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
-        Log.d(LOG_TAG, "unregisterRttEventListener");
-        this.mServiceModuleManager.getVolteServiceModule().unregisterRttEventListener(phoneId, listener);
+        if (!TextUtils.isEmpty(token)) {
+            Log.d(LOG_TAG, "unregisterRttEventListener");
+            IRttEventListener listener = removeCallback(token);
+            if (listener != null) {
+                this.mServiceModuleManager.getVolteServiceModule().unregisterRttEventListener(phoneId, listener);
+            }
+        }
     }
 
     public void triggerAutoConfigurationForApp(int phoneId) {
@@ -1608,16 +1728,24 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
         return false;
     }
 
-    public void registerGbaEventListener(int phoneId, IGbaEventListener listener) {
+    public String registerGbaEventListener(int phoneId, IGbaEventListener listener) {
         this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
         Log.d(LOG_TAG, "registerGbaEventListener");
         this.mGbaServiceModule.registerGbaEventListener(phoneId, listener);
+        String token = getTokenOfListener(listener);
+        this.mListenerTokenMap.put(token, new CallBack(listener, token));
+        return token;
     }
 
-    public void unregisterGbaEventListener(int phoneId, IGbaEventListener listener) {
+    public void unregisterGbaEventListener(int phoneId, String token) {
         this.mContext.enforceCallingOrSelfPermission(PERMISSION, LOG_TAG);
-        Log.d(LOG_TAG, "unregisterGbaEventListener");
-        this.mGbaServiceModule.unregisterGbaEventListener(phoneId, listener);
+        if (!TextUtils.isEmpty(token)) {
+            Log.d(LOG_TAG, "unregisterGbaEventListener");
+            IGbaEventListener listener = removeCallback(token);
+            if (listener != null) {
+                this.mGbaServiceModule.unregisterGbaEventListener(phoneId, listener);
+            }
+        }
     }
 
     public String getGlobalSettingsValueToString(String projection, int phoneId, String defVal) {
@@ -1743,7 +1871,7 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
         this.mConfigModule.startAutoConfig(force, onComplete, SimUtil.getDefaultPhoneId());
     }
 
-    public void registerImsRegistrationListener(IImsRegistrationListener listener, boolean broadcast, int phoneId) {
+    public String registerImsRegistrationListener(IImsRegistrationListener listener, boolean broadcast, int phoneId) {
         if (isPermissionGranted()) {
             String str = LOG_TAG;
             IMSLog.d(str, phoneId, "registerImsRegistrationListener: broadcast = " + broadcast);
@@ -1757,18 +1885,20 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
                     }
 
                     public final void accept(Object obj) {
-                        ImsServiceStub.this.lambda$registerImsRegistrationListener$8$ImsServiceStub(this.f$1, (ISimManager) obj);
+                        ImsServiceStub.this.lambda$registerImsRegistrationListener$9$ImsServiceStub(this.f$1, (ISimManager) obj);
                     }
                 });
-                return;
+            } else {
+                this.mRegistrationManager.registerListener(listener, broadcast, phoneId);
             }
-            this.mRegistrationManager.registerListener(listener, broadcast, phoneId);
-            return;
+            String token = getTokenOfListener(listener);
+            this.mListenerTokenMap.put(token, new CallBack(listener, token));
+            return token;
         }
         throw new SecurityException(LOG_TAG + "[" + phoneId + "] Permission denied");
     }
 
-    public /* synthetic */ void lambda$registerImsRegistrationListener$8$ImsServiceStub(IImsRegistrationListener listener, ISimManager sm) {
+    public /* synthetic */ void lambda$registerImsRegistrationListener$9$ImsServiceStub(IImsRegistrationListener listener, ISimManager sm) {
         this.mRegistrationManager.registerListener(listener, sm.getSimSlotIndex());
     }
 
@@ -1852,7 +1982,7 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
                 this.mEventLog.logAndAdd("Link to Phone Binder Death");
                 phoneBinder.linkToDeath(new IBinder.DeathRecipient() {
                     public final void binderDied() {
-                        ImsServiceStub.this.lambda$linkToPhoneDeath$9$ImsServiceStub();
+                        ImsServiceStub.this.lambda$linkToPhoneDeath$10$ImsServiceStub();
                     }
                 }, 0);
             } catch (RemoteException e) {
@@ -1861,7 +1991,7 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
         }
     }
 
-    public /* synthetic */ void lambda$linkToPhoneDeath$9$ImsServiceStub() {
+    public /* synthetic */ void lambda$linkToPhoneDeath$10$ImsServiceStub() {
         this.mEventLog.logAndAdd("Phone Crashed. Cleanup IMS");
         this.mRegistrationManager.sendDeregister(6);
         getServiceModuleManager().cleanUpModules();
@@ -1894,6 +2024,21 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
         }
     }
 
+    private <T extends IInterface> T removeCallback(String token) {
+        CallBack<? extends IInterface> callback = this.mListenerTokenMap.remove(token);
+        if (callback == null) {
+            return null;
+        }
+        callback.reset();
+        try {
+            return callback.mListener;
+        } catch (ClassCastException e) {
+            String str = LOG_TAG;
+            Log.e(str, "Unable to removeCallback by " + e);
+            return null;
+        }
+    }
+
     public static class BootCompleteReceiver extends BroadcastReceiver {
         public void onReceive(Context context, Intent intent) {
             if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction())) {
@@ -1906,14 +2051,30 @@ public class ImsServiceStub extends IImsService.Stub implements IImsFramework {
         }
     }
 
-    private static void checkUt(Context context) {
-        try {
-            if (context.getPackageManager().getPackageUid("com.salab.issuetracker", 0) == 1000) {
-                Log.i(LOG_TAG, "issueTracker found should be UT device");
-                IMSLog.setIsUt(true);
+    private final class CallBack<E extends IInterface> implements IBinder.DeathRecipient {
+        final E mListener;
+        final String mToken;
+
+        CallBack(E listener, String token) {
+            this.mListener = listener;
+            this.mToken = token;
+            try {
+                listener.asBinder().linkToDeath(this, 0);
+            } catch (RemoteException e) {
             }
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.i(LOG_TAG, "issueTracker not found");
+        }
+
+        public void binderDied() {
+            reset();
+            ImsServiceStub.this.mListenerTokenMap.remove(this.mToken);
+        }
+
+        /* access modifiers changed from: protected */
+        public void reset() {
+            try {
+                this.mListener.asBinder().unlinkToDeath(this, 0);
+            } catch (NoSuchElementException e) {
+            }
         }
     }
 }

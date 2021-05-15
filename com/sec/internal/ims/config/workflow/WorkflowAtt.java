@@ -73,7 +73,7 @@ public class WorkflowAtt extends WorkflowBase {
                     Log.i(WorkflowAtt.LOG_TAG, "MSISDN is registered.");
                 }
                 WorkflowAtt workflowAtt = WorkflowAtt.this;
-                workflowAtt.addEventLog(WorkflowAtt.LOG_TAG + "IMS registered, start autoconfig");
+                workflowAtt.addEventLog(WorkflowAtt.LOG_TAG + ": IMS registered, start autoconfig");
                 WorkflowAtt.this.sendEmptyMessage(1);
                 WorkflowAtt.this.unregisterImsRegistrationListener();
             }
@@ -88,7 +88,7 @@ public class WorkflowAtt extends WorkflowBase {
     private final ContentObserver mRcsUserSettingObserver = new ContentObserver(this) {
         public void onChange(boolean selfChange) {
             WorkflowAtt workflowAtt = WorkflowAtt.this;
-            workflowAtt.addEventLog(WorkflowAtt.LOG_TAG + "RCS user switch is toggled, start autoconfig");
+            workflowAtt.addEventLog(WorkflowAtt.LOG_TAG + ": RCS user switch is toggled, start autoconfig");
             WorkflowAtt.this.isMainSwitchToggled = true;
             WorkflowAtt.this.sendEmptyMessage(0);
         }
@@ -189,7 +189,7 @@ public class WorkflowAtt extends WorkflowBase {
             super.handleMessage(msg);
             return;
         }
-        addEventLog(LOG_TAG + "sms default application is changed");
+        addEventLog(LOG_TAG + ": sms default application is changed");
         this.isMainSwitchToggled = true;
         sendEmptyMessage(0);
     }
@@ -236,7 +236,7 @@ public class WorkflowAtt extends WorkflowBase {
                         WorkflowAtt.this.mSharedInfo.addHttpParam("rcs_version", WorkflowAtt.this.mRcsVersion);
                         WorkflowAtt.this.mSharedInfo.addHttpParam(ConfigConstants.PNAME.CLIENT_VENDOR, ConfigConstants.PVALUE.CLIENT_VENDOR);
                         SharedInfo sharedInfo = WorkflowAtt.this.mSharedInfo;
-                        sharedInfo.addHttpParam(ConfigConstants.PNAME.CLIENT_VERSION, ConfigConstants.PVALUE.CLIENT_VERSION_NAME + WorkflowAtt.this.mClientVersion);
+                        sharedInfo.addHttpParam(ConfigConstants.PNAME.CLIENT_VERSION, WorkflowAtt.this.mClientPlatform + WorkflowAtt.this.mClientVersion);
                         WorkflowAtt.this.mSharedInfo.addHttpParam(ConfigConstants.PNAME.DEFAULT_SMS_APP, WorkflowAtt.this.isSmsAppDefault() ? "1" : "2");
                         WorkflowAtt.this.mSharedInfo.addHttpParam("vers", String.valueOf(WorkflowAtt.this.getVersionFromServer()));
                         WorkflowAtt.this.mSharedInfo.addHttpParam("IMSI", WorkflowAtt.this.mTelephony.getImsi());
@@ -361,7 +361,7 @@ public class WorkflowAtt extends WorkflowBase {
         String str = LOG_TAG;
         int i = this.mPhoneId;
         IMSLog.i(str, i, "handleResponse: mLastErrorCode: " + this.mLastErrorCode);
-        addEventLog(LOG_TAG + "handleResponse: mLastErrorCode: " + this.mLastErrorCode);
+        addEventLog(LOG_TAG + ": handleResponse: mLastErrorCode: " + this.mLastErrorCode);
         if (errorCode != 0) {
             if (errorCode == 301) {
                 IMSLog.i(LOG_TAG, this.mPhoneId, "http redirects");
@@ -430,6 +430,7 @@ public class WorkflowAtt extends WorkflowBase {
             return;
         } else if (this.isFirstImsRegistrationDone && !isNetworkAvailable()) {
             IMSLog.i(LOG_TAG, this.mPhoneId, "No network connection, try when connected");
+            addEventLog(LOG_TAG + ": no network connection, try when connected");
             this.mModuleHandler.sendMessage(obtainMessage(17, Integer.valueOf(this.mPhoneId)));
             return;
         }
@@ -443,7 +444,7 @@ public class WorkflowAtt extends WorkflowBase {
         WorkflowBase.Workflow next2 = getNextWorkflow(1);
         if (!this.isFirstImsRegistrationDone) {
             IMSLog.i(LOG_TAG, this.mPhoneId, "The first IMS registration didn't happen yet: skip autoconfig");
-            addEventLog(LOG_TAG + "IMS is not yet registered, skip autoconfig");
+            addEventLog(LOG_TAG + ": IMS is not yet registered, skip autoconfig");
             IMSLog.c(LogClass.WFA_NO_FIRST_REGI, this.mPhoneId + ",NOFR");
             next2 = getNextWorkflow(8);
             this.isACSsuccessful = true;
@@ -484,7 +485,7 @@ public class WorkflowAtt extends WorkflowBase {
             this.isACSsuccessful = false;
         } else {
             IMSLog.i(LOG_TAG, this.mPhoneId, "Autoconfig failed: isFailedToConnect=" + this.isFailedToConnect);
-            addEventLog(LOG_TAG + "Autoconfig failed: isFailedToConnect=" + this.isFailedToConnect);
+            addEventLog(LOG_TAG + ": Autoconfig failed: isFailedToConnect=" + this.isFailedToConnect);
             IMSLog.c(LogClass.WFA_CONNECT_FAILED, this.mPhoneId + ",FAIL,CON:" + this.isFailedToConnect);
             int interval = getTrialInterval();
             if (this.mLastErrorCode == 401 || this.mLastErrorCode == 403) {
@@ -556,7 +557,7 @@ public class WorkflowAtt extends WorkflowBase {
     /* access modifiers changed from: private */
     public void loadPreConfig() {
         IMSLog.i(LOG_TAG, this.mPhoneId, "loadPreConfig");
-        addEventLog(LOG_TAG + "loadPreConfig");
+        addEventLog(LOG_TAG + ": loadPreConfig");
         IMSLog.c(LogClass.WFA_PRE_CONFIG, this.mPhoneId + ",LPC");
         int versionFromServer = getVersion();
         String xml = ConfigUtil.getResourcesFromFile(this.mContext, this.mPhoneId, ConfigUtil.LOCAL_CONFIG_FILE, "utf-8");

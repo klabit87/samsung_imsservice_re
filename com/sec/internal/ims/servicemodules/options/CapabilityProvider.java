@@ -264,6 +264,11 @@ public class CapabilityProvider extends ContentProvider {
 
     /*  JADX ERROR: NullPointerException in pass: CodeShrinkVisitor
         java.lang.NullPointerException
+        	at jadx.core.dex.instructions.args.InsnArg.wrapInstruction(InsnArg.java:118)
+        	at jadx.core.dex.visitors.shrink.CodeShrinkVisitor.inline(CodeShrinkVisitor.java:146)
+        	at jadx.core.dex.visitors.shrink.CodeShrinkVisitor.shrinkBlock(CodeShrinkVisitor.java:71)
+        	at jadx.core.dex.visitors.shrink.CodeShrinkVisitor.shrinkMethod(CodeShrinkVisitor.java:43)
+        	at jadx.core.dex.visitors.shrink.CodeShrinkVisitor.visit(CodeShrinkVisitor.java:35)
         */
     private android.database.Cursor queryLookupUriId(java.util.List<java.lang.String> r26, com.sec.ims.options.CapabilityRefreshType r27, int r28) {
         /*

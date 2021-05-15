@@ -19,7 +19,6 @@ import com.sec.internal.constants.ims.settings.GlobalSettingsConstants;
 import com.sec.internal.helper.SimUtil;
 import com.sec.internal.helper.SimpleEventLog;
 import com.sec.internal.helper.UriUtil;
-import com.sec.internal.helper.os.Debug;
 import com.sec.internal.ims.rcs.util.RcsUtils;
 import com.sec.internal.ims.registry.ImsRegistry;
 import com.sec.internal.ims.servicemodules.options.Contact;
@@ -1120,13 +1119,13 @@ public final class ContactCache {
         if (handler != null) {
             handler.post(new Runnable() {
                 public final void run() {
-                    ContactCache.this.lambda$startContactSync$2$ContactCache();
+                    ContactCache.this.lambda$startContactSync$1$ContactCache();
                 }
             });
         }
     }
 
-    public /* synthetic */ void lambda$startContactSync$2$ContactCache() {
+    public /* synthetic */ void lambda$startContactSync$1$ContactCache() {
         if (this.mCountryCode == null) {
             if (this.mMno == Mno.DEFAULT) {
                 Log.e(LOG_TAG, "startContactSync: operator is unknown. bail");
@@ -1148,21 +1147,12 @@ public final class ContactCache {
         if (this.mResyncRequired.get()) {
             this.mResyncRequired.set(false);
             sendMessageContactSync();
-        } else {
-            if (!isRefreshed) {
-                Log.i(LOG_TAG, "startContactSync: removed, check removed contacts.");
-                isRefreshed = processRemovedContact();
-            } else if (this.mIsContactUpdated) {
-                this.mIsContactUpdated = false;
-                processRemovedContact();
-            }
-            if (!Debug.isProductShip()) {
-                new Thread(new Runnable() {
-                    public final void run() {
-                        ContactCache.this.lambda$startContactSync$1$ContactCache();
-                    }
-                }).start();
-            }
+        } else if (!isRefreshed) {
+            Log.i(LOG_TAG, "startContactSync: removed, check removed contacts.");
+            isRefreshed = processRemovedContact();
+        } else if (this.mIsContactUpdated) {
+            this.mIsContactUpdated = false;
+            processRemovedContact();
         }
         if (isRefreshed) {
             Log.i(LOG_TAG, "startContactSync: Done. contact updated.");
@@ -1172,13 +1162,6 @@ public final class ContactCache {
             return;
         }
         Log.i(LOG_TAG, "startContactSync: Done. contact no found.");
-    }
-
-    public /* synthetic */ void lambda$startContactSync$1$ContactCache() {
-        SimpleEventLog simpleEventLog = this.mEventLog;
-        simpleEventLog.logAndAdd(LOG_TAG + ": Explicit GC after sync");
-        System.gc();
-        System.runFinalization();
     }
 
     private void startContactSync() {

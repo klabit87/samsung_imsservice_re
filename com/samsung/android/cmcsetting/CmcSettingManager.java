@@ -11,7 +11,6 @@ import android.os.SemSystemProperties;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
-import com.samsung.android.cmcnsd.CmcNsdManager;
 import com.samsung.android.cmcsetting.CmcSettingManagerConstants;
 import com.samsung.android.cmcsetting.listeners.CmcActivationInfoChangedListener;
 import com.samsung.android.cmcsetting.listeners.CmcCallActivationInfoChangedListener;
@@ -173,7 +172,7 @@ public class CmcSettingManager {
         if (context != null) {
             String string = Settings.Global.getString(context.getContentResolver(), "cmc_package_name");
             if (TextUtils.isEmpty(string)) {
-                string = CmcNsdManager.SERVICE_PACKAGE;
+                string = "com.samsung.android.mdecservice";
             }
             if (isSupportVersion(context, string)) {
                 this.mContext = context;

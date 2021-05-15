@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.text.TextUtils;
 import com.sec.internal.constants.ims.entitilement.NSDSNamespaces;
 import com.sec.internal.constants.ims.entitilement.data.NSDSRequest;
 import com.sec.internal.constants.ims.entitilement.data.Response3gppAuthentication;
@@ -45,6 +46,7 @@ public class BaseFlowImpl extends Handler {
     protected String mAkaToken = null;
     private Context mContext;
     private ArrayList<Message> mDeferredMessages = new ArrayList<>();
+    private String mDeviceId = null;
     protected NSDSClient mNSDSClient;
     private String mSimAuthType = null;
     private ISimManager mSimManager;
@@ -205,7 +207,7 @@ public class BaseFlowImpl extends Handler {
             reportResult(msg, (Bundle) null);
             return;
         }
-        this.mNSDSClient.executeRequestCollection(arrRequest, obtainReponseReceivedMessage(msg), baseProcedure.getVersionInfo(), this.mSimManager.getImsi(), getDeviceId());
+        this.mNSDSClient.executeRequestCollection(arrRequest, obtainReponseReceivedMessage(msg), baseProcedure.getVersionInfo(), this.mSimManager.getImsi(), this.mDeviceId);
     }
 
     private Message obtainReponseReceivedMessage(Message msg) {
@@ -216,8 +218,8 @@ public class BaseFlowImpl extends Handler {
         return parsedResponseMessage;
     }
 
-    /* JADX WARNING: type inference failed for: r3v12, types: [android.os.Parcelable] */
-    /* JADX WARNING: type inference failed for: r3v14, types: [android.os.Parcelable] */
+    /* JADX WARNING: type inference failed for: r3v11, types: [android.os.Parcelable] */
+    /* JADX WARNING: type inference failed for: r3v13, types: [android.os.Parcelable] */
     /* access modifiers changed from: protected */
     /* JADX WARNING: Multi-variable type inference failed */
     /* Code decompiled incorrectly, please refer to instructions dump. */
@@ -269,21 +271,18 @@ public class BaseFlowImpl extends Handler {
             r7.updateAkaTokenInSharedPref(r3)
             r3 = 5
             r7.sendEmptyMessage(r3)
-            goto L_0x0095
+            goto L_0x0092
         L_0x0068:
             boolean r3 = r7.isResponseAkaChallenge(r1)
-            if (r3 == 0) goto L_0x0095
-            r3 = 0
-            if (r2 == 0) goto L_0x0079
-            int r4 = r2.arg1
-            r5 = 1
-            if (r4 != r5) goto L_0x0077
-            goto L_0x0078
-        L_0x0077:
-            r5 = 0
-        L_0x0078:
-            r3 = r5
-        L_0x0079:
+            if (r3 == 0) goto L_0x0092
+            int r3 = r2.arg1
+            r4 = 1
+            if (r3 != r4) goto L_0x0074
+            goto L_0x0075
+        L_0x0074:
+            r4 = 0
+        L_0x0075:
+            r3 = r4
             java.lang.String r4 = LOG_TAG
             java.lang.StringBuilder r5 = new java.lang.StringBuilder
             r5.<init>()
@@ -292,9 +291,9 @@ public class BaseFlowImpl extends Handler {
             r5.append(r3)
             java.lang.String r5 = r5.toString()
             com.sec.internal.log.IMSLog.i(r4, r5)
-            if (r3 != 0) goto L_0x0095
+            if (r3 != 0) goto L_0x0092
             r7.clearAkaToken()
-        L_0x0095:
+        L_0x0092:
             r7.reportResult(r2, r0)
             return
         */
@@ -329,11 +328,14 @@ public class BaseFlowImpl extends Handler {
     /* access modifiers changed from: protected */
     public void requestInitial3gppAuthentication(Message msg) {
         IMSLog.i(LOG_TAG, "requestInitial3gppAuthentication()");
-        this.mNSDSClient.executeRequestCollection(new NSDSRequest[]{this.mNSDSClient.buildAuthenticationRequest(new AtomicInteger().incrementAndGet(), true, (String) null, (String) null, (String) null, NSDSHelper.getImsiEap(this.mContext, this.mSimManager.getSimSlotIndex(), this.mSimManager.getImsi(), this.mSimManager.getSimOperator()), getEncodedDeviceId())}, obtainMessage(1), ((NSDSBaseProcedure) msg.obj).getVersionInfo(), this.mSimManager.getImsi(), getDeviceId());
+        this.mNSDSClient.executeRequestCollection(new NSDSRequest[]{this.mNSDSClient.buildAuthenticationRequest(new AtomicInteger().incrementAndGet(), true, (String) null, (String) null, (String) null, NSDSHelper.getImsiEap(this.mContext, this.mSimManager.getSimSlotIndex(), this.mSimManager.getImsi(), this.mSimManager.getSimOperator()), getEncodedDeviceId())}, obtainMessage(1), ((NSDSBaseProcedure) msg.obj).getVersionInfo(), this.mSimManager.getImsi(), this.mDeviceId);
     }
 
     public String getDeviceId() {
-        return DeviceIdHelper.getDeviceId(this.mContext, this.mSimManager.getSimSlotIndex());
+        if (TextUtils.isEmpty(this.mDeviceId)) {
+            this.mDeviceId = DeviceIdHelper.getDeviceId(this.mContext, this.mSimManager.getSimSlotIndex());
+        }
+        return this.mDeviceId;
     }
 
     public String getEncodedDeviceId() {

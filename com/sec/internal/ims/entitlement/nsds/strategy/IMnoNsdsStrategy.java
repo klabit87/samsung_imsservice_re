@@ -88,7 +88,5 @@ public interface IMnoNsdsStrategy {
 
     boolean shouldIgnoreDeviceConfigValidity();
 
-    boolean shouldRecoverStoredEntitlement();
-
     boolean supportEntitlementCheck();
 }

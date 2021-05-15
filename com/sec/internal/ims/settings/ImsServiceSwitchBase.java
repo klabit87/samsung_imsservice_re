@@ -531,7 +531,7 @@ public class ImsServiceSwitchBase extends ImsServiceSwitch {
         for (String service : getImsServiceSwitchTable()) {
             imsswitch.put(service, true);
         }
-        if (!DeviceUtil.getGcfMode() && !"GCF".equalsIgnoreCase(OmcCode.get()) && !TextUtils.isEmpty(operator) && !isLabSimCard && isSimLoaded && !"45001".equals(operator) && !SimUtil.isSoftphoneEnabled() && ((imsswitch = loadImsSwitchFromJson(mnoname, "")) == null || imsswitch.size() == 0)) {
+        if (!DeviceUtil.getGcfMode().booleanValue() && !"GCF".equalsIgnoreCase(OmcCode.get()) && !TextUtils.isEmpty(operator) && !isLabSimCard && isSimLoaded && !"45001".equals(operator) && !SimUtil.isSoftphoneEnabled() && ((imsswitch = loadImsSwitchFromJson(mnoname, "")) == null || imsswitch.size() == 0)) {
             cscLteVideoCallEnabled = false;
             cscVolteEnabled = false;
             this.mEventLog.logAndAdd(this.mPhoneId, "init: No ImsSettings in Json for [" + operator + "]. Switch off.");

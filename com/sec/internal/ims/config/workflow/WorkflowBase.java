@@ -98,6 +98,7 @@ public abstract class WorkflowBase extends Handler implements IWorkflow {
     private static final String RCS_PROFILE = "rcsprofile";
     protected static final String TIMESTAMP_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZZ";
     private boolean isGlobalsettingsObserverRegisted;
+    protected String mClientPlatform;
     protected String mClientVersion;
     protected ConnectivityManager mConnectivityManager;
     protected final Context mContext;
@@ -436,6 +437,7 @@ public abstract class WorkflowBase extends Handler implements IWorkflow {
         this.mXmlParser = xmlParserAdapter;
         this.mRcsProfile = ConfigUtil.getRcsProfileLoaderInternalWithFeature(context2, mno.getName(), this.mPhoneId);
         this.mRcsVersion = ImsRegistry.getString(this.mPhoneId, "rcs_version", "6.0");
+        this.mClientPlatform = ImsRegistry.getString(this.mPhoneId, GlobalSettingsConstants.RCS.RCS_CLIENT_PLATFORM, ConfigConstants.PVALUE.CLIENT_VERSION_NAME);
         this.mClientVersion = ImsRegistry.getString(this.mPhoneId, GlobalSettingsConstants.RCS.RCS_CLIENT_VERSION, "6.0");
         this.mRcsProvisioningVersion = ImsRegistry.getString(this.mPhoneId, GlobalSettingsConstants.RCS.RCS_PROVISIONING_VERSION, "2.0");
         this.mRcsAppList = Arrays.asList(ImsRegistry.getStringArray(this.mPhoneId, GlobalSettingsConstants.RCS.RCS_APP_LIST, new String[0]));
@@ -1706,7 +1708,7 @@ public abstract class WorkflowBase extends Handler implements IWorkflow {
 
     /* access modifiers changed from: protected */
     public void createSharedInfo() {
-        this.mSharedInfo = new SharedInfo(this.mContext, this.mSm, this.mRcsProfile, this.mRcsVersion, this.mClientVersion);
+        this.mSharedInfo = new SharedInfo(this.mContext, this.mSm, this.mRcsProfile, this.mRcsVersion, this.mClientPlatform, this.mClientVersion);
     }
 
     public IStorageAdapter getStorage() {

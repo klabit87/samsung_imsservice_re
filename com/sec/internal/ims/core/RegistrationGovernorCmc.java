@@ -165,8 +165,8 @@ public class RegistrationGovernorCmc extends RegistrationGovernorBase {
     }
 
     public void onRegEventContactUriNotification(List<ImsUri> uris, int isRegi, String contactUriType) {
-        ICmcServiceHelper csm;
         int size;
+        ICmcServiceHelper csm;
         List<String> hostlist = new ArrayList<>();
         String pcscfIp = getCurrentPcscfIp();
         if (pcscfIp.isEmpty()) {
@@ -175,21 +175,6 @@ public class RegistrationGovernorCmc extends RegistrationGovernorBase {
         }
         int localIpType = NetworkUtil.isIPv6Address(pcscfIp) ? 2 : 1;
         IMSLog.i(LOG_TAG, this.mTask.getPhoneId(), "localIpType : " + localIpType);
-        int cmcType = this.mTask.getProfile().getCmcType();
-        if (cmcType > 2) {
-            int size2 = getP2pListSize(cmcType);
-            if (isRegi == 1) {
-                size = size2 + 1;
-            } else {
-                size = size2 - 1;
-                if (size < 0) {
-                    size = 0;
-                }
-            }
-            this.mP2pSdList.put(Integer.valueOf(cmcType), Integer.valueOf(size));
-            IMSLog.i(LOG_TAG, this.mTask.getPhoneId(), "cmcType: " + cmcType + ", isRegi:" + isRegi + ", size: " + this.mP2pSdList.get(Integer.valueOf(cmcType)));
-            return;
-        }
         StringBuilder strUriList = new StringBuilder();
         for (ImsUri uri : uris) {
             if (uri.getHost() == null) {
@@ -206,7 +191,23 @@ public class RegistrationGovernorCmc extends RegistrationGovernorBase {
             }
         }
         IMSLog.i(LOG_TAG, this.mTask.getPhoneId(), "onRegEventContactUriNotification : " + strUriList);
-        IMSLog.i(LOG_TAG, this.mTask.getPhoneId(), "onRegEventContactUriNotification " + hostlist);
+        int cmcType = this.mTask.getProfile().getCmcType();
+        int size2 = getP2pListSize(cmcType);
+        if (isRegi == 1) {
+            size = size2 + 1;
+        } else {
+            size = size2 - 1;
+            if (size < 0) {
+                size = 0;
+            }
+        }
+        this.mP2pSdList.put(Integer.valueOf(cmcType), Integer.valueOf(size));
+        IMSLog.i(LOG_TAG, this.mTask.getPhoneId(), "cmcType: " + cmcType + ", isRegi:" + isRegi + ", size: " + this.mP2pSdList.get(Integer.valueOf(cmcType)));
+        int phoneId = this.mTask.getPhoneId();
+        StringBuilder sb = new StringBuilder();
+        sb.append("onRegEventContactUriNotification ");
+        sb.append(hostlist);
+        IMSLog.i(LOG_TAG, phoneId, sb.toString());
         ImsRegistry.getCmcAccountManager().setRegiEventNotifyHostInfo(hostlist);
         if (this.mVsm != null && (csm = this.mVsm.getCmcServiceHelper()) != null) {
             csm.startP2pDiscovery(hostlist);

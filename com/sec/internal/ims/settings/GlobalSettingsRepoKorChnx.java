@@ -38,18 +38,18 @@ public class GlobalSettingsRepoKorChnx extends GlobalSettingsRepoBase {
         	at jadx.core.dex.visitors.regions.RegionMaker.makeRegion(RegionMaker.java:86)
         	at jadx.core.dex.visitors.regions.RegionMakerVisitor.visit(RegionMakerVisitor.java:49)
         */
-    public boolean updateMno(android.content.ContentValues r34) {
+    public boolean updateMno(android.content.ContentValues r32) {
         /*
-            r33 = this;
-            r8 = r33
-            r9 = r34
+            r31 = this;
+            r8 = r31
+            r9 = r32
             java.lang.Object r1 = r8.mLock
             monitor-enter(r1)
             java.lang.String r0 = "hassim"
-            java.lang.Boolean r0 = r9.getAsBoolean(r0)     // Catch:{ all -> 0x04a8 }
+            java.lang.Boolean r0 = r9.getAsBoolean(r0)     // Catch:{ all -> 0x049e }
             r10 = 0
             if (r0 != 0) goto L_0x0017
-            java.lang.Boolean r2 = java.lang.Boolean.valueOf(r10)     // Catch:{ all -> 0x04a8 }
+            java.lang.Boolean r2 = java.lang.Boolean.valueOf(r10)     // Catch:{ all -> 0x049e }
             r0 = r2
             r11 = r0
             goto L_0x0018
@@ -57,12 +57,12 @@ public class GlobalSettingsRepoKorChnx extends GlobalSettingsRepoBase {
             r11 = r0
         L_0x0018:
             java.lang.String r0 = "mnoname"
-            java.lang.String r0 = r9.getAsString(r0)     // Catch:{ all -> 0x04a8 }
+            java.lang.String r0 = r9.getAsString(r0)     // Catch:{ all -> 0x049e }
             r12 = r0
             java.lang.String r0 = "imsSwitchType"
-            java.lang.Integer r0 = r9.getAsInteger(r0)     // Catch:{ all -> 0x04a8 }
+            java.lang.Integer r0 = r9.getAsInteger(r0)     // Catch:{ all -> 0x049e }
             if (r0 != 0) goto L_0x002e
-            java.lang.Integer r2 = java.lang.Integer.valueOf(r10)     // Catch:{ all -> 0x04a8 }
+            java.lang.Integer r2 = java.lang.Integer.valueOf(r10)     // Catch:{ all -> 0x049e }
             r0 = r2
             r13 = r0
             goto L_0x002f
@@ -70,9 +70,9 @@ public class GlobalSettingsRepoKorChnx extends GlobalSettingsRepoBase {
             r13 = r0
         L_0x002f:
             java.lang.String r0 = "imsi"
-            java.lang.String r0 = r9.getAsString(r0)     // Catch:{ all -> 0x04a8 }
+            java.lang.String r0 = r9.getAsString(r0)     // Catch:{ all -> 0x049e }
             r14 = r0
-            monitor-exit(r1)     // Catch:{ all -> 0x04a8 }
+            monitor-exit(r1)     // Catch:{ all -> 0x049e }
             com.sec.internal.helper.SimpleEventLog r0 = r8.mEventLog
             java.lang.StringBuilder r1 = new java.lang.StringBuilder
             r1.<init>()
@@ -88,8 +88,8 @@ public class GlobalSettingsRepoKorChnx extends GlobalSettingsRepoBase {
             r1.append(r13)
             java.lang.String r1 = r1.toString()
             r0.logAndAdd(r1)
-            r33.logMnoInfo(r34)
-            boolean r15 = r33.getPrevGcEnabled()
+            r31.logMnoInfo(r32)
+            boolean r15 = r31.getPrevGcEnabled()
             java.lang.String r0 = "globalgcenabled"
             boolean r7 = com.sec.internal.helper.CollectionUtils.getBooleanValue(r9, r0, r10)
             if (r15 == r7) goto L_0x0071
@@ -118,8 +118,8 @@ public class GlobalSettingsRepoKorChnx extends GlobalSettingsRepoBase {
             r4 = 0
             r5 = -1
             r16 = 1
-            int r17 = r33.readRcsDefaultEnabled()
-            r1 = r33
+            int r17 = r31.readRcsDefaultEnabled()
+            r1 = r31
             r18 = r6
             r6 = r16
             r10 = r7
@@ -266,8 +266,8 @@ public class GlobalSettingsRepoKorChnx extends GlobalSettingsRepoBase {
         L_0x01cb:
             r0 = 0
         L_0x01cc:
-            int r3 = r33.readRcsDefaultEnabled()
-            boolean r1 = r33.updateRequires(r34)
+            int r3 = r31.readRcsDefaultEnabled()
+            boolean r1 = r31.updateRequires(r32)
             if (r1 != 0) goto L_0x023f
             com.sec.internal.helper.SimpleEventLog r1 = r8.mEventLog
             java.lang.StringBuilder r2 = new java.lang.StringBuilder
@@ -326,21 +326,12 @@ public class GlobalSettingsRepoKorChnx extends GlobalSettingsRepoBase {
             java.lang.String r1 = r1.toString()
             r0.logAndAdd(r1)
             java.lang.String r3 = r8.getPreviousMno(r6)
-            java.lang.String r0 = "globalgcenabled"
-            r1 = 0
-            boolean r2 = r6.getBoolean(r0, r1)
-            r33.reset()
-            android.content.SharedPreferences$Editor r1 = r6.edit()
-            java.lang.String r0 = "globalgcenabled"
-            r1.putBoolean(r0, r2)
-            r1.apply()
+            r31.reset()
             java.lang.String r0 = r8.LOG_TAG
-            r22 = r1
             int r1 = r8.mPhoneId
-            r23 = r2
             java.lang.StringBuilder r2 = new java.lang.StringBuilder
             r2.<init>()
-            r24 = r4
+            r22 = r4
             java.lang.String r4 = "updateMno: ["
             r2.append(r4)
             r2.append(r3)
@@ -352,15 +343,15 @@ public class GlobalSettingsRepoKorChnx extends GlobalSettingsRepoBase {
             java.lang.String r2 = r2.toString()
             com.sec.internal.log.IMSLog.d(r0, r1, r2)
             boolean r0 = r7.isKor()
-            if (r0 == 0) goto L_0x02b6
+            if (r0 == 0) goto L_0x029f
             boolean r0 = android.text.TextUtils.equals(r12, r3)
-            if (r0 != 0) goto L_0x02b6
+            if (r0 != 0) goto L_0x029f
             r0 = -1
             r4 = r0
-            goto L_0x02b8
-        L_0x02b6:
+            goto L_0x02a1
+        L_0x029f:
             r4 = r20
-        L_0x02b8:
+        L_0x02a1:
             com.sec.internal.helper.SimpleEventLog r0 = r8.mEventLog
             java.lang.StringBuilder r1 = new java.lang.StringBuilder
             r1.<init>()
@@ -382,19 +373,19 @@ public class GlobalSettingsRepoKorChnx extends GlobalSettingsRepoBase {
             r0 = 0
             r1 = 0
             r2 = -1
-            if (r4 == r2) goto L_0x02f3
+            if (r4 == r2) goto L_0x02dc
             r0 = 1
             r2 = r0
-            goto L_0x0384
-        L_0x02f3:
+            goto L_0x0376
+        L_0x02dc:
             int r2 = r8.mPhoneId
             boolean r2 = r8.needResetCallSettingBySim(r2)
-            if (r2 == 0) goto L_0x0321
+            if (r2 == 0) goto L_0x030a
             com.sec.internal.helper.SimpleEventLog r2 = r8.mEventLog
-            r25 = r0
+            r23 = r0
             java.lang.StringBuilder r0 = new java.lang.StringBuilder
             r0.<init>()
-            r26 = r1
+            r24 = r1
             java.lang.String r1 = "simSlot["
             r0.append(r1)
             int r1 = r8.mPhoneId
@@ -406,14 +397,14 @@ public class GlobalSettingsRepoKorChnx extends GlobalSettingsRepoBase {
             r0 = 1
             r1 = 1
             r2 = r0
-            goto L_0x0384
-        L_0x0321:
-            r25 = r0
-            r26 = r1
+            goto L_0x0376
+        L_0x030a:
+            r23 = r0
+            r24 = r1
             boolean r0 = android.text.TextUtils.equals(r12, r3)
-            if (r0 != 0) goto L_0x0380
+            if (r0 != 0) goto L_0x0372
             boolean r0 = android.text.TextUtils.isEmpty(r3)
-            if (r0 != 0) goto L_0x0380
+            if (r0 != 0) goto L_0x0372
             com.sec.internal.helper.SimpleEventLog r0 = r8.mEventLog
             java.lang.StringBuilder r1 = new java.lang.StringBuilder
             r1.<init>()
@@ -428,13 +419,14 @@ public class GlobalSettingsRepoKorChnx extends GlobalSettingsRepoBase {
             r0 = 1
             r1 = 1
             boolean r2 = r8.getPreviousGcfMode(r6)
+            java.lang.Boolean r23 = com.sec.internal.helper.os.DeviceUtil.getGcfMode()
             r25 = r0
-            boolean r0 = com.sec.internal.helper.os.DeviceUtil.getGcfMode()
-            if (r2 == r0) goto L_0x037e
+            boolean r0 = r23.booleanValue()
+            if (r2 == r0) goto L_0x036b
             com.sec.internal.helper.SimpleEventLog r0 = r8.mEventLog
             java.lang.StringBuilder r2 = new java.lang.StringBuilder
             r2.<init>()
-            r26 = r1
+            r23 = r1
             java.lang.String r1 = "simSlot["
             r2.append(r1)
             int r1 = r8.mPhoneId
@@ -443,24 +435,28 @@ public class GlobalSettingsRepoKorChnx extends GlobalSettingsRepoBase {
             r2.append(r1)
             java.lang.String r1 = r2.toString()
             r0.logAndAdd(r1)
-            goto L_0x0380
-        L_0x037e:
-            r26 = r1
-        L_0x0380:
+            goto L_0x036d
+        L_0x036b:
+            r23 = r1
+        L_0x036d:
+            r1 = r23
             r2 = r25
-            r1 = r26
-        L_0x0384:
+            goto L_0x0376
+        L_0x0372:
+            r2 = r23
+            r1 = r24
+        L_0x0376:
             android.content.Context r0 = r8.mContext
-            com.sec.internal.constants.ims.ImsConstants$SystemSettings$SettingsItem r25 = com.sec.internal.constants.ims.ImsConstants.SystemSettings.VILTE_SLOT1
-            r26 = r1
-            java.lang.String r1 = r25.getName()
-            r25 = r3
+            com.sec.internal.constants.ims.ImsConstants$SystemSettings$SettingsItem r23 = com.sec.internal.constants.ims.ImsConstants.SystemSettings.VILTE_SLOT1
+            r24 = r1
+            java.lang.String r1 = r23.getName()
+            r23 = r3
             int r3 = r8.mPhoneId
             int r3 = com.sec.internal.helper.DmConfigHelper.getImsUserSetting(r0, r1, r3)
             com.sec.internal.helper.SimpleEventLog r0 = r8.mEventLog
             java.lang.StringBuilder r1 = new java.lang.StringBuilder
             r1.<init>()
-            r27 = r5
+            r25 = r5
             java.lang.String r5 = "simSlot["
             r1.append(r5)
             int r5 = r8.mPhoneId
@@ -476,8 +472,9 @@ public class GlobalSettingsRepoKorChnx extends GlobalSettingsRepoBase {
             r1.append(r5)
             java.lang.String r1 = r1.toString()
             r0.logAndAdd(r1)
-            boolean r0 = com.sec.internal.helper.os.DeviceUtil.getGcfMode()
-            if (r0 != 0) goto L_0x03f7
+            java.lang.Boolean r0 = com.sec.internal.helper.os.DeviceUtil.getGcfMode()
+            boolean r0 = r0.booleanValue()
+            if (r0 != 0) goto L_0x03ed
             com.sec.internal.helper.SimpleEventLog r0 = r8.mEventLog
             java.lang.StringBuilder r1 = new java.lang.StringBuilder
             r1.<init>()
@@ -491,13 +488,13 @@ public class GlobalSettingsRepoKorChnx extends GlobalSettingsRepoBase {
             java.lang.String r1 = r1.toString()
             r0.logAndAdd(r1)
             r0 = -1
-            if (r3 == r0) goto L_0x03f7
+            if (r3 == r0) goto L_0x03ed
             r1 = 1
             r5 = r1
-            goto L_0x03f9
-        L_0x03f7:
-            r5 = r26
-        L_0x03f9:
+            goto L_0x03ef
+        L_0x03ed:
+            r5 = r24
+        L_0x03ef:
             com.sec.internal.helper.SimpleEventLog r0 = r8.mEventLog
             java.lang.StringBuilder r1 = new java.lang.StringBuilder
             r1.<init>()
@@ -511,38 +508,38 @@ public class GlobalSettingsRepoKorChnx extends GlobalSettingsRepoBase {
             java.lang.String r1 = r1.toString()
             r0.logAndAdd(r1)
             r0 = 0
-            r26 = -1
-            r1 = r33
-            r28 = r2
-            r29 = r21
+            r24 = -1
+            r1 = r31
+            r26 = r2
+            r27 = r21
             r21 = r20
-            r20 = r25
+            r20 = r23
             r3 = r4
-            r25 = r4
+            r23 = r4
             r4 = r5
-            r30 = r27
-            r27 = r5
+            r28 = r25
+            r25 = r5
             r5 = r21
-            r31 = r6
+            r29 = r6
             r6 = r0
-            r32 = r7
-            r7 = r26
+            r30 = r7
+            r7 = r24
             r1.setSettingsFromSp(r2, r3, r4, r5, r6, r7)
             java.lang.Object r2 = r8.mLock
             monitor-enter(r2)
-            boolean r0 = r11.booleanValue()     // Catch:{ all -> 0x049f }
-            int r1 = r13.intValue()     // Catch:{ all -> 0x049f }
-            r8.loadGlobalSettingsFromJson(r0, r12, r1, r9)     // Catch:{ all -> 0x049f }
-            monitor-exit(r2)     // Catch:{ all -> 0x049f }
-            int r0 = r33.readRcsDefaultEnabled()
+            boolean r0 = r11.booleanValue()     // Catch:{ all -> 0x0495 }
+            int r1 = r13.intValue()     // Catch:{ all -> 0x0495 }
+            r8.loadGlobalSettingsFromJson(r0, r12, r1, r9)     // Catch:{ all -> 0x0495 }
+            monitor-exit(r2)     // Catch:{ all -> 0x0495 }
+            int r0 = r31.readRcsDefaultEnabled()
             boolean r1 = r8.mVersionUpdated
-            if (r1 == 0) goto L_0x0496
+            if (r1 == 0) goto L_0x048c
             com.sec.internal.helper.SimpleEventLog r1 = r8.mEventLog
             java.lang.StringBuilder r2 = new java.lang.StringBuilder
             r2.<init>()
             java.lang.String r3 = "updateMno : rcs_default_enabled: ["
             r2.append(r3)
-            r7 = r29
+            r7 = r27
             r2.append(r7)
             java.lang.String r3 = "] => ["
             r2.append(r3)
@@ -551,7 +548,7 @@ public class GlobalSettingsRepoKorChnx extends GlobalSettingsRepoBase {
             r2.append(r3)
             java.lang.String r2 = r2.toString()
             r1.logAndAdd(r2)
-            if (r7 == r0) goto L_0x048e
+            if (r7 == r0) goto L_0x0484
             com.sec.internal.helper.SimpleEventLog r1 = r8.mEventLog
             java.lang.String r2 = "Reset rcs_user_setting because rcs_default_enabled is changed about same SIM"
             r1.logAndAdd(r2)
@@ -560,38 +557,38 @@ public class GlobalSettingsRepoKorChnx extends GlobalSettingsRepoBase {
             r4 = 0
             r5 = -1
             r6 = 1
-            r1 = r33
-            r26 = r7
+            r1 = r31
+            r24 = r7
             r7 = r0
             r1.setSettingsFromSp(r2, r3, r4, r5, r6, r7)
-            goto L_0x0490
-        L_0x048e:
-            r26 = r7
-        L_0x0490:
+            goto L_0x0486
+        L_0x0484:
+            r24 = r7
+        L_0x0486:
             r1 = 0
             r8.mVersionUpdated = r1
-            r3 = r30
-            goto L_0x049d
-        L_0x0496:
-            r26 = r29
-            r3 = r30
+            r3 = r28
+            goto L_0x0493
+        L_0x048c:
+            r24 = r27
+            r3 = r28
             r8.initRcsUserSetting(r3, r0)
-        L_0x049d:
+        L_0x0493:
             r1 = 1
             return r1
-        L_0x049f:
+        L_0x0495:
             r0 = move-exception
-            r26 = r29
-            r3 = r30
-        L_0x04a4:
-            monitor-exit(r2)     // Catch:{ all -> 0x04a6 }
+            r24 = r27
+            r3 = r28
+        L_0x049a:
+            monitor-exit(r2)     // Catch:{ all -> 0x049c }
             throw r0
-        L_0x04a6:
+        L_0x049c:
             r0 = move-exception
-            goto L_0x04a4
-        L_0x04a8:
+            goto L_0x049a
+        L_0x049e:
             r0 = move-exception
-            monitor-exit(r1)     // Catch:{ all -> 0x04a8 }
+            monitor-exit(r1)     // Catch:{ all -> 0x049e }
             throw r0
         */
         throw new UnsupportedOperationException("Method not decompiled: com.sec.internal.ims.settings.GlobalSettingsRepoKorChnx.updateMno(android.content.ContentValues):boolean");

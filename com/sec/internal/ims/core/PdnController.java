@@ -52,7 +52,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +72,6 @@ public class PdnController extends Handler implements IPdnController {
     private static final int EVENT_WIFI_DISCONNECTED = 106;
     /* access modifiers changed from: private */
     public static final String LOG_TAG = PdnController.class.getSimpleName();
-    private static Map<Integer, Integer> mDataState = new HashMap();
     private final String ECC_IWLAN = "IWLAN";
     private final String PROPERTY_ECC_PATH = "ril.subtype";
     protected final ConnectivityManager mConnectivityManager;
@@ -623,13 +621,6 @@ public class PdnController extends Handler implements IPdnController {
                 listener.onPreciseDataConnectionStateChanged(this.mInternalSimSlot, dataConnectionState);
             }
         }
-
-        public void onDataConnectionStateChanged(int state, int networkType) {
-            String access$000 = PdnController.LOG_TAG;
-            int i = this.mInternalSimSlot;
-            IMSLog.s(access$000, i, "onDataConnectionStateChanged: state " + state + ", networkType " + networkType);
-            PdnController.this.setDataState(this.mInternalSimSlot, state);
-        }
     }
 
     /* access modifiers changed from: private */
@@ -912,7 +903,7 @@ public class PdnController extends Handler implements IPdnController {
         this.mWfcEpdgMgr = ImsServiceStub.getInstance().getWfcEpdgManager();
         this.mEPDNintfName = new String[phoneCount];
         this.mDefaultPhoneId = SimUtil.getDefaultPhoneId();
-        this.mPhoneStateManager = new ImsPhoneStateManager(this.mContext, 4177);
+        this.mPhoneStateManager = new ImsPhoneStateManager(this.mContext, 4113);
         this.mEventLog = new SimpleEventLog(this.mContext, LOG_TAG, 200);
     }
 
@@ -1046,7 +1037,6 @@ public class PdnController extends Handler implements IPdnController {
         PhoneStateListenerInternal removeObj = getPhoneStateListener(simSlot);
         if (removeObj != null) {
             this.mPhoneStateListener.remove(removeObj);
-            mDataState.remove(Integer.valueOf(simSlot));
         }
     }
 
@@ -1566,9 +1556,9 @@ public class PdnController extends Handler implements IPdnController {
 
     private void onEpdgConnected(int phoneId, String apnType, boolean connected) {
         NetworkState ns = getNetworkState(phoneId);
+        String str = LOG_TAG;
+        IMSLog.i(str, phoneId, "EpdgEvent onEpdgConnected: apnType=" + apnType + " connected=" + connected + " mIsEpdgConnected=" + ns.isEpdgConnected());
         if (TextUtils.equals(apnType, DeviceConfigManager.IMS) && ns != null) {
-            String str = LOG_TAG;
-            IMSLog.i(str, phoneId, "EpdgEvent onEpdgConnected: apnType=" + apnType + " connected=" + connected + " mIsEpdgConnected=" + ns.isEpdgConnected());
             boolean existCallBack = false;
             Iterator<NetworkCallback> it = this.mNetworkCallbacks.values().iterator();
             while (true) {
@@ -2286,16 +2276,5 @@ public class PdnController extends Handler implements IPdnController {
         String str = LOG_TAG;
         Log.i(str, "Invalid bearer: " + bearer);
         return -1;
-    }
-
-    public int getDataState(int phoneId) {
-        if (mDataState.containsKey(Integer.valueOf(phoneId))) {
-            return mDataState.get(Integer.valueOf(phoneId)).intValue();
-        }
-        return -1;
-    }
-
-    public void setDataState(int phoneId, int state) {
-        mDataState.put(Integer.valueOf(phoneId), Integer.valueOf(state));
     }
 }

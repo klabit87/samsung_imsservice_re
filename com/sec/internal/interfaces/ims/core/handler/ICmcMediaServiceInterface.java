@@ -10,6 +10,8 @@ public interface ICmcMediaServiceInterface {
 
     void sendDisonnectToSve();
 
+    void sendMediaEvent(int i, int i2, int i3, int i4);
+
     void sendRtpStatsToStack(IMSMediaEvent.AudioRtpStats audioRtpStats);
 
     int sreCreateRelayChannel(int i, int i2);

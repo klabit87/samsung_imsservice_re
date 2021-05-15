@@ -5,37 +5,38 @@ import android.os.Parcelable;
 import android.os.SemSystemProperties;
 import android.util.Log;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 public class NsdNetwork implements Parcelable {
     public static final Parcelable.Creator<NsdNetwork> CREATOR = new Parcelable.Creator<NsdNetwork>() {
-        public NsdNetwork createFromParcel(Parcel parcel) {
-            return new NsdNetwork(parcel);
+        public NsdNetwork createFromParcel(Parcel in) {
+            return new NsdNetwork(in);
         }
 
-        public NsdNetwork[] newArray(int i) {
-            return new NsdNetwork[i];
+        public NsdNetwork[] newArray(int size) {
+            return new NsdNetwork[size];
         }
     };
-    public static final String TAG = NsdNetwork.class.getSimpleName();
-    public static final boolean USER_BINARY = "user".equals(SemSystemProperties.get("ro.build.type", "user"));
+    private static final String TAG = NsdNetwork.class.getSimpleName();
+    private static boolean USER_BINARY = "user".equals(SemSystemProperties.get("ro.build.type", "user"));
+    /* access modifiers changed from: private */
     public String mAuthenticationToken;
+    /* access modifiers changed from: private */
     public NsdNetworkCapabilities mCapabilities;
+    /* access modifiers changed from: private */
     public String mHostAddress;
-    public final ArrayList<String> mInterfaceNameList = new ArrayList<>();
+    /* access modifiers changed from: private */
+    public ArrayList<String> mInterfaceNameList;
+    /* access modifiers changed from: private */
     public boolean mIsConnected;
 
-    public int describeContents() {
-        return 0;
+    protected NsdNetwork() {
+        this.mInterfaceNameList = new ArrayList<>();
     }
 
-    public NsdNetwork() {
-    }
-
-    public NsdNetwork(Parcel parcel) {
-        readFromParcel(parcel);
+    protected NsdNetwork(Parcel in) {
+        readFromParcel(in);
     }
 
     public boolean isConnected() {
@@ -46,8 +47,8 @@ public class NsdNetwork implements Parcelable {
         return this.mCapabilities.getTransport();
     }
 
-    public boolean hasTransport(int i) {
-        return this.mCapabilities.hasTransport(i);
+    public boolean hasTransport(int transport) {
+        return this.mCapabilities.hasTransport(transport);
     }
 
     public String getHostAddress() {
@@ -70,107 +71,106 @@ public class NsdNetwork implements Parcelable {
         if (!(obj instanceof NsdNetwork)) {
             return false;
         }
-        NsdNetwork nsdNetwork = (NsdNetwork) obj;
-        if (this.mIsConnected != nsdNetwork.mIsConnected || !Objects.equals(this.mHostAddress, nsdNetwork.mHostAddress) || !Objects.equals(this.mAuthenticationToken, nsdNetwork.mAuthenticationToken) || !this.mCapabilities.equals(nsdNetwork.mCapabilities) || this.mInterfaceNameList.size() != nsdNetwork.mInterfaceNameList.size() || !this.mInterfaceNameList.containsAll(nsdNetwork.mInterfaceNameList)) {
+        NsdNetwork rhs = (NsdNetwork) obj;
+        if (this.mIsConnected != rhs.mIsConnected || !Objects.equals(this.mHostAddress, rhs.mHostAddress) || !Objects.equals(this.mAuthenticationToken, rhs.mAuthenticationToken) || !this.mCapabilities.equals(rhs.mCapabilities)) {
             return false;
         }
-        return true;
-    }
-
-    public int hashCode() {
-        return Objects.hash(new Object[]{Boolean.valueOf(this.mIsConnected), this.mHostAddress, this.mAuthenticationToken, this.mCapabilities, this.mInterfaceNameList});
+        if (Objects.equals(this.mInterfaceNameList, rhs.mInterfaceNameList)) {
+            return true;
+        }
+        String str = TAG;
+        Log.e(str, "NotEquals " + this.mInterfaceNameList + " with " + rhs.mInterfaceNameList);
+        return false;
     }
 
     public String toString() {
         String str;
-        StringBuilder sb = new StringBuilder();
-        sb.append(hashCode());
-        sb.append(" {isConnected=");
-        sb.append(this.mIsConnected);
-        sb.append(" cap=");
-        sb.append(this.mCapabilities);
-        sb.append(" hostAddress=[");
-        sb.append(this.mHostAddress);
-        sb.append("]");
-        sb.append(" infNames=");
-        sb.append(this.mInterfaceNameList);
+        StringBuilder builder = new StringBuilder();
+        builder.append(hashCode());
+        builder.append(" {isConnected=");
+        builder.append(this.mIsConnected);
+        builder.append(" cap=");
+        builder.append(this.mCapabilities);
+        builder.append(" hostAddress=[");
+        builder.append(this.mHostAddress);
+        builder.append("]");
+        builder.append(" infNames=");
+        builder.append(this.mInterfaceNameList);
         if (!USER_BINARY || (str = this.mAuthenticationToken) == null || str.isEmpty()) {
-            sb.append(" token=[");
-            sb.append(this.mAuthenticationToken);
-            sb.append("]}");
+            builder.append(" token=[");
+            builder.append(this.mAuthenticationToken);
+            builder.append("]}");
         } else {
-            sb.append(" token=[");
+            builder.append(" token=[");
             String str2 = this.mAuthenticationToken;
-            sb.append(str2.substring(0, str2.length() / 3));
-            sb.append("xxx");
-            sb.append("]}");
+            builder.append(str2.substring(0, str2.length() / 3));
+            builder.append("xxx");
+            builder.append("]}");
         }
-        return sb.toString();
+        return builder.toString();
     }
 
-    public void writeToParcel(Parcel parcel, int i) {
-        if (parcel == null) {
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel out, int flags) {
+        if (out == null) {
             Log.e(TAG, "failed to write to Parcel. out is null");
             return;
         }
-        parcel.writeBoolean(this.mIsConnected);
-        parcel.writeString(this.mHostAddress);
-        parcel.writeString(this.mAuthenticationToken);
-        parcel.writeParcelable(this.mCapabilities, 0);
-        parcel.writeStringList(this.mInterfaceNameList);
+        out.writeBoolean(this.mIsConnected);
+        out.writeString(this.mHostAddress);
+        out.writeString(this.mAuthenticationToken);
+        out.writeParcelable(this.mCapabilities, 0);
+        out.writeStringList(this.mInterfaceNameList);
     }
 
-    private void readFromParcel(Parcel parcel) {
-        this.mIsConnected = parcel.readBoolean();
-        this.mHostAddress = parcel.readString();
-        this.mAuthenticationToken = parcel.readString();
-        this.mCapabilities = (NsdNetworkCapabilities) parcel.readParcelable(NsdNetworkCapabilities.class.getClassLoader());
-        this.mInterfaceNameList.addAll(parcel.createStringArrayList());
+    private void readFromParcel(Parcel in) {
+        this.mIsConnected = in.readBoolean();
+        this.mHostAddress = in.readString();
+        this.mAuthenticationToken = in.readString();
+        this.mCapabilities = (NsdNetworkCapabilities) in.readParcelable(NsdNetworkCapabilities.class.getClassLoader());
+        this.mInterfaceNameList = in.createStringArrayList();
     }
 
     public static class Builder {
-        public String mAuthenticationToken;
-        public NsdNetworkCapabilities mCapabilities;
-        public String mHostAddress;
-        public final ArrayList<String> mInterfaceNameList = new ArrayList<>();
-        public boolean mIsConnected;
+        private NsdNetwork mNetwork = new NsdNetwork();
 
-        public Builder setConnected(boolean z) {
-            this.mIsConnected = z;
-            return this;
-        }
-
-        public Builder setHostAddress(String str) {
-            this.mHostAddress = str;
-            return this;
-        }
-
-        public Builder setAuthenticationToken(String str) {
-            this.mAuthenticationToken = str;
-            return this;
-        }
-
-        public Builder setInterfaceNameList(List<String> list) {
-            if (list != null) {
-                this.mInterfaceNameList.addAll(list);
-                Collections.sort(this.mInterfaceNameList);
+        public Builder from(NsdNetwork network) {
+            if (network != null) {
+                this.mNetwork = network;
             }
             return this;
         }
 
-        public Builder setCapabilities(NsdNetworkCapabilities nsdNetworkCapabilities) {
-            this.mCapabilities = nsdNetworkCapabilities;
+        public Builder setConnected(boolean isConnected) {
+            boolean unused = this.mNetwork.mIsConnected = isConnected;
+            return this;
+        }
+
+        public Builder setHostAddress(String hostAddress) {
+            String unused = this.mNetwork.mHostAddress = hostAddress;
+            return this;
+        }
+
+        public Builder setAuthenticationToken(String token) {
+            String unused = this.mNetwork.mAuthenticationToken = token;
+            return this;
+        }
+
+        public Builder setInterfaceNameList(List<String> infNames) {
+            this.mNetwork.mInterfaceNameList.addAll(infNames);
+            return this;
+        }
+
+        public Builder setCapabilities(NsdNetworkCapabilities capabilities) {
+            NsdNetworkCapabilities unused = this.mNetwork.mCapabilities = capabilities;
             return this;
         }
 
         public NsdNetwork build() {
-            NsdNetwork nsdNetwork = new NsdNetwork();
-            boolean unused = nsdNetwork.mIsConnected = this.mIsConnected;
-            String unused2 = nsdNetwork.mHostAddress = this.mHostAddress;
-            String unused3 = nsdNetwork.mAuthenticationToken = this.mAuthenticationToken;
-            NsdNetworkCapabilities unused4 = nsdNetwork.mCapabilities = this.mCapabilities;
-            nsdNetwork.mInterfaceNameList.addAll(this.mInterfaceNameList);
-            return nsdNetwork;
+            return this.mNetwork;
         }
     }
 }

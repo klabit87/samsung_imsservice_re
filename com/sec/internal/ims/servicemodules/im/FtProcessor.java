@@ -308,7 +308,7 @@ public class FtProcessor extends Handler implements FtMessageListener {
         ImSession session = this.mCache.getImSession(msg.getChatId());
         if (session != null) {
             ImDump imDump = this.mImModule.getImDump();
-            imDump.addEventLogs("sendDeliveredNotification: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", imdnId" + msg.getImdnId());
+            imDump.addEventLogs("sendDeliveredNotification: conversationId=" + session.getConversationId() + ", imdnId" + msg.getImdnId());
             session.sendDeliveredNotification(msg);
             return;
         }
@@ -470,7 +470,7 @@ public class FtProcessor extends Handler implements FtMessageListener {
             r3.append(r15)
             java.lang.String r4 = " contactUri="
             r3.append(r4)
-            java.lang.String r4 = com.sec.internal.log.IMSLog.numberChecker((com.sec.ims.util.ImsUri) r29)
+            java.lang.String r4 = com.sec.internal.log.IMSLog.checker(r29)
             r3.append(r4)
             java.lang.String r4 = " disp="
             r3.append(r4)
@@ -962,7 +962,7 @@ public class FtProcessor extends Handler implements FtMessageListener {
                 return;
             }
             ImDump imDump = this.mImModule.getImDump();
-            imDump.addEventLogs("sendDisplayedNotification: chatId=" + session.getChatId() + ", convId=" + session.getConversationId() + ", contId=" + session.getContributionId() + ", imdnId=" + msg.getImdnId());
+            imDump.addEventLogs("sendDisplayedNotification: conversationId=" + session.getConversationId() + ", imdnId=" + msg.getImdnId());
             session.readMessages(messageList);
             return;
         }
@@ -1161,7 +1161,7 @@ public class FtProcessor extends Handler implements FtMessageListener {
         IMnoStrategy mnoStrategy = this.mImModule.getRcsStrategy(phoneId);
         Set<ImsUri> normalizedParticipants = this.mImSessionProcessor.getNormalizedParticipants(phoneId, ftIncomingSessionEvent.mParticipants, ftIncomingSessionEvent.mSenderUri);
         String str2 = LOG_TAG;
-        Log.i(str2, "onIncomingFileTransferReceived normalizedParticipants : " + IMSLog.numberChecker((Collection<ImsUri>) normalizedParticipants));
+        Log.i(str2, "onIncomingFileTransferReceived normalizedParticipants : " + IMSLog.checker(normalizedParticipants));
         boolean isGroupChat = normalizedParticipants.size() > 1 || ftIncomingSessionEvent.mIsConference;
         boolean isResumeRequest = ftIncomingSessionEvent.mStart != 0;
         ChatData.ChatType chatType = this.mImSessionProcessor.generateChatType(isGroupChat, ftIncomingSessionEvent.mIsSlmSvcMsg || this.mImModule.getRcsStrategy(phoneId).boolSetting(RcsPolicySettings.RcsPolicy.PARTICIPANTBASED_CLOSED_GROUPCHAT), false);

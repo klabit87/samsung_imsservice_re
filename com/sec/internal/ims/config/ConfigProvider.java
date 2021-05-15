@@ -315,11 +315,6 @@ public class ConfigProvider extends ContentProvider {
         setConfigTable("address", rootAppParm);
         setConfigTable(ConfigConstants.ConfigTable.LBO_PCSCF_ADDRESS_TYPE, rootAppParm);
         setConfigTable(ConfigConstants.ConfigTable.KEEP_ALIVE_ENABLED, rootAppParm);
-        setConfigTable(ConfigConstants.ConfigTable.TIMER_T1, rootAppParm);
-        setConfigTable(ConfigConstants.ConfigTable.TIMER_T2, rootAppParm);
-        setConfigTable(ConfigConstants.ConfigTable.TIMER_T4, rootAppParm);
-        setConfigTable(ConfigConstants.ConfigTable.REG_RETRY_BASE_TIME, rootAppParm);
-        setConfigTable(ConfigConstants.ConfigTable.REG_RETRY_MAX_TIME, rootAppParm);
         IReadConfigParam extParm = new ReadExtParm();
         setConfigTable(ConfigConstants.ConfigTable.EXT_MAX_SIZE_IMAGE_SHARE, extParm);
         setConfigTable("maxtimevideoshare", extParm);
@@ -616,7 +611,7 @@ public class ConfigProvider extends ContentProvider {
             Map<String, String> readData;
             Map<String, String> readData2 = new HashMap<>();
             IStorageAdapter storage = ConfigProvider.this.getStorageByPath(ConfigConstants.ConfigPath.APPLICATION_CHARACTERISTIC_PATH, phoneId);
-            if (ConfigConstants.ConfigTable.HOME_NETWORK_DOMAIN_NAME.equalsIgnoreCase(param) || ConfigConstants.ConfigTable.PRIVATE_USER_IDENTITY.equalsIgnoreCase(param) || ConfigConstants.ConfigTable.KEEP_ALIVE_ENABLED.equalsIgnoreCase(param) || ConfigConstants.ConfigTable.TIMER_T1.equalsIgnoreCase(param) || ConfigConstants.ConfigTable.TIMER_T2.equalsIgnoreCase(param) || ConfigConstants.ConfigTable.TIMER_T4.equalsIgnoreCase(param) || ConfigConstants.ConfigTable.REG_RETRY_BASE_TIME.equalsIgnoreCase(param) || ConfigConstants.ConfigTable.REG_RETRY_MAX_TIME.equalsIgnoreCase(param)) {
+            if (ConfigConstants.ConfigTable.HOME_NETWORK_DOMAIN_NAME.equalsIgnoreCase(param) || ConfigConstants.ConfigTable.PRIVATE_USER_IDENTITY.equalsIgnoreCase(param) || ConfigConstants.ConfigTable.KEEP_ALIVE_ENABLED.equalsIgnoreCase(param)) {
                 Map<String, String> readData3 = storage.readAll(ConfigConstants.ConfigPath.APPLICATION_CHARACTERISTIC_PATH + param);
                 if (readData3 == null || readData3.isEmpty()) {
                     readData = storage.readAll(ConfigConstants.ConfigPath.APPLICATION_CHARACTERISTIC_UP20_PATH + param);
@@ -1006,15 +1001,15 @@ public class ConfigProvider extends ContentProvider {
         }
 
         public Map<String, String> readParam(String param, int phoneId) {
+            IStorageAdapter storage = ConfigProvider.this.getStorageByPath(ConfigConstants.ConfigPath.SERVICE_PROVIDER_EXT_PATH, phoneId);
             if (ConfigConstants.ConfigTable.SERVICEPROVIDEREXT_FTHTTPGROUPCHAT.equalsIgnoreCase(param)) {
-                IStorageAdapter storage = ConfigProvider.this.getStorageByPath(ConfigConstants.ConfigPath.SERVICEPROVIDEREXT_CHARACTERISTIC_PATH, phoneId);
-                return storage.readAll(ConfigConstants.ConfigPath.SERVICEPROVIDEREXT_CHARACTERISTIC_PATH + param);
-            } else if (ConfigConstants.ConfigTable.SERVICEPROVIDEREXT_CHATBOT_USER_NAME.equalsIgnoreCase(param) || ConfigConstants.ConfigTable.SERVICEPROVIDEREXT_CHATBOT_PASSWORD.equalsIgnoreCase(param)) {
-                IStorageAdapter storage2 = ConfigProvider.this.getStorageByPath(ConfigConstants.ConfigPath.SERVICEPROVIDEREXT_CHATBOT_PATH, phoneId);
+                IStorageAdapter storage2 = ConfigProvider.this.getStorageByPath(ConfigConstants.ConfigPath.SERVICEPROVIDEREXT_CHARACTERISTIC_PATH, phoneId);
                 return storage2.readAll(ConfigConstants.ConfigPath.SERVICEPROVIDEREXT_CHARACTERISTIC_PATH + param);
+            } else if (ConfigConstants.ConfigTable.SERVICEPROVIDEREXT_CHATBOT_USER_NAME.equalsIgnoreCase(param) || ConfigConstants.ConfigTable.SERVICEPROVIDEREXT_CHATBOT_PASSWORD.equalsIgnoreCase(param)) {
+                IStorageAdapter storage3 = ConfigProvider.this.getStorageByPath(ConfigConstants.ConfigPath.SERVICEPROVIDEREXT_CHATBOT_PATH, phoneId);
+                return storage3.readAll(ConfigConstants.ConfigPath.SERVICEPROVIDEREXT_CHATBOT_PATH + param);
             } else {
-                IStorageAdapter storage3 = ConfigProvider.this.getStorageByPath(ConfigConstants.ConfigPath.SERVICE_PROVIDER_EXT_PATH, phoneId);
-                return storage3.readAll(ConfigConstants.ConfigPath.SERVICE_PROVIDER_EXT_PATH + param);
+                return storage.readAll(ConfigConstants.ConfigPath.SERVICE_PROVIDER_EXT_PATH + param);
             }
         }
     }

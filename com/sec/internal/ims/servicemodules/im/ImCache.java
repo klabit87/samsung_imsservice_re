@@ -439,18 +439,18 @@ public class ImCache {
         return this.mImSessions.get(chatData.getChatId());
     }
 
-    public synchronized ImSession getImSessionByConversationId(String imsi, String cid, boolean isGroupChat) {
+    public synchronized ImSession getImSessionByConversationId(String cid, boolean isGroupChat) {
         String str = LOG_TAG;
         IMSLog.s(str, "getImSessionByConversationId cid=" + cid + " isGroupChat=" + isGroupChat);
         if (cid == null) {
             return null;
         }
         for (ImSession session : this.mImSessions.snapshot().values()) {
-            if (imsi.equals(session.getOwnImsi()) && session.isGroupChat() == isGroupChat && cid.equals(session.getConversationId())) {
+            if (session.isGroupChat() == isGroupChat && cid.equals(session.getConversationId())) {
                 return session;
             }
         }
-        ChatData chatData = this.mPersister.querySessionByConversationId(imsi, cid, isGroupChat);
+        ChatData chatData = this.mPersister.querySessionByConversationId(cid, isGroupChat);
         if (chatData == null) {
             Log.i(LOG_TAG, "getImSessionByConversationId: Couldn't load from db.");
             return null;
@@ -487,11 +487,11 @@ public class ImCache {
             r1.append(r8)     // Catch:{ all -> 0x00c2 }
             java.lang.String r2 = " participants="
             r1.append(r2)     // Catch:{ all -> 0x00c2 }
-            java.lang.String r2 = com.sec.internal.log.IMSLog.numberChecker((java.util.Collection<com.sec.ims.util.ImsUri>) r7)     // Catch:{ all -> 0x00c2 }
+            java.lang.String r2 = com.sec.internal.log.IMSLog.checker(r7)     // Catch:{ all -> 0x00c2 }
             r1.append(r2)     // Catch:{ all -> 0x00c2 }
             java.lang.String r2 = " imsi="
             r1.append(r2)     // Catch:{ all -> 0x00c2 }
-            java.lang.String r2 = com.sec.internal.log.IMSLog.numberChecker((java.lang.String) r9)     // Catch:{ all -> 0x00c2 }
+            java.lang.String r2 = com.sec.internal.log.IMSLog.checker(r9)     // Catch:{ all -> 0x00c2 }
             r1.append(r2)     // Catch:{ all -> 0x00c2 }
             java.lang.String r1 = r1.toString()     // Catch:{ all -> 0x00c2 }
             android.util.Log.i(r0, r1)     // Catch:{ all -> 0x00c2 }
@@ -520,7 +520,7 @@ public class ImCache {
             java.lang.String r5 = " imsi="
             r4.append(r5)     // Catch:{ all -> 0x00c2 }
             java.lang.String r5 = r2.getOwnImsi()     // Catch:{ all -> 0x00c2 }
-            java.lang.String r5 = com.sec.internal.log.IMSLog.numberChecker((java.lang.String) r5)     // Catch:{ all -> 0x00c2 }
+            java.lang.String r5 = com.sec.internal.log.IMSLog.checker(r5)     // Catch:{ all -> 0x00c2 }
             r4.append(r5)     // Catch:{ all -> 0x00c2 }
             java.lang.String r4 = r4.toString()     // Catch:{ all -> 0x00c2 }
             android.util.Log.i(r3, r4)     // Catch:{ all -> 0x00c2 }
@@ -581,7 +581,7 @@ public class ImCache {
             r1.append(r7)     // Catch:{ all -> 0x006b }
             java.lang.String r2 = " participants="
             r1.append(r2)     // Catch:{ all -> 0x006b }
-            java.lang.String r2 = com.sec.internal.log.IMSLog.numberChecker((java.util.Collection<com.sec.ims.util.ImsUri>) r6)     // Catch:{ all -> 0x006b }
+            java.lang.String r2 = com.sec.internal.log.IMSLog.checker(r6)     // Catch:{ all -> 0x006b }
             r1.append(r2)     // Catch:{ all -> 0x006b }
             java.lang.String r1 = r1.toString()     // Catch:{ all -> 0x006b }
             android.util.Log.i(r0, r1)     // Catch:{ all -> 0x006b }
@@ -780,7 +780,7 @@ public class ImCache {
         return this.mPersister.cloudUpdateParticipant(rowId, values);
     }
 
-    /* JADX WARNING: Code restructure failed: missing block: B:43:0x00ee, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:43:0x00ea, code lost:
         return 0;
      */
     /* Code decompiled incorrectly, please refer to instructions dump. */
@@ -788,128 +788,127 @@ public class ImCache {
         /*
             r13 = this;
             monitor-enter(r13)
-            java.lang.String r0 = LOG_TAG     // Catch:{ all -> 0x00fe }
-            java.lang.StringBuilder r1 = new java.lang.StringBuilder     // Catch:{ all -> 0x00fe }
-            r1.<init>()     // Catch:{ all -> 0x00fe }
+            java.lang.String r0 = LOG_TAG     // Catch:{ all -> 0x00fa }
+            java.lang.StringBuilder r1 = new java.lang.StringBuilder     // Catch:{ all -> 0x00fa }
+            r1.<init>()     // Catch:{ all -> 0x00fa }
             java.lang.String r2 = "cloudsearchAndInsertSession: "
-            r1.append(r2)     // Catch:{ all -> 0x00fe }
-            r1.append(r14)     // Catch:{ all -> 0x00fe }
-            java.lang.String r1 = r1.toString()     // Catch:{ all -> 0x00fe }
-            com.sec.internal.log.IMSLog.s(r0, r1)     // Catch:{ all -> 0x00fe }
+            r1.append(r2)     // Catch:{ all -> 0x00fa }
+            r1.append(r14)     // Catch:{ all -> 0x00fa }
+            java.lang.String r1 = r1.toString()     // Catch:{ all -> 0x00fa }
+            com.sec.internal.log.IMSLog.s(r0, r1)     // Catch:{ all -> 0x00fa }
             r0 = 0
-            if (r15 == 0) goto L_0x00ef
-            int r1 = r15.length     // Catch:{ NullPointerException -> 0x00f8 }
+            if (r15 == 0) goto L_0x00eb
+            int r1 = r15.length     // Catch:{ NullPointerException -> 0x00f4 }
             r2 = 1
             if (r1 >= r2) goto L_0x0020
-            goto L_0x00ef
+            goto L_0x00eb
         L_0x0020:
-            java.util.HashSet r1 = new java.util.HashSet     // Catch:{ NullPointerException -> 0x00f8 }
-            r1.<init>()     // Catch:{ NullPointerException -> 0x00f8 }
-            int r3 = r15.length     // Catch:{ NullPointerException -> 0x00f8 }
+            java.util.HashSet r1 = new java.util.HashSet     // Catch:{ NullPointerException -> 0x00f4 }
+            r1.<init>()     // Catch:{ NullPointerException -> 0x00f4 }
+            int r3 = r15.length     // Catch:{ NullPointerException -> 0x00f4 }
             r4 = r0
         L_0x0027:
             if (r4 >= r3) goto L_0x003d
-            r5 = r15[r4]     // Catch:{ NullPointerException -> 0x00f8 }
+            r5 = r15[r4]     // Catch:{ NullPointerException -> 0x00f4 }
             java.lang.String r6 = "uri"
-            java.lang.String r6 = r5.getAsString(r6)     // Catch:{ NullPointerException -> 0x00f8 }
-            com.sec.ims.util.ImsUri r6 = com.sec.ims.util.ImsUri.parse(r6)     // Catch:{ NullPointerException -> 0x00f8 }
-            r1.add(r6)     // Catch:{ NullPointerException -> 0x00f8 }
+            java.lang.String r6 = r5.getAsString(r6)     // Catch:{ NullPointerException -> 0x00f4 }
+            com.sec.ims.util.ImsUri r6 = com.sec.ims.util.ImsUri.parse(r6)     // Catch:{ NullPointerException -> 0x00f4 }
+            r1.add(r6)     // Catch:{ NullPointerException -> 0x00f4 }
             int r4 = r4 + 1
             goto L_0x0027
         L_0x003d:
-            r3 = r15[r0]     // Catch:{ NullPointerException -> 0x00f8 }
-            com.sec.internal.constants.ims.servicemodules.im.ChatData r3 = r13.cloudSessionTranslation(r3)     // Catch:{ NullPointerException -> 0x00f8 }
-            com.sec.internal.ims.servicemodules.im.ImModule r4 = r13.mImModule     // Catch:{ NullPointerException -> 0x00f8 }
-            java.lang.String r5 = r3.getOwnIMSI()     // Catch:{ NullPointerException -> 0x00f8 }
-            int r4 = r4.getPhoneIdByIMSI(r5)     // Catch:{ NullPointerException -> 0x00f8 }
-            com.sec.internal.ims.servicemodules.im.ImModule r5 = r13.mImModule     // Catch:{ NullPointerException -> 0x00f8 }
-            com.sec.internal.ims.servicemodules.im.strategy.IMnoStrategy r5 = r5.getRcsStrategy(r4)     // Catch:{ NullPointerException -> 0x00f8 }
-            if (r5 == 0) goto L_0x00ed
-            com.sec.internal.ims.servicemodules.im.ImModule r5 = r13.mImModule     // Catch:{ NullPointerException -> 0x00f8 }
-            com.sec.internal.ims.servicemodules.im.strategy.IMnoStrategy r5 = r5.getRcsStrategy(r4)     // Catch:{ NullPointerException -> 0x00f8 }
+            r3 = r15[r0]     // Catch:{ NullPointerException -> 0x00f4 }
+            com.sec.internal.constants.ims.servicemodules.im.ChatData r3 = r13.cloudSessionTranslation(r3)     // Catch:{ NullPointerException -> 0x00f4 }
+            com.sec.internal.ims.servicemodules.im.ImModule r4 = r13.mImModule     // Catch:{ NullPointerException -> 0x00f4 }
+            java.lang.String r5 = r3.getOwnIMSI()     // Catch:{ NullPointerException -> 0x00f4 }
+            int r4 = r4.getPhoneIdByIMSI(r5)     // Catch:{ NullPointerException -> 0x00f4 }
+            com.sec.internal.ims.servicemodules.im.ImModule r5 = r13.mImModule     // Catch:{ NullPointerException -> 0x00f4 }
+            com.sec.internal.ims.servicemodules.im.strategy.IMnoStrategy r5 = r5.getRcsStrategy(r4)     // Catch:{ NullPointerException -> 0x00f4 }
+            if (r5 == 0) goto L_0x00e9
+            com.sec.internal.ims.servicemodules.im.ImModule r5 = r13.mImModule     // Catch:{ NullPointerException -> 0x00f4 }
+            com.sec.internal.ims.servicemodules.im.strategy.IMnoStrategy r5 = r5.getRcsStrategy(r4)     // Catch:{ NullPointerException -> 0x00f4 }
             java.lang.String r6 = "central_msg_store"
-            boolean r5 = r5.boolSetting(r6)     // Catch:{ NullPointerException -> 0x00f8 }
-            if (r5 == 0) goto L_0x00ed
-            com.sec.internal.constants.ims.servicemodules.im.ChatData$ChatType r5 = r3.getChatType()     // Catch:{ NullPointerException -> 0x00f8 }
-            java.lang.String r6 = LOG_TAG     // Catch:{ NullPointerException -> 0x00f8 }
-            java.lang.StringBuilder r7 = new java.lang.StringBuilder     // Catch:{ NullPointerException -> 0x00f8 }
-            r7.<init>()     // Catch:{ NullPointerException -> 0x00f8 }
+            boolean r5 = r5.boolSetting(r6)     // Catch:{ NullPointerException -> 0x00f4 }
+            if (r5 == 0) goto L_0x00e9
+            com.sec.internal.constants.ims.servicemodules.im.ChatData$ChatType r5 = r3.getChatType()     // Catch:{ NullPointerException -> 0x00f4 }
+            java.lang.String r6 = LOG_TAG     // Catch:{ NullPointerException -> 0x00f4 }
+            java.lang.StringBuilder r7 = new java.lang.StringBuilder     // Catch:{ NullPointerException -> 0x00f4 }
+            r7.<init>()     // Catch:{ NullPointerException -> 0x00f4 }
             java.lang.String r8 = "chatType = "
-            r7.append(r8)     // Catch:{ NullPointerException -> 0x00f8 }
-            java.lang.String r8 = r5.toString()     // Catch:{ NullPointerException -> 0x00f8 }
-            r7.append(r8)     // Catch:{ NullPointerException -> 0x00f8 }
-            java.lang.String r7 = r7.toString()     // Catch:{ NullPointerException -> 0x00f8 }
-            android.util.Log.i(r6, r7)     // Catch:{ NullPointerException -> 0x00f8 }
-            r6 = r15[r0]     // Catch:{ NullPointerException -> 0x00f8 }
+            r7.append(r8)     // Catch:{ NullPointerException -> 0x00f4 }
+            java.lang.String r8 = r5.toString()     // Catch:{ NullPointerException -> 0x00f4 }
+            r7.append(r8)     // Catch:{ NullPointerException -> 0x00f4 }
+            java.lang.String r7 = r7.toString()     // Catch:{ NullPointerException -> 0x00f4 }
+            android.util.Log.i(r6, r7)     // Catch:{ NullPointerException -> 0x00f4 }
+            r6 = r15[r0]     // Catch:{ NullPointerException -> 0x00f4 }
             java.lang.String r7 = "conversation_id"
-            java.lang.String r6 = r6.getAsString(r7)     // Catch:{ NullPointerException -> 0x00f8 }
+            java.lang.String r6 = r6.getAsString(r7)     // Catch:{ NullPointerException -> 0x00f4 }
             r7 = 0
-            com.sec.internal.constants.ims.servicemodules.im.ChatData$ChatType r8 = com.sec.internal.constants.ims.servicemodules.im.ChatData.ChatType.REGULAR_GROUP_CHAT     // Catch:{ NullPointerException -> 0x00f8 }
-            if (r8 != r5) goto L_0x0099
-            com.sec.internal.ims.servicemodules.im.ImPersister r8 = r13.mPersister     // Catch:{ NullPointerException -> 0x00f8 }
-            java.lang.String r9 = r3.getOwnIMSI()     // Catch:{ NullPointerException -> 0x00f8 }
-            com.sec.internal.constants.ims.servicemodules.im.ChatData r2 = r8.querySessionByConversationId(r9, r6, r2)     // Catch:{ NullPointerException -> 0x00f8 }
-            goto L_0x00a7
-        L_0x0099:
-            com.sec.internal.ims.servicemodules.im.ImPersister r2 = r13.mPersister     // Catch:{ NullPointerException -> 0x00f8 }
-            java.lang.String r8 = r3.getOwnIMSI()     // Catch:{ NullPointerException -> 0x00f8 }
-            com.sec.internal.constants.ims.servicemodules.im.ChatMode r9 = r3.getChatMode()     // Catch:{ NullPointerException -> 0x00f8 }
-            com.sec.internal.constants.ims.servicemodules.im.ChatData r2 = r2.querySessionByParticipants(r1, r5, r8, r9)     // Catch:{ NullPointerException -> 0x00f8 }
-        L_0x00a7:
-            if (r2 == 0) goto L_0x00c3
-            if (r6 == 0) goto L_0x00bd
-            java.lang.String r7 = r2.getConversationId()     // Catch:{ NullPointerException -> 0x00f8 }
-            boolean r7 = r6.equals(r7)     // Catch:{ NullPointerException -> 0x00f8 }
-            if (r7 == 0) goto L_0x00bd
-            r2.setConversationId(r6)     // Catch:{ NullPointerException -> 0x00f8 }
-            com.sec.internal.ims.servicemodules.im.ImPersister r7 = r13.mPersister     // Catch:{ NullPointerException -> 0x00f8 }
-            r7.onSessionUpdated(r2)     // Catch:{ NullPointerException -> 0x00f8 }
-        L_0x00bd:
-            int r0 = r2.getId()     // Catch:{ NullPointerException -> 0x00f8 }
+            com.sec.internal.constants.ims.servicemodules.im.ChatData$ChatType r8 = com.sec.internal.constants.ims.servicemodules.im.ChatData.ChatType.REGULAR_GROUP_CHAT     // Catch:{ NullPointerException -> 0x00f4 }
+            if (r8 != r5) goto L_0x0095
+            com.sec.internal.ims.servicemodules.im.ImPersister r8 = r13.mPersister     // Catch:{ NullPointerException -> 0x00f4 }
+            com.sec.internal.constants.ims.servicemodules.im.ChatData r2 = r8.querySessionByConversationId(r6, r2)     // Catch:{ NullPointerException -> 0x00f4 }
+            goto L_0x00a3
+        L_0x0095:
+            com.sec.internal.ims.servicemodules.im.ImPersister r2 = r13.mPersister     // Catch:{ NullPointerException -> 0x00f4 }
+            java.lang.String r8 = r3.getOwnIMSI()     // Catch:{ NullPointerException -> 0x00f4 }
+            com.sec.internal.constants.ims.servicemodules.im.ChatMode r9 = r3.getChatMode()     // Catch:{ NullPointerException -> 0x00f4 }
+            com.sec.internal.constants.ims.servicemodules.im.ChatData r2 = r2.querySessionByParticipants(r1, r5, r8, r9)     // Catch:{ NullPointerException -> 0x00f4 }
+        L_0x00a3:
+            if (r2 == 0) goto L_0x00bf
+            if (r6 == 0) goto L_0x00b9
+            java.lang.String r7 = r2.getConversationId()     // Catch:{ NullPointerException -> 0x00f4 }
+            boolean r7 = r6.equals(r7)     // Catch:{ NullPointerException -> 0x00f4 }
+            if (r7 == 0) goto L_0x00b9
+            r2.setConversationId(r6)     // Catch:{ NullPointerException -> 0x00f4 }
+            com.sec.internal.ims.servicemodules.im.ImPersister r7 = r13.mPersister     // Catch:{ NullPointerException -> 0x00f4 }
+            r7.onSessionUpdated(r2)     // Catch:{ NullPointerException -> 0x00f4 }
+        L_0x00b9:
+            int r0 = r2.getId()     // Catch:{ NullPointerException -> 0x00f4 }
             monitor-exit(r13)
             return r0
-        L_0x00c3:
+        L_0x00bf:
             r7 = 1
-            int r8 = r15.length     // Catch:{ NullPointerException -> 0x00f8 }
+            int r8 = r15.length     // Catch:{ NullPointerException -> 0x00f4 }
             r9 = r0
-        L_0x00c6:
-            if (r9 >= r8) goto L_0x00de
-            r10 = r15[r9]     // Catch:{ NullPointerException -> 0x00f8 }
-            com.sec.internal.constants.ims.servicemodules.im.ImParticipant r11 = r13.cloudParticipantTranslation(r10)     // Catch:{ NullPointerException -> 0x00f8 }
-            com.sec.internal.ims.servicemodules.im.ImPersister r12 = r13.mPersister     // Catch:{ NullPointerException -> 0x00f8 }
-            r12.insertParticipant((com.sec.internal.constants.ims.servicemodules.im.ImParticipant) r11)     // Catch:{ NullPointerException -> 0x00f8 }
-            int r12 = r11.getId()     // Catch:{ NullPointerException -> 0x00f8 }
-            if (r12 > 0) goto L_0x00db
+        L_0x00c2:
+            if (r9 >= r8) goto L_0x00da
+            r10 = r15[r9]     // Catch:{ NullPointerException -> 0x00f4 }
+            com.sec.internal.constants.ims.servicemodules.im.ImParticipant r11 = r13.cloudParticipantTranslation(r10)     // Catch:{ NullPointerException -> 0x00f4 }
+            com.sec.internal.ims.servicemodules.im.ImPersister r12 = r13.mPersister     // Catch:{ NullPointerException -> 0x00f4 }
+            r12.insertParticipant((com.sec.internal.constants.ims.servicemodules.im.ImParticipant) r11)     // Catch:{ NullPointerException -> 0x00f4 }
+            int r12 = r11.getId()     // Catch:{ NullPointerException -> 0x00f4 }
+            if (r12 > 0) goto L_0x00d7
             r7 = 0
-            goto L_0x00de
-        L_0x00db:
+            goto L_0x00da
+        L_0x00d7:
             int r9 = r9 + 1
-            goto L_0x00c6
-        L_0x00de:
-            if (r7 == 0) goto L_0x00eb
-            com.sec.internal.ims.servicemodules.im.ImPersister r8 = r13.mPersister     // Catch:{ NullPointerException -> 0x00f8 }
-            r8.insertSession(r3)     // Catch:{ NullPointerException -> 0x00f8 }
-            int r0 = r3.getId()     // Catch:{ NullPointerException -> 0x00f8 }
+            goto L_0x00c2
+        L_0x00da:
+            if (r7 == 0) goto L_0x00e7
+            com.sec.internal.ims.servicemodules.im.ImPersister r8 = r13.mPersister     // Catch:{ NullPointerException -> 0x00f4 }
+            r8.insertSession(r3)     // Catch:{ NullPointerException -> 0x00f4 }
+            int r0 = r3.getId()     // Catch:{ NullPointerException -> 0x00f4 }
+            monitor-exit(r13)
+            return r0
+        L_0x00e7:
+            monitor-exit(r13)
+            return r0
+        L_0x00e9:
             monitor-exit(r13)
             return r0
         L_0x00eb:
-            monitor-exit(r13)
-            return r0
-        L_0x00ed:
-            monitor-exit(r13)
-            return r0
-        L_0x00ef:
-            java.lang.String r1 = LOG_TAG     // Catch:{ NullPointerException -> 0x00f8 }
+            java.lang.String r1 = LOG_TAG     // Catch:{ NullPointerException -> 0x00f4 }
             java.lang.String r2 = "cloudsearchAndInsertSession: no values inserted"
-            android.util.Log.i(r1, r2)     // Catch:{ NullPointerException -> 0x00f8 }
+            android.util.Log.i(r1, r2)     // Catch:{ NullPointerException -> 0x00f4 }
             monitor-exit(r13)
             return r0
-        L_0x00f8:
+        L_0x00f4:
             r1 = move-exception
-            r1.printStackTrace()     // Catch:{ all -> 0x00fe }
+            r1.printStackTrace()     // Catch:{ all -> 0x00fa }
             monitor-exit(r13)
             return r0
-        L_0x00fe:
+        L_0x00fa:
             r14 = move-exception
             monitor-exit(r13)
             throw r14
@@ -1192,7 +1191,7 @@ public class ImCache {
         ChatData.ChatType chatType2 = chatType;
         synchronized (this) {
             String str2 = LOG_TAG;
-            IMSLog.i(str2, "makeNewOutgoingSession: chatType=" + chatType2 + " participants=" + IMSLog.numberChecker((Collection<ImsUri>) participants) + " imsi= " + IMSLog.numberChecker(imsi));
+            IMSLog.i(str2, "makeNewOutgoingSession: chatType=" + chatType2 + " participants=" + IMSLog.checker(participants) + " imsi= " + IMSLog.checker(imsi));
             int phoneId = this.mImModule.getPhoneIdByIMSI(str);
             if (!TextUtils.isEmpty(conversationId) || !TextUtils.isEmpty(contributionId)) {
                 conversationId2 = conversationId;
@@ -1215,7 +1214,7 @@ public class ImCache {
     public synchronized ImSession makeNewIncomingSession(ImIncomingSessionEvent event, Set<ImsUri> participants, ChatData.ChatType chatType, ChatMode chatMode) {
         ImSession session;
         String str = LOG_TAG;
-        Log.i(str, "makeNewIncomingSession: chatType=" + chatType + " participants=" + IMSLog.numberChecker((Collection<ImsUri>) participants));
+        Log.i(str, "makeNewIncomingSession: chatType=" + chatType + " participants=" + IMSLog.checker(participants));
         int phoneId = this.mImModule.getPhoneIdByIMSI(event.mOwnImsi);
         session = new ImSessionBuilder().looper(this.mImModule.getLooper()).listener(this.mImModule.getImSessionProcessor()).config(this.mImModule.getImConfig()).imsService(getImHandler()).slmService(ImsRegistry.getHandlerFactory().getSlmHandler()).uriGenerator(this.mImModule.getUriGenerator()).chatId(StringIdGenerator.generateChatId(participants, event.mOwnImsi, ChatData.ChatType.isGroupChat(chatType), chatMode.getId())).participantsUri(participants).chatType(chatType).chatMode(chatMode).ownPhoneNum(this.mImModule.getOwnPhoneNum(phoneId)).ownSimIMSI(event.mOwnImsi).ownGroupAlias("").subject(event.mSubject).contributionId(event.mContributionId).conversationId(event.mConversationId).sdpContentType(event.mSdpContentType).direction(ImDirection.INCOMING).rawHandle(event.mIsDeferred ? null : event.mRawHandle).sessionType(event.mSessionType).getter(this.mImModule).build();
         registerSession(session);
@@ -1232,7 +1231,7 @@ public class ImCache {
         String contributionId;
         ImSession session;
         String str = LOG_TAG;
-        Log.i(str, "makeNewEmptySession: chatType=" + chatType + " participants=" + IMSLog.numberChecker((Collection<ImsUri>) participants) + " ownImsi= " + IMSLog.numberChecker(ownImsi));
+        Log.i(str, "makeNewEmptySession: chatType=" + chatType + " participants=" + IMSLog.checker(participants) + " ownImsi= " + IMSLog.checker(ownImsi));
         String conversationId = null;
         int phoneId = this.mImModule.getPhoneIdByIMSI(ownImsi);
         if (this.mImModule.getImConfig(phoneId).getImMsgTech() == ImConstants.ImMsgTech.CPM) {

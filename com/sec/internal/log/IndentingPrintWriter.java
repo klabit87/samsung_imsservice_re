@@ -58,9 +58,9 @@ public class IndentingPrintWriter extends PrintWriter {
         int lineEnd = offset;
         while (lineEnd < bufferEnd) {
             int lineEnd2 = lineEnd + 1;
-            char lineEnd3 = buf[lineEnd];
+            char ch = buf[lineEnd];
             this.mCurrentLength++;
-            if (lineEnd3 == 10) {
+            if (ch == 10) {
                 maybeWriteIndent();
                 super.write(buf, lineStart, lineEnd2 - lineStart);
                 lineStart = lineEnd2;

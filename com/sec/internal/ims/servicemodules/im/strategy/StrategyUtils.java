@@ -47,7 +47,7 @@ class StrategyUtils {
             try {
                 if (phoneUtil.parse(msdn, "US").getCountryCode() == 1 && UriUtil.isShortCode(msdn, "US")) {
                     String str2 = LOG_TAG;
-                    IMSLog.i(str2, phoneId, "isCapabilityValidUri: ShortCode. invalid request. msdn " + IMSLog.numberChecker(msdn));
+                    IMSLog.i(str2, phoneId, "isCapabilityValidUri: ShortCode. invalid request. msdn " + IMSLog.checker(msdn));
                     return false;
                 }
             } catch (NumberParseException e) {

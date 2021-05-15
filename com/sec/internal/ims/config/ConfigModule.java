@@ -135,186 +135,186 @@ public class ConfigModule extends Handler implements IConfigModule {
         this.mConfigComplete = new ConfigComplete(this.mContext, this.mRm, this, this.mEventLog);
     }
 
-    /* JADX WARNING: Code restructure failed: missing block: B:144:0x040a, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:154:0x041b, code lost:
         setAcsTryReason(r9, com.sec.internal.constants.ims.DiagnosisConstants.RCSA_ATRE.PUSH_SMS);
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:220:0x066e, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:230:0x067f, code lost:
         r1 = true;
         r6.mConfigTrigger.setReadyStartForceCmd(true);
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:221:0x0674, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:231:0x0685, code lost:
         r6.mConfigTrigger.setReadyStartCmdList(r9, r1);
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:222:0x0679, code lost:
-        if (r10 != null) goto L_0x06c5;
+    /* JADX WARNING: Code restructure failed: missing block: B:232:0x068a, code lost:
+        if (r10 != null) goto L_0x06d6;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:223:0x067b, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:233:0x068c, code lost:
         com.sec.internal.log.IMSLog.i(LOG_TAG, "workflow is null");
         r0 = com.sec.internal.ims.core.sim.SimManagerFactory.getSimManagerFromSimSlot(r9);
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:224:0x0687, code lost:
-        if (r0 == null) goto L_0x06bb;
+    /* JADX WARNING: Code restructure failed: missing block: B:234:0x0698, code lost:
+        if (r0 == null) goto L_0x06cc;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:226:0x068d, code lost:
-        if (r0.hasNoSim() != false) goto L_0x06bb;
+    /* JADX WARNING: Code restructure failed: missing block: B:236:0x069e, code lost:
+        if (r0.hasNoSim() != false) goto L_0x06cc;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:228:0x0697, code lost:
-        if (android.text.TextUtils.isEmpty(r0.getSimMnoName()) == false) goto L_0x06a0;
+    /* JADX WARNING: Code restructure failed: missing block: B:238:0x06a8, code lost:
+        if (android.text.TextUtils.isEmpty(r0.getSimMnoName()) == false) goto L_0x06b1;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:230:0x069d, code lost:
-        if (r0.hasVsim() != false) goto L_0x06a0;
+    /* JADX WARNING: Code restructure failed: missing block: B:240:0x06ae, code lost:
+        if (r0.hasVsim() != false) goto L_0x06b1;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:231:0x06a0, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:241:0x06b1, code lost:
         com.sec.internal.log.IMSLog.i(LOG_TAG, "try init workflow and start again");
         sendMessage(obtainMessage(0, r9, 0, (java.lang.Object) null));
         sendMessage(obtainMessage(2, r9, 0, (java.lang.Object) null));
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:232:0x06bb, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:242:0x06cc, code lost:
         com.sec.internal.log.IMSLog.i(LOG_TAG, "sim is not ready, start config finished");
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:233:0x06c5, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:243:0x06d6, code lost:
         com.sec.internal.log.IMSLog.i(LOG_TAG, r9, "HANDLE_AUTO_CONFIG_START:");
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:234:0x06d0, code lost:
-        if (isGcEnabledChange(r9) == false) goto L_0x06d5;
+    /* JADX WARNING: Code restructure failed: missing block: B:244:0x06e1, code lost:
+        if (isGcEnabledChange(r9) == false) goto L_0x06e6;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:235:0x06d2, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:245:0x06e3, code lost:
         r10.clearToken();
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:237:0x06d9, code lost:
-        if (r10.checkNetworkConnectivity() != false) goto L_0x06ec;
+    /* JADX WARNING: Code restructure failed: missing block: B:247:0x06ea, code lost:
+        if (r10.checkNetworkConnectivity() != false) goto L_0x06fd;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:238:0x06db, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:248:0x06ec, code lost:
         r6.mConfigTrigger.tryAutoConfig(r10, r9, r6.mWorkFlowController.isSimInfochanged(r9, r6.mIsRemoteConfigNeeded), r6.mMobileNetwork);
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:240:0x06ee, code lost:
-        if (r6.mIsRemoteConfigNeeded == false) goto L_0x0702;
+    /* JADX WARNING: Code restructure failed: missing block: B:250:0x06ff, code lost:
+        if (r6.mIsRemoteConfigNeeded == false) goto L_0x0713;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:241:0x06f0, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:251:0x0701, code lost:
         com.sec.internal.log.IMSLog.i(LOG_TAG, r9, "need CurrConfig");
         r10.startCurrConfig();
         r6.mConfigTrigger.setReadyStartCmdList(r9, false);
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:243:0x070e, code lost:
-        if (com.sec.internal.ims.registry.ImsRegistry.getInt(r9, com.sec.internal.constants.ims.settings.GlobalSettingsConstants.RCS.AUTO_CONFIG_PDN, 0) != 1) goto L_0x072e;
+    /* JADX WARNING: Code restructure failed: missing block: B:253:0x071f, code lost:
+        if (com.sec.internal.ims.registry.ImsRegistry.getInt(r9, com.sec.internal.constants.ims.settings.GlobalSettingsConstants.RCS.AUTO_CONFIG_PDN, 0) != 1) goto L_0x073f;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:245:0x0721, code lost:
-        if (r6.mNetworkLists.get(r9).containsKey(2) == false) goto L_0x07cd;
+    /* JADX WARNING: Code restructure failed: missing block: B:255:0x0732, code lost:
+        if (r6.mNetworkLists.get(r9).containsKey(2) == false) goto L_0x07de;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:246:0x0723, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:256:0x0734, code lost:
         r6.mReadyNetwork.put(r9, true);
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:248:0x0732, code lost:
-        if (isMobileDataOn() == false) goto L_0x076a;
+    /* JADX WARNING: Code restructure failed: missing block: B:258:0x0743, code lost:
+        if (isMobileDataOn() == false) goto L_0x077b;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:250:0x0738, code lost:
-        if (isRoamingMobileDataOn(r9) != false) goto L_0x073b;
+    /* JADX WARNING: Code restructure failed: missing block: B:260:0x0749, code lost:
+        if (isRoamingMobileDataOn(r9) != false) goto L_0x074c;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:251:0x073b, code lost:
-        if (r14 == null) goto L_0x07cd;
+    /* JADX WARNING: Code restructure failed: missing block: B:261:0x074c, code lost:
+        if (r14 == null) goto L_0x07de;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:253:0x0741, code lost:
-        if (r14.boolSetting(com.sec.internal.ims.settings.RcsPolicySettings.RcsPolicy.PS_ONLY_NETWORK) == false) goto L_0x07cd;
+    /* JADX WARNING: Code restructure failed: missing block: B:263:0x0752, code lost:
+        if (r14.boolSetting(com.sec.internal.ims.settings.RcsPolicySettings.RcsPolicy.PS_ONLY_NETWORK) == false) goto L_0x07de;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:255:0x0747, code lost:
-        if (isMobileDataOn() == false) goto L_0x07cd;
+    /* JADX WARNING: Code restructure failed: missing block: B:265:0x0758, code lost:
+        if (isMobileDataOn() == false) goto L_0x07de;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:257:0x074d, code lost:
-        if (isWifiSwitchOn() == false) goto L_0x07cd;
+    /* JADX WARNING: Code restructure failed: missing block: B:267:0x075e, code lost:
+        if (isWifiSwitchOn() == false) goto L_0x07de;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:258:0x074f, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:268:0x0760, code lost:
         com.sec.internal.log.IMSLog.i(LOG_TAG, r9, "Mobile Data ON & WIFI ON case for PS only network.");
         r0 = r6.mWorkFlowController.getCurrentRcsConfigVersion(r9);
         sendMessage(obtainMessage(3, r0, r0, java.lang.Integer.valueOf(r9)));
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:259:0x076a, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:269:0x077b, code lost:
         com.sec.internal.log.IMSLog.i(LOG_TAG, r9, "Mobile Data is off or roaming data off in roaming area");
         r0 = r6.mWorkFlowController.getCurrentRcsConfigVersion(r9);
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:260:0x077e, code lost:
-        if (r12.contains("wifi") == false) goto L_0x083e;
+    /* JADX WARNING: Code restructure failed: missing block: B:270:0x078f, code lost:
+        if (r12.contains("wifi") == false) goto L_0x084f;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:262:0x0784, code lost:
-        if (isWifiSwitchOn() != false) goto L_0x0788;
+    /* JADX WARNING: Code restructure failed: missing block: B:272:0x0795, code lost:
+        if (isWifiSwitchOn() != false) goto L_0x0799;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:263:0x0788, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:273:0x0799, code lost:
         com.sec.internal.log.IMSLog.i(LOG_TAG, r9, "Mobile Data is off but WiFi is on");
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:264:0x0791, code lost:
-        if (r11 != com.sec.internal.constants.Mno.CMCC) goto L_0x0796;
+    /* JADX WARNING: Code restructure failed: missing block: B:274:0x07a2, code lost:
+        if (r11 != com.sec.internal.constants.Mno.CMCC) goto L_0x07a7;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:265:0x0793, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:275:0x07a4, code lost:
         r6.mMobileNetwork = false;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:266:0x0796, code lost:
-        if (r14 == null) goto L_0x07b3;
+    /* JADX WARNING: Code restructure failed: missing block: B:276:0x07a7, code lost:
+        if (r14 == null) goto L_0x07c4;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:268:0x079c, code lost:
-        if (r14.boolSetting(com.sec.internal.ims.settings.RcsPolicySettings.RcsPolicy.PS_ONLY_NETWORK) == false) goto L_0x07b3;
+    /* JADX WARNING: Code restructure failed: missing block: B:278:0x07ad, code lost:
+        if (r14.boolSetting(com.sec.internal.ims.settings.RcsPolicySettings.RcsPolicy.PS_ONLY_NETWORK) == false) goto L_0x07c4;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:269:0x079e, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:279:0x07af, code lost:
         com.sec.internal.log.IMSLog.i(LOG_TAG, r9, "WiFi is on. Register to VOLTE to receive OTP message for PS only network");
         sendMessage(obtainMessage(3, r0, r0, java.lang.Integer.valueOf(r9)));
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:270:0x07b3, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:280:0x07c4, code lost:
         com.sec.internal.log.IMSLog.i(LOG_TAG, r9, "Mobile Data is off but WiFi is on. So wait 20 seconds.");
         removeMessages(3);
         sendMessageDelayed(obtainMessage(3, r0, r0, java.lang.Integer.valueOf(r9)), 20000);
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:271:0x07cd, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:281:0x07de, code lost:
         com.sec.internal.log.IMSLog.i(LOG_TAG, r9, "Auto Config Start: ReadyNetwork = " + r6.mReadyNetwork.get(r9) + ", Start command = " + r6.mConfigTrigger.getReadyStartCmdList(r9));
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:272:0x0803, code lost:
-        if (r6.mReadyNetwork.get(r9).booleanValue() == false) goto L_0x0816;
+    /* JADX WARNING: Code restructure failed: missing block: B:282:0x0814, code lost:
+        if (r6.mReadyNetwork.get(r9).booleanValue() == false) goto L_0x0827;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:273:0x0805, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:283:0x0816, code lost:
         r6.mConfigTrigger.tryAutoConfig(r10, r9, r6.mWorkFlowController.isSimInfochanged(r9, r6.mIsRemoteConfigNeeded), r6.mMobileNetwork);
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:274:0x0816, code lost:
-        if (r14 == null) goto L_0x081e;
+    /* JADX WARNING: Code restructure failed: missing block: B:284:0x0827, code lost:
+        if (r14 == null) goto L_0x082f;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:276:0x081c, code lost:
-        if (r14.boolSetting(com.sec.internal.ims.settings.RcsPolicySettings.RcsPolicy.PS_ONLY_NETWORK) != false) goto L_0x0828;
+    /* JADX WARNING: Code restructure failed: missing block: B:286:0x082d, code lost:
+        if (r14.boolSetting(com.sec.internal.ims.settings.RcsPolicySettings.RcsPolicy.PS_ONLY_NETWORK) != false) goto L_0x0839;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:278:0x0820, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:288:0x0831, code lost:
         if (r11 != com.sec.internal.constants.Mno.BELL) goto L_?;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:280:0x0826, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:290:0x0837, code lost:
         if (getAvailableNetwork(r9) != null) goto L_?;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:281:0x0828, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:291:0x0839, code lost:
         com.sec.internal.log.IMSLog.i(LOG_TAG, r9, "No conditions satisfied to start Auto Config, proceed to VOLTE REG");
         sendMessage(obtainMessage(3, 0, 0, java.lang.Integer.valueOf(r9)));
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:282:0x083e, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:292:0x084f, code lost:
         com.sec.internal.log.IMSLog.i(LOG_TAG, r9, "Both Mobile Data and WiFi are off, skip autoconfig");
         sendMessage(obtainMessage(3, r0, r0, java.lang.Integer.valueOf(r9)));
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:353:?, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:363:?, code lost:
         return;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:354:?, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:364:?, code lost:
         return;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:355:?, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:365:?, code lost:
         return;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:356:?, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:366:?, code lost:
         return;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:357:?, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:367:?, code lost:
         return;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:358:?, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:368:?, code lost:
         return;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:359:?, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:369:?, code lost:
         return;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:360:?, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:370:?, code lost:
         return;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:361:?, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:371:?, code lost:
         return;
      */
     /* Code decompiled incorrectly, please refer to instructions dump. */
@@ -327,26 +327,20 @@ public class ConfigModule extends Handler implements IConfigModule {
             int r0 = r7.arg1
             int r1 = r7.what
             r8 = 3
-            if (r1 == r8) goto L_0x0022
+            if (r1 == r8) goto L_0x0017
             int r1 = r7.what
             r2 = 17
-            if (r1 == r2) goto L_0x0022
-            int r1 = r7.what
-            r2 = 4
-            if (r1 == r2) goto L_0x0022
-            int r1 = r7.what
-            r2 = 21
-            if (r1 != r2) goto L_0x0020
-            goto L_0x0022
-        L_0x0020:
+            if (r1 != r2) goto L_0x0015
+            goto L_0x0017
+        L_0x0015:
             r9 = r0
-            goto L_0x002b
-        L_0x0022:
+            goto L_0x0020
+        L_0x0017:
             java.lang.Object r1 = r7.obj
             java.lang.Integer r1 = (java.lang.Integer) r1
             int r0 = r1.intValue()
             r9 = r0
-        L_0x002b:
+        L_0x0020:
             com.sec.internal.ims.config.WorkFlowController r0 = r6.mWorkFlowController
             com.sec.internal.interfaces.ims.config.IWorkflow r10 = r0.getWorkflow(r9)
             com.sec.internal.constants.Mno r11 = com.sec.internal.helper.SimUtil.getSimMno(r9)
@@ -357,14 +351,14 @@ public class ConfigModule extends Handler implements IConfigModule {
             com.sec.internal.ims.servicemodules.im.strategy.IMnoStrategy r14 = com.sec.internal.ims.rcs.RcsPolicyManager.getRcsStrategy(r9)
             r0 = 1
             r15 = 0
-            if (r14 == 0) goto L_0x0051
+            if (r14 == 0) goto L_0x0046
             boolean r1 = r14.isRemoteConfigNeeded(r9)
-            if (r1 == 0) goto L_0x0051
+            if (r1 == 0) goto L_0x0046
             r1 = r0
-            goto L_0x0052
-        L_0x0051:
+            goto L_0x0047
+        L_0x0046:
             r1 = r15
-        L_0x0052:
+        L_0x0047:
             r6.mIsRemoteConfigNeeded = r1
             java.lang.String r1 = LOG_TAG
             java.lang.StringBuilder r2 = new java.lang.StringBuilder
@@ -396,58 +390,58 @@ public class ConfigModule extends Handler implements IConfigModule {
             java.lang.String r4 = "lastError"
             r5 = 2
             switch(r1) {
-                case 0: goto L_0x0854;
-                case 1: goto L_0x066e;
-                case 2: goto L_0x066c;
-                case 3: goto L_0x0411;
-                case 4: goto L_0x03c8;
-                case 5: goto L_0x03bf;
-                case 6: goto L_0x03b6;
-                case 7: goto L_0x03ad;
-                case 8: goto L_0x0368;
-                case 9: goto L_0x035b;
-                case 10: goto L_0x0318;
-                case 11: goto L_0x0307;
-                case 12: goto L_0x02e5;
-                case 13: goto L_0x01fc;
-                case 14: goto L_0x01f3;
-                case 15: goto L_0x0196;
-                case 16: goto L_0x018c;
-                case 17: goto L_0x017e;
-                case 18: goto L_0x0174;
-                case 19: goto L_0x0107;
-                case 20: goto L_0x00fe;
-                case 21: goto L_0x040a;
-                case 22: goto L_0x00f7;
-                case 23: goto L_0x00f0;
-                case 24: goto L_0x00d6;
-                case 25: goto L_0x00ac;
-                default: goto L_0x00a2;
+                case 0: goto L_0x0865;
+                case 1: goto L_0x067f;
+                case 2: goto L_0x067d;
+                case 3: goto L_0x0422;
+                case 4: goto L_0x03d9;
+                case 5: goto L_0x03d0;
+                case 6: goto L_0x03c7;
+                case 7: goto L_0x03be;
+                case 8: goto L_0x0379;
+                case 9: goto L_0x036c;
+                case 10: goto L_0x0329;
+                case 11: goto L_0x0318;
+                case 12: goto L_0x02f6;
+                case 13: goto L_0x020d;
+                case 14: goto L_0x0204;
+                case 15: goto L_0x018b;
+                case 16: goto L_0x0181;
+                case 17: goto L_0x0173;
+                case 18: goto L_0x0169;
+                case 19: goto L_0x00fc;
+                case 20: goto L_0x00f3;
+                case 21: goto L_0x041b;
+                case 22: goto L_0x00ec;
+                case 23: goto L_0x00e5;
+                case 24: goto L_0x00cb;
+                case 25: goto L_0x00a1;
+                default: goto L_0x0097;
             }
-        L_0x00a2:
+        L_0x0097:
             java.lang.String r0 = LOG_TAG
             java.lang.String r1 = "unknown message"
             com.sec.internal.log.IMSLog.i(r0, r9, r1)
-            goto L_0x0902
-        L_0x00ac:
+            goto L_0x0913
+        L_0x00a1:
             com.sec.internal.helper.PhoneIdKeyMap<java.util.HashMap<java.lang.Integer, android.net.Network>> r0 = r6.mNetworkLists
             java.lang.Object r0 = r0.get(r9)
             java.util.HashMap r0 = (java.util.HashMap) r0
             int r1 = r7.arg2
             java.lang.Integer r1 = java.lang.Integer.valueOf(r1)
             r0.remove(r1)
-            if (r14 == 0) goto L_0x00d1
+            if (r14 == 0) goto L_0x00c6
             java.lang.String r0 = "dual_simhandling"
             boolean r0 = r14.boolSetting(r0)
-            if (r0 == 0) goto L_0x00d1
+            if (r0 == 0) goto L_0x00c6
             java.lang.String r0 = LOG_TAG
             java.lang.String r1 = "Clear workflow"
             com.sec.internal.log.IMSLog.i(r0, r9, r1)
             r6.clearWorkFlow(r9)
-        L_0x00d1:
+        L_0x00c6:
             r6.processConnectionChange(r9)
-            goto L_0x0902
-        L_0x00d6:
+            goto L_0x0913
+        L_0x00cb:
             com.sec.internal.helper.PhoneIdKeyMap<java.util.HashMap<java.lang.Integer, android.net.Network>> r0 = r6.mNetworkLists
             java.lang.Object r0 = r0.get(r9)
             java.util.HashMap r0 = (java.util.HashMap) r0
@@ -457,27 +451,27 @@ public class ConfigModule extends Handler implements IConfigModule {
             android.net.Network r2 = (android.net.Network) r2
             r0.put(r1, r2)
             r6.processConnectionChange(r9)
-            goto L_0x0902
-        L_0x00f0:
+            goto L_0x0913
+        L_0x00e5:
             com.sec.internal.ims.config.WorkFlowController r0 = r6.mWorkFlowController
             r0.onBootCompleted()
-            goto L_0x0902
-        L_0x00f7:
-            if (r10 == 0) goto L_0x0902
+            goto L_0x0913
+        L_0x00ec:
+            if (r10 == 0) goto L_0x0913
             r10.clearAutoConfigStorage()
-            goto L_0x0902
-        L_0x00fe:
-            if (r10 == 0) goto L_0x0902
+            goto L_0x0913
+        L_0x00f3:
+            if (r10 == 0) goto L_0x0913
             java.lang.String r0 = r6.mMsisdnNumber
             r10.sendMsisdnNumber(r0)
-            goto L_0x0902
-        L_0x0107:
+            goto L_0x0913
+        L_0x00fc:
             java.lang.String r1 = LOG_TAG
             java.lang.String r2 = "HANDLE_AUTO_CONFIG_RESTART:"
             com.sec.internal.log.IMSLog.i(r1, r9, r2)
             com.sec.internal.ims.config.ConfigTrigger r1 = r6.mConfigTrigger
             r1.setReadyStartCmdList(r9, r0)
-            if (r10 != 0) goto L_0x012b
+            if (r10 != 0) goto L_0x0120
             r0 = 0
             java.lang.String r1 = LOG_TAG
             java.lang.String r2 = "workflow is null. skip autoconfig"
@@ -485,8 +479,8 @@ public class ConfigModule extends Handler implements IConfigModule {
             java.lang.Integer r1 = java.lang.Integer.valueOf(r9)
             android.os.Message r1 = r6.obtainMessage(r8, r0, r0, r1)
             r6.sendMessage(r1)
-            goto L_0x0902
-        L_0x012b:
+            goto L_0x0913
+        L_0x0120:
             java.lang.String r0 = LOG_TAG
             java.lang.StringBuilder r1 = new java.lang.StringBuilder
             r1.<init>()
@@ -506,33 +500,33 @@ public class ConfigModule extends Handler implements IConfigModule {
             java.lang.Object r0 = r0.get(r9)
             java.lang.Boolean r0 = (java.lang.Boolean) r0
             boolean r0 = r0.booleanValue()
-            if (r0 == 0) goto L_0x0902
+            if (r0 == 0) goto L_0x0913
             com.sec.internal.ims.config.ConfigTrigger r0 = r6.mConfigTrigger
             com.sec.internal.ims.config.WorkFlowController r1 = r6.mWorkFlowController
             boolean r2 = r6.mIsRemoteConfigNeeded
             boolean r1 = r1.isSimInfochanged(r9, r2)
             boolean r2 = r6.mMobileNetwork
             r0.tryAutoConfig(r10, r9, r1, r2)
-            goto L_0x0902
-        L_0x0174:
-            if (r10 == 0) goto L_0x0179
+            goto L_0x0913
+        L_0x0169:
+            if (r10 == 0) goto L_0x016e
             r10.onDefaultSmsPackageChanged()
-        L_0x0179:
+        L_0x016e:
             r6.notifyDefaultSmsChanged(r9)
-            goto L_0x0902
-        L_0x017e:
+            goto L_0x0913
+        L_0x0173:
             java.lang.String r1 = LOG_TAG
             java.lang.String r2 = "HANDLE_AUTO_CONFIG_START_WITH_SUITABLE_NETWORK retrigger ACS with best network"
             com.sec.internal.log.IMSLog.i(r1, r9, r2)
             com.sec.internal.ims.config.ConfigTrigger r1 = r6.mConfigTrigger
             r1.setReadyStartCmdList(r9, r0)
-            goto L_0x0902
-        L_0x018c:
+            goto L_0x0913
+        L_0x0181:
             r6.init(r9)
-            if (r10 == 0) goto L_0x0902
+            if (r10 == 0) goto L_0x0913
             r10.handleMSISDNDialog()
-            goto L_0x0902
-        L_0x0196:
+            goto L_0x0913
+        L_0x018b:
             int r9 = r7.arg1
             com.sec.internal.ims.config.params.ACSConfig r1 = r6.getAcsConfig(r9)
             r1.resetAcsSettings()
@@ -540,7 +534,7 @@ public class ConfigModule extends Handler implements IConfigModule {
             java.util.List r1 = r1.getPendingRegistration(r9)
             com.sec.internal.ims.config.params.ACSConfig r2 = r6.getAcsConfig(r9)
             boolean r2 = r2.isRcsDormantMode()
-            if (r2 == 0) goto L_0x01cd
+            if (r2 == 0) goto L_0x01c2
             android.content.Context r2 = r6.mContext
             android.content.res.Resources r3 = r2.getResources()
             r4 = 2131099700(0x7f060034, float:1.781176E38)
@@ -550,32 +544,46 @@ public class ConfigModule extends Handler implements IConfigModule {
             com.sec.internal.ims.config.ConfigTrigger r2 = r6.mConfigTrigger
             r2.setStateforTriggeringACS(r9)
             r6.triggerAutoConfig(r0, r9, r1)
-            goto L_0x0902
-        L_0x01cd:
+            goto L_0x0913
+        L_0x01c2:
             boolean r2 = r11.isKor()
-            if (r2 != 0) goto L_0x01e9
+            if (r2 != 0) goto L_0x01fa
             boolean r2 = com.sec.internal.ims.util.ConfigUtil.isRcsEur((com.sec.internal.constants.Mno) r11)
-            if (r2 != 0) goto L_0x01e9
+            if (r2 != 0) goto L_0x01fa
+            com.sec.internal.constants.Mno r2 = com.sec.internal.constants.Mno.SPRINT
+            if (r11 == r2) goto L_0x01fa
+            com.sec.internal.constants.Mno r2 = com.sec.internal.constants.Mno.TCE
+            if (r11 == r2) goto L_0x01fa
+            com.sec.internal.constants.Mno r2 = com.sec.internal.constants.Mno.CLARO_ARGENTINA
+            if (r11 == r2) goto L_0x01fa
+            com.sec.internal.constants.Mno r2 = com.sec.internal.constants.Mno.CLARO_PARAGUAY
+            if (r11 == r2) goto L_0x01fa
+            com.sec.internal.constants.Mno r2 = com.sec.internal.constants.Mno.PERSONAL_ARGENTINA
+            if (r11 == r2) goto L_0x01fa
+            com.sec.internal.constants.Mno r2 = com.sec.internal.constants.Mno.CLARO_DOMINICAN
+            if (r11 == r2) goto L_0x01fa
+            com.sec.internal.constants.Mno r2 = com.sec.internal.constants.Mno.CLARO_URUGUAY
+            if (r11 == r2) goto L_0x01fa
             java.lang.String r2 = "jibe"
             boolean r2 = r2.equals(r13)
-            if (r2 == 0) goto L_0x0902
+            if (r2 == 0) goto L_0x0913
             com.sec.internal.interfaces.ims.core.IRegistrationManager r2 = r6.mRm
             boolean r2 = com.sec.internal.ims.util.ConfigUtil.hasChatbotService(r9, r2)
-            if (r2 == 0) goto L_0x0902
-        L_0x01e9:
+            if (r2 == 0) goto L_0x0913
+        L_0x01fa:
             com.sec.internal.ims.config.ConfigTrigger r2 = r6.mConfigTrigger
             r2.setStateforTriggeringACS(r9)
             r6.triggerAutoConfig(r0, r9, r1)
-            goto L_0x0902
-        L_0x01f3:
+            goto L_0x0913
+        L_0x0204:
             int r0 = r7.arg1
             int r1 = r7.arg2
             r6.onTelephonyCallStatusChanged(r0, r1)
-            goto L_0x0902
-        L_0x01fc:
+            goto L_0x0913
+        L_0x020d:
             r1 = -1
             java.lang.Object r5 = r7.obj
-            if (r5 == 0) goto L_0x0213
+            if (r5 == 0) goto L_0x0224
             java.lang.Object r5 = r7.obj
             android.os.Bundle r5 = (android.os.Bundle) r5
             int r1 = r5.getInt(r4)
@@ -583,30 +591,30 @@ public class ConfigModule extends Handler implements IConfigModule {
             android.os.Bundle r4 = (android.os.Bundle) r4
             int r3 = r4.getInt(r3)
             r9 = r3
-            goto L_0x0215
-        L_0x0213:
+            goto L_0x0226
+        L_0x0224:
             r3 = 0
             r9 = r3
-        L_0x0215:
+        L_0x0226:
             boolean r3 = com.sec.internal.ims.util.ConfigUtil.isRcsEur((com.sec.internal.constants.Mno) r11)
-            if (r3 != 0) goto L_0x0235
+            if (r3 != 0) goto L_0x0246
             com.sec.internal.constants.Mno r3 = com.sec.internal.constants.Mno.CMCC
-            if (r11 == r3) goto L_0x0235
+            if (r11 == r3) goto L_0x0246
             int r3 = r6.mCallState
-            if (r3 == 0) goto L_0x0235
+            if (r3 == 0) goto L_0x0246
             java.lang.String r2 = LOG_TAG
             java.lang.String r3 = "Pending Autoconfig comlete event on active call"
             com.sec.internal.log.IMSLog.i(r2, r9, r3)
             r6.mPendingAutoComplete = r0
             com.sec.internal.ims.config.params.ACSConfig r0 = r6.getAcsConfig(r9)
             r0.setAcsLastError(r1)
-            goto L_0x0902
-        L_0x0235:
+            goto L_0x0913
+        L_0x0246:
             com.sec.internal.interfaces.ims.core.IRegistrationManager r0 = r6.mRm
             java.util.List r0 = r0.getPendingRegistration(r9)
             android.content.Context r3 = r6.mContext
             boolean r3 = com.sec.internal.ims.rcs.util.RcsUtils.DualRcs.isRegAllowed(r3, r9)
-            if (r3 == 0) goto L_0x02be
+            if (r3 == 0) goto L_0x02cf
             com.sec.internal.ims.config.ConfigComplete r3 = r6.mConfigComplete
             int r4 = r6.m403ForbiddenCounter
             r3.setStateforACSComplete(r1, r9, r0, r4)
@@ -615,7 +623,7 @@ public class ConfigModule extends Handler implements IConfigModule {
             com.sec.internal.interfaces.ims.config.IWorkflow r4 = r4.getWorkflow(r9)
             r3.handleAutoconfigurationComplete(r9, r0, r1, r4)
             com.sec.internal.constants.Mno r3 = com.sec.internal.constants.Mno.KT
-            if (r11 != r3) goto L_0x02e3
+            if (r11 != r3) goto L_0x02f4
             java.lang.String r3 = LOG_TAG
             java.lang.StringBuilder r4 = new java.lang.StringBuilder
             r4.<init>()
@@ -633,56 +641,56 @@ public class ConfigModule extends Handler implements IConfigModule {
             java.lang.String r4 = r4.toString()
             com.sec.internal.log.IMSLog.i(r3, r9, r4)
             boolean r3 = r6.mNeedRetryOverWifi
-            if (r3 == 0) goto L_0x02e3
-            if (r1 == 0) goto L_0x02aa
-            if (r1 == r2) goto L_0x02aa
+            if (r3 == 0) goto L_0x02f4
+            if (r1 == 0) goto L_0x02bb
+            if (r1 == r2) goto L_0x02bb
             r2 = 801(0x321, float:1.122E-42)
-            if (r1 == r2) goto L_0x02aa
+            if (r1 == r2) goto L_0x02bb
             r2 = 802(0x322, float:1.124E-42)
-            if (r1 == r2) goto L_0x02aa
+            if (r1 == r2) goto L_0x02bb
             r2 = 803(0x323, float:1.125E-42)
-            if (r1 == r2) goto L_0x02aa
+            if (r1 == r2) goto L_0x02bb
             r2 = 804(0x324, float:1.127E-42)
-            if (r1 == r2) goto L_0x02aa
+            if (r1 == r2) goto L_0x02bb
             r2 = 805(0x325, float:1.128E-42)
-            if (r1 != r2) goto L_0x02a0
-            goto L_0x02aa
-        L_0x02a0:
+            if (r1 != r2) goto L_0x02b1
+            goto L_0x02bb
+        L_0x02b1:
             java.lang.String r2 = LOG_TAG
             java.lang.String r3 = "clear mNeedRetryOverWifi to false"
             com.sec.internal.log.IMSLog.i(r2, r9, r3)
             r6.mNeedRetryOverWifi = r15
-            goto L_0x02e3
-        L_0x02aa:
+            goto L_0x02f4
+        L_0x02bb:
             boolean r2 = r6.mWifiNetwork
-            if (r2 == 0) goto L_0x02e3
+            if (r2 == 0) goto L_0x02f4
             java.lang.String r2 = LOG_TAG
             java.lang.String r3 = "reset AcsSettings for KT over Wifi"
             com.sec.internal.log.IMSLog.i(r2, r9, r3)
             com.sec.internal.ims.config.params.ACSConfig r2 = r6.getAcsConfig(r9)
             r2.resetAcsSettings()
-            goto L_0x02e3
-        L_0x02be:
+            goto L_0x02f4
+        L_0x02cf:
             java.util.Iterator r2 = r0.iterator()
-        L_0x02c2:
+        L_0x02d3:
             boolean r3 = r2.hasNext()
-            if (r3 == 0) goto L_0x02dc
+            if (r3 == 0) goto L_0x02ed
             java.lang.Object r3 = r2.next()
             com.sec.internal.interfaces.ims.core.IRegisterTask r3 = (com.sec.internal.interfaces.ims.core.IRegisterTask) r3
             com.sec.internal.constants.ims.core.RegistrationConstants$RegisterTaskState r4 = r3.getState()
             com.sec.internal.constants.ims.core.RegistrationConstants$RegisterTaskState r5 = com.sec.internal.constants.ims.core.RegistrationConstants.RegisterTaskState.CONFIGURING
-            if (r4 != r5) goto L_0x02db
+            if (r4 != r5) goto L_0x02ec
             com.sec.internal.constants.ims.core.RegistrationConstants$RegisterTaskState r4 = com.sec.internal.constants.ims.core.RegistrationConstants.RegisterTaskState.IDLE
             r3.setState(r4)
-        L_0x02db:
-            goto L_0x02c2
-        L_0x02dc:
+        L_0x02ec:
+            goto L_0x02d3
+        L_0x02ed:
             java.lang.String r2 = LOG_TAG
             java.lang.String r3 = "DDS set to other SIM"
             com.sec.internal.log.IMSLog.i(r2, r9, r3)
-        L_0x02e3:
-            goto L_0x0902
-        L_0x02e5:
+        L_0x02f4:
+            goto L_0x0913
+        L_0x02f6:
             java.lang.Object r0 = r7.obj
             com.sec.internal.helper.AsyncResult r0 = (com.sec.internal.helper.AsyncResult) r0
             java.lang.Object r1 = r0.result
@@ -690,72 +698,72 @@ public class ConfigModule extends Handler implements IConfigModule {
             int r1 = r1.intValue()
             r6.onSimRefresh(r1)
             boolean r1 = r11.isKor()
-            if (r1 == 0) goto L_0x0902
+            if (r1 == 0) goto L_0x0913
             java.lang.String r1 = LOG_TAG
             java.lang.String r2 = "sim state changed, reset to MSISDN_FROM_PAU"
             com.sec.internal.log.IMSLog.i(r1, r9, r2)
             r6.resetMsisdnFromPau(r9)
-            goto L_0x0902
-        L_0x0307:
+            goto L_0x0913
+        L_0x0318:
             java.lang.Object r0 = r7.obj
             com.sec.internal.helper.AsyncResult r0 = (com.sec.internal.helper.AsyncResult) r0
             java.lang.Object r1 = r0.result
             java.lang.Integer r1 = (java.lang.Integer) r1
             int r1 = r1.intValue()
             r6.onSimReady(r1)
-            goto L_0x0902
-        L_0x0318:
+            goto L_0x0913
+        L_0x0329:
             r6.getAvailableNetwork(r9)
             com.sec.internal.ims.config.ConfigTrigger r0 = r6.mConfigTrigger
             r0.setReadyStartCmdList(r9, r15)
             com.sec.internal.interfaces.ims.core.IRegistrationManager r0 = r6.mRm
             java.util.List r0 = r0.getPendingRegistration(r9)
             java.util.Iterator r0 = r0.iterator()
-        L_0x032a:
+        L_0x033b:
             boolean r1 = r0.hasNext()
-            if (r1 == 0) goto L_0x0352
+            if (r1 == 0) goto L_0x0363
             java.lang.Object r1 = r0.next()
             com.sec.internal.interfaces.ims.core.IRegisterTask r1 = (com.sec.internal.interfaces.ims.core.IRegisterTask) r1
             boolean r2 = r1.isRcsOnly()
-            if (r2 == 0) goto L_0x0351
+            if (r2 == 0) goto L_0x0362
             com.sec.internal.constants.ims.core.RegistrationConstants$RegisterTaskState r2 = r1.getState()
             com.sec.internal.constants.ims.core.RegistrationConstants$RegisterTaskState r3 = com.sec.internal.constants.ims.core.RegistrationConstants.RegisterTaskState.CONFIGURING
-            if (r2 != r3) goto L_0x0351
+            if (r2 != r3) goto L_0x0362
             java.lang.String r2 = LOG_TAG
             java.lang.String r3 = "task is set as IDLE because of dds change."
             com.sec.internal.log.IMSLog.i(r2, r9, r3)
             com.sec.internal.constants.ims.core.RegistrationConstants$RegisterTaskState r2 = com.sec.internal.constants.ims.core.RegistrationConstants.RegisterTaskState.IDLE
             r1.setState(r2)
-        L_0x0351:
-            goto L_0x032a
-        L_0x0352:
+        L_0x0362:
+            goto L_0x033b
+        L_0x0363:
             java.lang.String r0 = LOG_TAG
             java.lang.String r1 = "Network configs are reset"
             com.sec.internal.log.IMSLog.i(r0, r9, r1)
-            goto L_0x0902
-        L_0x035b:
+            goto L_0x0913
+        L_0x036c:
             r6.setDualSimRcsAutoConfig(r0)
             r0 = 0
             android.os.Message r0 = r6.obtainMessage(r5, r9, r15, r0)
             r6.sendMessage(r0)
-            goto L_0x0902
-        L_0x0368:
-            if (r10 == 0) goto L_0x0902
+            goto L_0x0913
+        L_0x0379:
+            if (r10 == 0) goto L_0x0913
             java.lang.String r1 = r6.getRcsProfile(r9)
             boolean r1 = com.sec.ims.settings.ImsProfile.isRcsUpProfile(r1)
-            if (r1 == 0) goto L_0x03a6
+            if (r1 == 0) goto L_0x03b7
             boolean r1 = com.sec.internal.ims.util.ConfigUtil.isRcsEur((com.sec.internal.constants.Mno) r11)
-            if (r1 == 0) goto L_0x03a6
+            if (r1 == 0) goto L_0x03b7
             boolean r1 = r6.mPendingAutoConfig
-            if (r1 != 0) goto L_0x038b
+            if (r1 != 0) goto L_0x039c
             boolean r1 = r6.mIsRcsEnabled
-            if (r1 != 0) goto L_0x0384
+            if (r1 != 0) goto L_0x0395
             r6.mPendingAutoConfig = r0
-        L_0x0384:
+        L_0x0395:
             boolean r0 = r6.mIsRcsEnabled
             r10.changeOpMode(r0)
-            goto L_0x0902
-        L_0x038b:
+            goto L_0x0913
+        L_0x039c:
             java.lang.String r0 = LOG_TAG
             java.lang.StringBuilder r1 = new java.lang.StringBuilder
             r1.<init>()
@@ -765,90 +773,90 @@ public class ConfigModule extends Handler implements IConfigModule {
             r1.append(r2)
             java.lang.String r1 = r1.toString()
             com.sec.internal.log.IMSLog.i(r0, r9, r1)
-            goto L_0x0902
-        L_0x03a6:
+            goto L_0x0913
+        L_0x03b7:
             boolean r0 = r6.mIsRcsEnabled
             r10.changeOpMode(r0)
-            goto L_0x0902
-        L_0x03ad:
-            if (r10 == 0) goto L_0x0902
+            goto L_0x0913
+        L_0x03be:
+            if (r10 == 0) goto L_0x0913
             java.lang.String r0 = r6.mVerificationCode
             r10.sendVerificationCode(r0)
-            goto L_0x0902
-        L_0x03b6:
-            if (r10 == 0) goto L_0x0902
+            goto L_0x0913
+        L_0x03c7:
+            if (r10 == 0) goto L_0x0913
             com.sec.ims.IAutoConfigurationListener r0 = r6.mListener
             r10.unregisterAutoConfigurationListener(r0)
-            goto L_0x0902
-        L_0x03bf:
-            if (r10 == 0) goto L_0x0902
+            goto L_0x0913
+        L_0x03d0:
+            if (r10 == 0) goto L_0x0913
             com.sec.ims.IAutoConfigurationListener r0 = r6.mListener
             r10.registerAutoConfigurationListener(r0)
-            goto L_0x0902
-        L_0x03c8:
+            goto L_0x0913
+        L_0x03d9:
             com.sec.internal.ims.config.ConfigTrigger r1 = r6.mConfigTrigger
             com.sec.internal.constants.Mno r2 = com.sec.internal.constants.Mno.MTS_RUSSIA
-            if (r11 == r2) goto L_0x03d0
+            if (r11 == r2) goto L_0x03e1
             r2 = r0
-            goto L_0x03d1
-        L_0x03d0:
+            goto L_0x03e2
+        L_0x03e1:
             r2 = r15
-        L_0x03d1:
+        L_0x03e2:
             r1.setNeedResetConfig(r2)
             com.sec.internal.interfaces.ims.core.IRegistrationManager r1 = r6.mRm
             java.util.List r1 = r1.getPendingRegistration(r9)
             java.util.Iterator r2 = r1.iterator()
-        L_0x03de:
+        L_0x03ef:
             boolean r3 = r2.hasNext()
-            if (r3 == 0) goto L_0x0403
+            if (r3 == 0) goto L_0x0414
             java.lang.Object r3 = r2.next()
             com.sec.internal.interfaces.ims.core.IRegisterTask r3 = (com.sec.internal.interfaces.ims.core.IRegisterTask) r3
             boolean r4 = r3.isRcsOnly()
-            if (r4 == 0) goto L_0x0401
+            if (r4 == 0) goto L_0x0412
             com.sec.ims.settings.ImsProfile r4 = r3.getProfile()
             boolean r4 = r4.getNeedAutoconfig()
-            if (r4 == 0) goto L_0x0401
+            if (r4 == 0) goto L_0x0412
             com.sec.internal.interfaces.ims.core.IRegistrationManager r4 = r6.mRm
             r8 = 143(0x8f, float:2.0E-43)
             r4.sendDeregister((int) r8, (int) r9)
-        L_0x0401:
+        L_0x0412:
             r8 = 3
-            goto L_0x03de
-        L_0x0403:
+            goto L_0x03ef
+        L_0x0414:
             com.sec.internal.ims.config.params.ACSConfig r2 = r6.getAcsConfig(r9)
             r2.setIsTriggeredByNrcr(r0)
-        L_0x040a:
+        L_0x041b:
             com.sec.internal.constants.ims.DiagnosisConstants$RCSA_ATRE r1 = com.sec.internal.constants.ims.DiagnosisConstants.RCSA_ATRE.PUSH_SMS
             r6.setAcsTryReason(r9, r1)
-            goto L_0x066e
-        L_0x0411:
+            goto L_0x067f
+        L_0x0422:
             java.lang.String r1 = LOG_TAG
             java.lang.String r8 = "HANDLE_AUTO_CONFIG_COMPLETE:"
             com.sec.internal.log.IMSLog.i(r1, r9, r8)
             int r1 = r7.arg1
             int r8 = r7.arg2
-            if (r10 != 0) goto L_0x0421
+            if (r10 != 0) goto L_0x0432
             r16 = 708(0x2c4, float:9.92E-43)
-            goto L_0x0425
-        L_0x0421:
+            goto L_0x0436
+        L_0x0432:
             int r16 = r10.getLastErrorCode()
-        L_0x0425:
+        L_0x0436:
             r17 = r16
             com.sec.internal.interfaces.ims.core.ISimManager r16 = com.sec.internal.ims.core.sim.SimManagerFactory.getSimManagerFromSimSlot(r9)
-            if (r16 == 0) goto L_0x044a
+            if (r16 == 0) goto L_0x045b
             boolean r18 = r16.isSimAvailable()
-            if (r18 == 0) goto L_0x044a
+            if (r18 == 0) goto L_0x045b
             android.content.Context r15 = r6.mContext
             boolean r15 = com.sec.internal.ims.util.ConfigUtil.isGcForEur(r15, r9)
-            if (r15 == 0) goto L_0x044a
-            if (r8 != 0) goto L_0x044a
+            if (r15 == 0) goto L_0x045b
+            if (r8 != 0) goto L_0x045b
             java.lang.String r15 = LOG_TAG
             java.lang.String r5 = "it needs to perform again Auto-configuration process"
             com.sec.internal.log.IMSLog.i(r15, r9, r5)
             android.content.Context r5 = r6.mContext
             r15 = -1
             com.sec.internal.constants.ims.ImsConstants.SystemSettings.setRcsUserSetting(r5, r15, r9)
-        L_0x044a:
+        L_0x045b:
             com.sec.internal.helper.SimpleEventLog r5 = r6.mEventLog
             java.lang.StringBuilder r15 = new java.lang.StringBuilder
             r15.<init>()
@@ -880,17 +888,17 @@ public class ConfigModule extends Handler implements IConfigModule {
             java.lang.String r0 = r15.toString()
             com.sec.internal.log.IMSLog.c(r5, r0)
             boolean r0 = r6.mIsRemoteConfigNeeded
-            if (r0 == 0) goto L_0x04a9
-            if (r8 <= 0) goto L_0x04a9
+            if (r0 == 0) goto L_0x04ba
+            if (r8 <= 0) goto L_0x04ba
             r0 = 59
-            if (r8 != r0) goto L_0x04a7
-            goto L_0x04a9
-        L_0x04a7:
+            if (r8 != r0) goto L_0x04b8
+            goto L_0x04ba
+        L_0x04b8:
             r0 = 0
-            goto L_0x04aa
-        L_0x04a9:
+            goto L_0x04bb
+        L_0x04ba:
             r0 = 1
-        L_0x04aa:
+        L_0x04bb:
             java.lang.String r5 = LOG_TAG
             java.lang.StringBuilder r15 = new java.lang.StringBuilder
             r15.<init>()
@@ -908,9 +916,9 @@ public class ConfigModule extends Handler implements IConfigModule {
             r7.append(r0)
             java.lang.String r7 = r7.toString()
             com.sec.internal.log.IMSLog.c(r5, r7)
-            if (r14 == 0) goto L_0x04df
+            if (r14 == 0) goto L_0x04f0
             r14.updateLocalConfigUsedState(r0)
-        L_0x04df:
+        L_0x04f0:
             java.lang.String r5 = LOG_TAG
             java.lang.StringBuilder r7 = new java.lang.StringBuilder
             r7.<init>()
@@ -922,33 +930,33 @@ public class ConfigModule extends Handler implements IConfigModule {
             java.lang.String r7 = r7.toString()
             com.sec.internal.log.IMSLog.i(r5, r9, r7)
             r5 = 987(0x3db, float:1.383E-42)
-            if (r2 == r5) goto L_0x0547
+            if (r2 == r5) goto L_0x0558
             com.sec.internal.ims.config.WorkFlowController r5 = r6.mWorkFlowController
             boolean r5 = r5.getIsAcsFirstTry(r9)
             r7 = 200(0xc8, float:2.8E-43)
-            if (r5 != 0) goto L_0x050f
-            if (r2 != r7) goto L_0x050f
-            if (r8 >= 0) goto L_0x0519
-        L_0x050f:
+            if (r5 != 0) goto L_0x0520
+            if (r2 != r7) goto L_0x0520
+            if (r8 >= 0) goto L_0x052a
+        L_0x0520:
             com.sec.internal.ims.config.ConfigComplete r5 = r6.mConfigComplete
             r5.sendRCSAInfoToHQM(r8, r2, r9)
             com.sec.internal.ims.config.WorkFlowController r5 = r6.mWorkFlowController
             r5.removeIsAcsFirstTry(r9)
-        L_0x0519:
+        L_0x052a:
             android.content.ContentValues r5 = new android.content.ContentValues
             r5.<init>()
-            if (r2 != r7) goto L_0x052b
+            if (r2 != r7) goto L_0x053c
             r7 = 1
             java.lang.Integer r15 = java.lang.Integer.valueOf(r7)
             java.lang.String r7 = "RACC"
             r5.put(r7, r15)
-            goto L_0x0535
-        L_0x052b:
+            goto L_0x0546
+        L_0x053c:
             r7 = 1
             java.lang.Integer r15 = java.lang.Integer.valueOf(r7)
             java.lang.String r7 = "RACF"
             r5.put(r7, r15)
-        L_0x0535:
+        L_0x0546:
             r7 = 1
             java.lang.Integer r7 = java.lang.Integer.valueOf(r7)
             java.lang.String r15 = "overwrite_mode"
@@ -956,9 +964,9 @@ public class ConfigModule extends Handler implements IConfigModule {
             android.content.Context r7 = r6.mContext
             java.lang.String r15 = "DRCS"
             com.sec.internal.ims.diagnosis.ImsLogAgentUtil.storeLogToAgent(r9, r7, r15, r5)
-        L_0x0547:
+        L_0x0558:
             r5 = 800(0x320, float:1.121E-42)
-            if (r2 != r5) goto L_0x057a
+            if (r2 != r5) goto L_0x058b
             java.lang.String r5 = LOG_TAG
             java.lang.String r7 = "SSL Handshake failed"
             com.sec.internal.log.IMSLog.i(r5, r9, r7)
@@ -966,9 +974,9 @@ public class ConfigModule extends Handler implements IConfigModule {
             android.util.SparseArray<android.os.Message> r5 = r6.mOnCompleteList
             java.lang.Object r5 = r5.get(r9)
             android.os.Message r5 = (android.os.Message) r5
-            if (r5 == 0) goto L_0x0902
+            if (r5 == 0) goto L_0x0913
             com.sec.internal.constants.Mno r7 = com.sec.internal.constants.Mno.RJIL
-            if (r11 != r7) goto L_0x0902
+            if (r11 != r7) goto L_0x0913
             android.os.Bundle r7 = new android.os.Bundle
             r7.<init>()
             r7.putInt(r3, r9)
@@ -977,32 +985,32 @@ public class ConfigModule extends Handler implements IConfigModule {
             r5.sendToTarget()
             android.util.SparseArray<android.os.Message> r3 = r6.mOnCompleteList
             r3.remove(r9)
-            goto L_0x0902
-        L_0x057a:
-            if (r16 == 0) goto L_0x058f
+            goto L_0x0913
+        L_0x058b:
+            if (r16 == 0) goto L_0x05a0
             boolean r5 = r16.isSimAvailable()
-            if (r5 != 0) goto L_0x058f
+            if (r5 != 0) goto L_0x05a0
             r5 = 708(0x2c4, float:9.92E-43)
-            if (r2 != r5) goto L_0x058f
+            if (r2 != r5) goto L_0x05a0
             java.lang.String r3 = LOG_TAG
             java.lang.String r4 = "autoconfiguration failed because sim is unavailable."
             com.sec.internal.log.IMSLog.i(r3, r9, r4)
-            goto L_0x0902
-        L_0x058f:
+            goto L_0x0913
+        L_0x05a0:
             android.util.SparseArray<android.os.Message> r5 = r6.mOnCompleteList
             java.lang.Object r5 = r5.get(r9)
             android.os.Message r5 = (android.os.Message) r5
-            if (r5 == 0) goto L_0x05c5
+            if (r5 == 0) goto L_0x05d6
             java.lang.String r7 = LOG_TAG
             java.lang.String r15 = "send complete message"
             com.sec.internal.log.IMSLog.i(r7, r9, r15)
-            if (r8 == 0) goto L_0x05ad
+            if (r8 == 0) goto L_0x05be
             com.sec.internal.constants.Mno r7 = com.sec.internal.constants.Mno.CMCC
-            if (r11 != r7) goto L_0x05ad
+            if (r11 != r7) goto L_0x05be
             com.sec.internal.ims.config.ConfigTrigger r7 = r6.mConfigTrigger
             r15 = 0
             r7.setReadyStartCmdList(r9, r15)
-        L_0x05ad:
+        L_0x05be:
             android.os.Bundle r7 = new android.os.Bundle
             r7.<init>()
             r7.putInt(r3, r9)
@@ -1012,10 +1020,10 @@ public class ConfigModule extends Handler implements IConfigModule {
             r5 = 0
             android.util.SparseArray<android.os.Message> r3 = r6.mOnCompleteList
             r3.remove(r9)
-            goto L_0x0640
-        L_0x05c5:
+            goto L_0x0651
+        L_0x05d6:
             boolean r3 = r6.mIsRemoteConfigNeeded
-            if (r3 == 0) goto L_0x05eb
+            if (r3 == 0) goto L_0x05fc
             java.lang.String r3 = LOG_TAG
             java.lang.String r4 = "complete autoconfiguration and send EVENT_AUTOCONFIGURATION_COMPLETE msg"
             com.sec.internal.log.IMSLog.i(r3, r9, r4)
@@ -1028,17 +1036,17 @@ public class ConfigModule extends Handler implements IConfigModule {
             java.lang.String r4 = r4.toString()
             com.sec.internal.log.IMSLog.c(r3, r4)
             r6.onNewRcsConfigurationAvailable(r9, r2)
-            goto L_0x0640
-        L_0x05eb:
+            goto L_0x0651
+        L_0x05fc:
             boolean r3 = r11.isKor()
-            if (r3 != 0) goto L_0x061f
+            if (r3 != 0) goto L_0x0630
             com.sec.internal.constants.Mno r3 = com.sec.internal.constants.Mno.ATT
-            if (r11 == r3) goto L_0x061f
+            if (r11 == r3) goto L_0x0630
             com.sec.internal.constants.Mno r3 = com.sec.internal.constants.Mno.TMOUS
-            if (r11 == r3) goto L_0x061f
+            if (r11 == r3) goto L_0x0630
             com.sec.internal.constants.Mno r3 = com.sec.internal.constants.Mno.CMCC
-            if (r11 == r3) goto L_0x061f
-            if (r1 != r8) goto L_0x061f
+            if (r11 == r3) goto L_0x0630
+            if (r1 != r8) goto L_0x0630
             r3 = 318767118(0x1300000e, float:1.6155898E-27)
             java.lang.StringBuilder r4 = new java.lang.StringBuilder
             r4.<init>()
@@ -1050,8 +1058,8 @@ public class ConfigModule extends Handler implements IConfigModule {
             com.sec.internal.helper.SimpleEventLog r3 = r6.mEventLog
             java.lang.String r4 = "same version. no event"
             r3.logAndAdd(r9, r4)
-            goto L_0x0640
-        L_0x061f:
+            goto L_0x0651
+        L_0x0630:
             r3 = 318767119(0x1300000f, float:1.61559E-27)
             java.lang.StringBuilder r4 = new java.lang.StringBuilder
             r4.<init>()
@@ -1064,13 +1072,13 @@ public class ConfigModule extends Handler implements IConfigModule {
             java.lang.String r4 = "no exist complete message. send EVENT_RECONFIGURATION"
             r3.logAndAdd(r9, r4)
             r6.onNewRcsConfigurationAvailable(r9, r2)
-        L_0x0640:
+        L_0x0651:
             boolean r3 = r6.mPendingAutoConfig
-            if (r3 == 0) goto L_0x0902
+            if (r3 == 0) goto L_0x0913
             r3 = 0
             r6.mPendingAutoConfig = r3
             boolean r4 = r6.mIsRcsEnabled
-            if (r4 == 0) goto L_0x0902
+            if (r4 == 0) goto L_0x0913
             com.sec.internal.ims.config.params.ACSConfig r4 = r6.getAcsConfig(r9)
             r4.resetAcsSettings()
             r4 = 8
@@ -1082,32 +1090,32 @@ public class ConfigModule extends Handler implements IConfigModule {
             r6.removeMessages(r4)
             android.os.Message r3 = r6.obtainMessage(r4, r9, r3, r7)
             r6.sendMessage(r3)
-            goto L_0x0902
-        L_0x066c:
+            goto L_0x0913
+        L_0x067d:
             r1 = 1
-            goto L_0x0674
-        L_0x066e:
+            goto L_0x0685
+        L_0x067f:
             com.sec.internal.ims.config.ConfigTrigger r0 = r6.mConfigTrigger
             r1 = 1
             r0.setReadyStartForceCmd(r1)
-        L_0x0674:
+        L_0x0685:
             com.sec.internal.ims.config.ConfigTrigger r0 = r6.mConfigTrigger
             r0.setReadyStartCmdList(r9, r1)
-            if (r10 != 0) goto L_0x06c5
+            if (r10 != 0) goto L_0x06d6
             java.lang.String r0 = LOG_TAG
             java.lang.String r1 = "workflow is null"
             com.sec.internal.log.IMSLog.i(r0, r1)
             com.sec.internal.interfaces.ims.core.ISimManager r0 = com.sec.internal.ims.core.sim.SimManagerFactory.getSimManagerFromSimSlot(r9)
-            if (r0 == 0) goto L_0x06bb
+            if (r0 == 0) goto L_0x06cc
             boolean r1 = r0.hasNoSim()
-            if (r1 != 0) goto L_0x06bb
+            if (r1 != 0) goto L_0x06cc
             java.lang.String r1 = r0.getSimMnoName()
             boolean r1 = android.text.TextUtils.isEmpty(r1)
-            if (r1 == 0) goto L_0x06a0
+            if (r1 == 0) goto L_0x06b1
             boolean r1 = r0.hasVsim()
-            if (r1 != 0) goto L_0x06a0
-            goto L_0x06bb
-        L_0x06a0:
+            if (r1 != 0) goto L_0x06b1
+            goto L_0x06cc
+        L_0x06b1:
             java.lang.String r1 = LOG_TAG
             java.lang.String r2 = "try init workflow and start again"
             com.sec.internal.log.IMSLog.i(r1, r2)
@@ -1118,32 +1126,32 @@ public class ConfigModule extends Handler implements IConfigModule {
             r3 = 2
             android.os.Message r1 = r6.obtainMessage(r3, r9, r2, r1)
             r6.sendMessage(r1)
-            goto L_0x0902
-        L_0x06bb:
+            goto L_0x0913
+        L_0x06cc:
             java.lang.String r1 = LOG_TAG
             java.lang.String r2 = "sim is not ready, start config finished"
             com.sec.internal.log.IMSLog.i(r1, r2)
-            goto L_0x0902
-        L_0x06c5:
+            goto L_0x0913
+        L_0x06d6:
             java.lang.String r0 = LOG_TAG
             java.lang.String r1 = "HANDLE_AUTO_CONFIG_START:"
             com.sec.internal.log.IMSLog.i(r0, r9, r1)
             boolean r0 = r6.isGcEnabledChange(r9)
-            if (r0 == 0) goto L_0x06d5
+            if (r0 == 0) goto L_0x06e6
             r10.clearToken()
-        L_0x06d5:
+        L_0x06e6:
             boolean r0 = r10.checkNetworkConnectivity()
-            if (r0 != 0) goto L_0x06ec
+            if (r0 != 0) goto L_0x06fd
             com.sec.internal.ims.config.ConfigTrigger r0 = r6.mConfigTrigger
             com.sec.internal.ims.config.WorkFlowController r1 = r6.mWorkFlowController
             boolean r2 = r6.mIsRemoteConfigNeeded
             boolean r1 = r1.isSimInfochanged(r9, r2)
             boolean r2 = r6.mMobileNetwork
             r0.tryAutoConfig(r10, r9, r1, r2)
-            goto L_0x0902
-        L_0x06ec:
+            goto L_0x0913
+        L_0x06fd:
             boolean r0 = r6.mIsRemoteConfigNeeded
-            if (r0 == 0) goto L_0x0702
+            if (r0 == 0) goto L_0x0713
             java.lang.String r0 = LOG_TAG
             java.lang.String r1 = "need CurrConfig"
             com.sec.internal.log.IMSLog.i(r0, r9, r1)
@@ -1151,39 +1159,39 @@ public class ConfigModule extends Handler implements IConfigModule {
             com.sec.internal.ims.config.ConfigTrigger r0 = r6.mConfigTrigger
             r1 = 0
             r0.setReadyStartCmdList(r9, r1)
-            goto L_0x0902
-        L_0x0702:
+            goto L_0x0913
+        L_0x0713:
             r1 = 0
             java.lang.String r0 = "rcs_auto_config_pdn"
             int r0 = com.sec.internal.ims.registry.ImsRegistry.getInt(r9, r0, r1)
             java.lang.String r1 = "ps_only_network"
             r2 = 1
-            if (r0 != r2) goto L_0x072e
+            if (r0 != r2) goto L_0x073f
             com.sec.internal.helper.PhoneIdKeyMap<java.util.HashMap<java.lang.Integer, android.net.Network>> r0 = r6.mNetworkLists
             java.lang.Object r0 = r0.get(r9)
             java.util.HashMap r0 = (java.util.HashMap) r0
             r3 = 2
             java.lang.Integer r3 = java.lang.Integer.valueOf(r3)
             boolean r0 = r0.containsKey(r3)
-            if (r0 == 0) goto L_0x07cd
+            if (r0 == 0) goto L_0x07de
             com.sec.internal.helper.PhoneIdKeyMap<java.lang.Boolean> r0 = r6.mReadyNetwork
             java.lang.Boolean r2 = java.lang.Boolean.valueOf(r2)
             r0.put(r9, r2)
-            goto L_0x07cd
-        L_0x072e:
+            goto L_0x07de
+        L_0x073f:
             boolean r0 = r19.isMobileDataOn()
-            if (r0 == 0) goto L_0x076a
+            if (r0 == 0) goto L_0x077b
             boolean r0 = r6.isRoamingMobileDataOn(r9)
-            if (r0 != 0) goto L_0x073b
-            goto L_0x076a
-        L_0x073b:
-            if (r14 == 0) goto L_0x0769
+            if (r0 != 0) goto L_0x074c
+            goto L_0x077b
+        L_0x074c:
+            if (r14 == 0) goto L_0x077a
             boolean r0 = r14.boolSetting(r1)
-            if (r0 == 0) goto L_0x0769
+            if (r0 == 0) goto L_0x077a
             boolean r0 = r19.isMobileDataOn()
-            if (r0 == 0) goto L_0x07cd
+            if (r0 == 0) goto L_0x07de
             boolean r0 = r19.isWifiSwitchOn()
-            if (r0 == 0) goto L_0x07cd
+            if (r0 == 0) goto L_0x07de
             java.lang.String r0 = LOG_TAG
             java.lang.String r2 = "Mobile Data ON & WIFI ON case for PS only network."
             com.sec.internal.log.IMSLog.i(r0, r9, r2)
@@ -1193,10 +1201,10 @@ public class ConfigModule extends Handler implements IConfigModule {
             r3 = 3
             android.os.Message r2 = r6.obtainMessage(r3, r0, r0, r2)
             r6.sendMessage(r2)
-            goto L_0x07cd
-        L_0x0769:
-            goto L_0x07cd
-        L_0x076a:
+            goto L_0x07de
+        L_0x077a:
+            goto L_0x07de
+        L_0x077b:
             java.lang.String r0 = LOG_TAG
             java.lang.String r2 = "Mobile Data is off or roaming data off in roaming area"
             com.sec.internal.log.IMSLog.i(r0, r9, r2)
@@ -1204,22 +1212,22 @@ public class ConfigModule extends Handler implements IConfigModule {
             int r0 = r0.getCurrentRcsConfigVersion(r9)
             java.lang.String r2 = "wifi"
             boolean r2 = r12.contains(r2)
-            if (r2 == 0) goto L_0x083e
+            if (r2 == 0) goto L_0x084f
             boolean r2 = r19.isWifiSwitchOn()
-            if (r2 != 0) goto L_0x0788
-            goto L_0x083e
-        L_0x0788:
+            if (r2 != 0) goto L_0x0799
+            goto L_0x084f
+        L_0x0799:
             java.lang.String r2 = LOG_TAG
             java.lang.String r3 = "Mobile Data is off but WiFi is on"
             com.sec.internal.log.IMSLog.i(r2, r9, r3)
             com.sec.internal.constants.Mno r2 = com.sec.internal.constants.Mno.CMCC
-            if (r11 != r2) goto L_0x0796
+            if (r11 != r2) goto L_0x07a7
             r2 = 0
             r6.mMobileNetwork = r2
-        L_0x0796:
-            if (r14 == 0) goto L_0x07b3
+        L_0x07a7:
+            if (r14 == 0) goto L_0x07c4
             boolean r2 = r14.boolSetting(r1)
-            if (r2 == 0) goto L_0x07b3
+            if (r2 == 0) goto L_0x07c4
             java.lang.String r2 = LOG_TAG
             java.lang.String r3 = "WiFi is on. Register to VOLTE to receive OTP message for PS only network"
             com.sec.internal.log.IMSLog.i(r2, r9, r3)
@@ -1227,8 +1235,8 @@ public class ConfigModule extends Handler implements IConfigModule {
             r3 = 3
             android.os.Message r2 = r6.obtainMessage(r3, r0, r0, r2)
             r6.sendMessage(r2)
-            goto L_0x0769
-        L_0x07b3:
+            goto L_0x077a
+        L_0x07c4:
             java.lang.String r2 = LOG_TAG
             java.lang.String r3 = "Mobile Data is off but WiFi is on. So wait 20 seconds."
             com.sec.internal.log.IMSLog.i(r2, r9, r3)
@@ -1238,8 +1246,8 @@ public class ConfigModule extends Handler implements IConfigModule {
             android.os.Message r3 = r6.obtainMessage(r2, r0, r0, r3)
             r4 = 20000(0x4e20, double:9.8813E-320)
             r6.sendMessageDelayed(r3, r4)
-            goto L_0x0769
-        L_0x07cd:
+            goto L_0x077a
+        L_0x07de:
             java.lang.String r0 = LOG_TAG
             java.lang.StringBuilder r2 = new java.lang.StringBuilder
             r2.<init>()
@@ -1259,24 +1267,24 @@ public class ConfigModule extends Handler implements IConfigModule {
             java.lang.Object r0 = r0.get(r9)
             java.lang.Boolean r0 = (java.lang.Boolean) r0
             boolean r0 = r0.booleanValue()
-            if (r0 == 0) goto L_0x0816
+            if (r0 == 0) goto L_0x0827
             com.sec.internal.ims.config.ConfigTrigger r0 = r6.mConfigTrigger
             com.sec.internal.ims.config.WorkFlowController r1 = r6.mWorkFlowController
             boolean r2 = r6.mIsRemoteConfigNeeded
             boolean r1 = r1.isSimInfochanged(r9, r2)
             boolean r2 = r6.mMobileNetwork
             r0.tryAutoConfig(r10, r9, r1, r2)
-            goto L_0x0902
-        L_0x0816:
-            if (r14 == 0) goto L_0x081e
+            goto L_0x0913
+        L_0x0827:
+            if (r14 == 0) goto L_0x082f
             boolean r0 = r14.boolSetting(r1)
-            if (r0 != 0) goto L_0x0828
-        L_0x081e:
+            if (r0 != 0) goto L_0x0839
+        L_0x082f:
             com.sec.internal.constants.Mno r0 = com.sec.internal.constants.Mno.BELL
-            if (r11 != r0) goto L_0x0902
+            if (r11 != r0) goto L_0x0913
             android.util.Pair r0 = r6.getAvailableNetwork(r9)
-            if (r0 != 0) goto L_0x0902
-        L_0x0828:
+            if (r0 != 0) goto L_0x0913
+        L_0x0839:
             java.lang.String r0 = LOG_TAG
             java.lang.String r1 = "No conditions satisfied to start Auto Config, proceed to VOLTE REG"
             com.sec.internal.log.IMSLog.i(r0, r9, r1)
@@ -1285,8 +1293,8 @@ public class ConfigModule extends Handler implements IConfigModule {
             r2 = 0
             android.os.Message r0 = r6.obtainMessage(r1, r2, r2, r0)
             r6.sendMessage(r0)
-            goto L_0x0902
-        L_0x083e:
+            goto L_0x0913
+        L_0x084f:
             java.lang.String r1 = LOG_TAG
             java.lang.String r2 = "Both Mobile Data and WiFi are off, skip autoconfig"
             com.sec.internal.log.IMSLog.i(r1, r9, r2)
@@ -1294,19 +1302,19 @@ public class ConfigModule extends Handler implements IConfigModule {
             r2 = 3
             android.os.Message r1 = r6.obtainMessage(r2, r0, r0, r1)
             r6.sendMessage(r1)
-            goto L_0x0902
-        L_0x0854:
-            if (r10 != 0) goto L_0x08f6
+            goto L_0x0913
+        L_0x0865:
+            if (r10 != 0) goto L_0x0907
             java.lang.String r0 = LOG_TAG
             java.lang.String r1 = "HANDLE_AUTO_CONFIG_INIT:"
             com.sec.internal.log.IMSLog.i(r0, r9, r1)
             boolean r0 = r6.rcsProfileInit(r9)
-            if (r0 != 0) goto L_0x086c
+            if (r0 != 0) goto L_0x087d
             java.lang.String r0 = LOG_TAG
             java.lang.String r1 = "SIM is not ready. skip init workflow"
             com.sec.internal.log.IMSLog.i(r0, r9, r1)
-            goto L_0x0902
-        L_0x086c:
+            goto L_0x0913
+        L_0x087d:
             android.os.HandlerThread r0 = new android.os.HandlerThread
             java.lang.StringBuilder r1 = new java.lang.StringBuilder
             r1.<init>()
@@ -1329,7 +1337,7 @@ public class ConfigModule extends Handler implements IConfigModule {
             r6.clearWorkFlowThread(r9)
             android.util.SparseArray<android.os.HandlerThread> r0 = r6.mWorkflowThreadList
             r0.put(r9, r7)
-            if (r10 != 0) goto L_0x08c4
+            if (r10 != 0) goto L_0x08d5
             java.lang.String r0 = LOG_TAG
             java.lang.String r1 = "workflow is null. skip init workflow, regard old version and new version as 0"
             com.sec.internal.log.IMSLog.i(r0, r9, r1)
@@ -1340,8 +1348,8 @@ public class ConfigModule extends Handler implements IConfigModule {
             r2 = 0
             android.os.Message r0 = r6.obtainMessage(r1, r2, r2, r0)
             r6.sendMessage(r0)
-            goto L_0x0902
-        L_0x08c4:
+            goto L_0x0913
+        L_0x08d5:
             com.sec.internal.ims.config.WorkFlowController r0 = r6.mWorkFlowController
             r0.initWorkflow(r9, r10)
             r0 = 318767115(0x1300000b, float:1.6155893E-27)
@@ -1353,23 +1361,23 @@ public class ConfigModule extends Handler implements IConfigModule {
             java.lang.String r1 = r1.toString()
             com.sec.internal.log.IMSLog.c(r0, r1)
             boolean r0 = r6.mIsRemoteConfigNeeded
-            if (r0 == 0) goto L_0x08f5
+            if (r0 == 0) goto L_0x0906
             boolean r0 = r6.mIsReceivedSimRefresh
-            if (r0 == 0) goto L_0x08f5
+            if (r0 == 0) goto L_0x0906
             java.lang.String r0 = LOG_TAG
             java.lang.String r1 = "clear config info because of sim refresh"
             com.sec.internal.log.IMSLog.i(r0, r9, r1)
             r10.clearAutoConfigStorage()
             r0 = 0
             r6.mIsReceivedSimRefresh = r0
-        L_0x08f5:
-            goto L_0x0902
-        L_0x08f6:
+        L_0x0906:
+            goto L_0x0913
+        L_0x0907:
             java.lang.String r0 = LOG_TAG
             java.lang.String r1 = "re-init Workflow if needed."
             com.sec.internal.log.IMSLog.i(r0, r9, r1)
             r10.reInitIfNeeded()
-        L_0x0902:
+        L_0x0913:
             return
         */
         throw new UnsupportedOperationException("Method not decompiled: com.sec.internal.ims.config.ConfigModule.handleMessage(android.os.Message):void");
@@ -1499,7 +1507,7 @@ public class ConfigModule extends Handler implements IConfigModule {
         Mno mno = SimUtil.getSimMno(phoneId);
         String rcsAs = ConfigUtil.getAcsServerType(this.mContext, phoneId);
         IMnoStrategy mnoStrategy = RcsPolicyManager.getRcsStrategy(phoneId);
-        if (mno == Mno.CMCC || ((ImsConstants.RCS_AS.JIBE.equals(rcsAs) && !ConfigUtil.isRcsEur(phoneId)) || (mnoStrategy != null && mnoStrategy.isRemoteConfigNeeded(phoneId)))) {
+        if (mno == Mno.CMCC || mno == Mno.SPRINT || mno == Mno.TCE || mno == Mno.CLARO_ARGENTINA || ((ImsConstants.RCS_AS.JIBE.equals(rcsAs) && !ConfigUtil.isRcsEur(phoneId)) || (mnoStrategy != null && mnoStrategy.isRemoteConfigNeeded(phoneId)))) {
             IMSLog.i(LOG_TAG, phoneId, "changeOpMode: it is not supported");
             return;
         }
@@ -1662,7 +1670,8 @@ public class ConfigModule extends Handler implements IConfigModule {
             } else if (isChanged && isRcsAvailable) {
                 IMSLog.i(LOG_TAG, phoneId, "reinit workflow");
                 IMSLog.c(LogClass.CM_REINIT_WORKFLOW, phoneId + ",WF:REINIT");
-                if (ImsConstants.RCS_AS.JIBE.equals(ConfigUtil.getAcsServerType(this.mContext, phoneId))) {
+                String rcsAs = ConfigUtil.getAcsServerType(this.mContext, phoneId);
+                if (mno == Mno.SPRINT || mno == Mno.TCE || mno == Mno.CLARO_ARGENTINA || ImsConstants.RCS_AS.JIBE.equals(rcsAs)) {
                     workflow.clearAutoConfigStorage();
                     IMSLog.i(LOG_TAG, phoneId, "setting for starting auto config by Message app is clear");
                     ImsConstants.SystemSettings.setRcsUserSetting(this.mContext, -1, phoneId);

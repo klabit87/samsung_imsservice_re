@@ -20,17 +20,18 @@ import java.util.Iterator;
 import java.util.List;
 
 public class CmcNsdManager {
-    public static final NsdNetwork DEFAULT_WIFI_AP_NETWORK = new NsdNetwork.Builder().setCapabilities(new NsdNetworkCapabilities.Builder().addTransport(0).setCapabilities(7).build()).build();
-    public static final NsdNetwork DEFAULT_WIFI_DIRECT_NETWORK = new NsdNetwork.Builder().setCapabilities(new NsdNetworkCapabilities.Builder().addTransport(1).build()).build();
-    public static final String SERVICE_PACKAGE = "com.samsung.android.mdecservice";
-    public static final String VERSION = "0.0.2";
+    private static final NsdNetwork DEFAULT_WIFI_AP_NETWORK = new NsdNetwork.Builder().setCapabilities(new NsdNetworkCapabilities.Builder().addTransport(0).setCapabilities(7).build()).build();
+    private static final NsdNetwork DEFAULT_WIFI_DIRECT_NETWORK = new NsdNetwork.Builder().setCapabilities(new NsdNetworkCapabilities.Builder().addTransport(1).build()).build();
+    private static final String SERVICE_PACKAGE = "com.samsung.android.mdecservice";
+    private static final String VERSION = "0.0.1";
+    /* access modifiers changed from: private */
     public final String TAG = (CmcNsdManager.class.getSimpleName() + "[" + hashCode() + "]");
-    public final ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+    private final ServiceConnection mConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName name, IBinder service) {
             String access$000 = CmcNsdManager.this.TAG;
-            Log.w(access$000, "onServiceConnected() name=" + componentName);
+            Log.w(access$000, "onServiceConnected() name=" + name);
             try {
-                INsdService unused = CmcNsdManager.this.mService = INsdService.Stub.asInterface(iBinder);
+                INsdService unused = CmcNsdManager.this.mService = INsdService.Stub.asInterface(service);
                 if (CmcNsdManager.this.mService == null) {
                     Log.e(CmcNsdManager.this.TAG, "onServiceConnected() failed to get proxy");
                     return;
@@ -43,43 +44,46 @@ public class CmcNsdManager {
             }
         }
 
-        public void onServiceDisconnected(ComponentName componentName) {
+        public void onServiceDisconnected(ComponentName name) {
             String access$000 = CmcNsdManager.this.TAG;
-            Log.w(access$000, "onServiceDisconnected() name=" + componentName);
+            Log.w(access$000, "onServiceDisconnected() name=" + name);
             CmcNsdManager.this.onUnbound();
         }
     };
-    public final Context mContext;
-    public boolean mIsBound = false;
-    public boolean mIsNetworkAcquired = false;
+    private final Context mContext;
+    private boolean mIsBound = false;
+    private boolean mIsNetworkAcquired = false;
+    /* access modifiers changed from: private */
     public final SparseArray<NsdNetwork> mLastNetworks = new SparseArray<>();
-    public BindStatusListener mListener = null;
+    private BindStatusListener mListener = null;
+    /* access modifiers changed from: private */
     public final INsdNetworkCallback mNsdNetworkCallback = new INsdNetworkCallback.Stub() {
-        public void onWifiApConnectionChanged(NsdNetwork nsdNetwork) throws RemoteException {
+        public void onWifiApConnectionChanged(NsdNetwork network) throws RemoteException {
             String access$000 = CmcNsdManager.this.TAG;
-            Log.i(access$000, "onWifiApConnectionChanged() network=" + nsdNetwork);
-            if (nsdNetwork != null) {
-                CmcNsdManager.this.mLastNetworks.put(nsdNetwork.getTransport(), nsdNetwork);
-                CmcNsdManager.this.notifyWifiApConnectionChanged(nsdNetwork);
+            Log.i(access$000, "onWifiApConnectionChanged() network=" + network);
+            if (network != null) {
+                CmcNsdManager.this.mLastNetworks.put(network.getTransport(), network);
+                CmcNsdManager.this.notifyWifiApConnectionChanged(network);
             }
         }
 
-        public void onWifiDirectConnectionChanged(NsdNetwork nsdNetwork) throws RemoteException {
+        public void onWifiDirectConnectionChanged(NsdNetwork network) throws RemoteException {
             String access$000 = CmcNsdManager.this.TAG;
-            Log.i(access$000, "onWifiDirectConnectionChanged() network=" + nsdNetwork);
-            if (nsdNetwork != null) {
-                CmcNsdManager.this.mLastNetworks.put(nsdNetwork.getTransport(), nsdNetwork);
-                CmcNsdManager.this.notifyWifiDirectConnectionChanged(nsdNetwork);
+            Log.i(access$000, "onWifiDirectConnectionChanged() network=" + network);
+            if (network != null) {
+                CmcNsdManager.this.mLastNetworks.put(network.getTransport(), network);
+                CmcNsdManager.this.notifyWifiDirectConnectionChanged(network);
             }
         }
 
-        public void onWifiApNetworkMessageReceived(NsdNetworkCapabilities nsdNetworkCapabilities, NsdNetworkMessage nsdNetworkMessage) throws RemoteException {
+        public void onWifiApNetworkMessageReceived(NsdNetworkCapabilities capabilities, NsdNetworkMessage message) throws RemoteException {
             String access$000 = CmcNsdManager.this.TAG;
-            Log.i(access$000, "onWifiApNetworkMessageReceived() cap=" + nsdNetworkCapabilities + " message=" + nsdNetworkMessage);
-            CmcNsdManager.this.notifyWifiApNetworkMessageReceived(nsdNetworkCapabilities, nsdNetworkMessage);
+            Log.i(access$000, "onWifiApNetworkMessageReceived() cap=" + capabilities + " message=" + message);
+            CmcNsdManager.this.notifyWifiApNetworkMessageReceived(capabilities, message);
         }
     };
-    public final List<NetworkCallbackWrapper> mNsdNetworkCallbackList = new ArrayList();
+    private final List<NetworkCallbackWrapper> mNsdNetworkCallbackList = new ArrayList();
+    /* access modifiers changed from: private */
     public INsdService mService = null;
 
     public interface BindStatusListener {
@@ -96,8 +100,8 @@ public class CmcNsdManager {
         Log.i(str, "pkgName=" + context.getPackageName() + " version=" + VERSION);
     }
 
-    public void registerServiceConnectionListener(BindStatusListener bindStatusListener) {
-        this.mListener = bindStatusListener;
+    public void registerServiceConnectionListener(BindStatusListener listener) {
+        this.mListener = listener;
     }
 
     public void unregisterServiceConnectionListener() {
@@ -112,7 +116,7 @@ public class CmcNsdManager {
         String str = this.TAG;
         Log.i(str, "bind() isBound=" + isBound());
         if (isBound()) {
-            onBound();
+            this.mListener.onBound();
             return;
         }
         Intent intent = new Intent();
@@ -167,14 +171,14 @@ public class CmcNsdManager {
     }
 
     /* access modifiers changed from: private */
-    public void notifyWifiApConnectionChanged(NsdNetwork nsdNetwork) {
+    public void notifyWifiApConnectionChanged(NsdNetwork network) {
         synchronized (this.mNsdNetworkCallbackList) {
-            for (NetworkCallbackWrapper next : this.mNsdNetworkCallbackList) {
-                if (next.getCapabilities().hasCapabilities(nsdNetwork.getCapabilities())) {
-                    if (nsdNetwork.isConnected()) {
-                        next.getCallback().onConnected(nsdNetwork);
+            for (NetworkCallbackWrapper w : this.mNsdNetworkCallbackList) {
+                if (w.getCapabilities().hasCapabilities(network.getCapabilities())) {
+                    if (network.isConnected()) {
+                        w.getCallback().onConnected(network);
                     } else {
-                        next.getCallback().onDisconnected(nsdNetwork);
+                        w.getCallback().onDisconnected(network);
                     }
                 }
             }
@@ -182,17 +186,17 @@ public class CmcNsdManager {
     }
 
     /* access modifiers changed from: private */
-    public void notifyWifiDirectConnectionChanged(NsdNetwork nsdNetwork) {
+    public void notifyWifiDirectConnectionChanged(NsdNetwork network) {
         synchronized (this.mNsdNetworkCallbackList) {
-            for (NetworkCallbackWrapper next : this.mNsdNetworkCallbackList) {
-                if (next.getCapabilities().hasCapabilities(nsdNetwork.getCapabilities())) {
-                    if (!nsdNetwork.isConnected()) {
-                        next.getCallback().onDisconnected(nsdNetwork);
+            for (NetworkCallbackWrapper w : this.mNsdNetworkCallbackList) {
+                if (w.getCapabilities().hasCapabilities(network.getCapabilities())) {
+                    if (!network.isConnected()) {
+                        w.getCallback().onDisconnected(network);
                         this.mIsNetworkAcquired = false;
                     } else if (this.mIsNetworkAcquired) {
-                        next.getCallback().onConnected(nsdNetwork);
+                        w.getCallback().onConnected(network);
                     } else {
-                        next.getCallback().onAvailable(nsdNetwork.getCapabilities());
+                        w.getCallback().onAvailable(network.getCapabilities());
                     }
                 }
             }
@@ -200,23 +204,23 @@ public class CmcNsdManager {
     }
 
     /* access modifiers changed from: private */
-    public void notifyWifiApNetworkMessageReceived(NsdNetworkCapabilities nsdNetworkCapabilities, NsdNetworkMessage nsdNetworkMessage) {
+    public void notifyWifiApNetworkMessageReceived(NsdNetworkCapabilities capabilities, NsdNetworkMessage message) {
         synchronized (this.mNsdNetworkCallbackList) {
-            for (NetworkCallbackWrapper next : this.mNsdNetworkCallbackList) {
-                if (next.getCapabilities().hasCapabilities(nsdNetworkCapabilities)) {
-                    next.getCallback().onNetworkMessageReceived(nsdNetworkMessage);
+            for (NetworkCallbackWrapper w : this.mNsdNetworkCallbackList) {
+                if (w.getCapabilities().hasCapabilities(capabilities)) {
+                    w.getCallback().onNetworkMessageReceived(message);
                 }
             }
         }
     }
 
-    public static class NetworkCallbackWrapper {
-        public final NsdNetworkCallback mCallback;
-        public final NsdNetworkCapabilities mCapabilities;
+    private static class NetworkCallbackWrapper {
+        private final NsdNetworkCallback mCallback;
+        private final NsdNetworkCapabilities mCapabilities;
 
-        public NetworkCallbackWrapper(NsdNetworkCapabilities nsdNetworkCapabilities, NsdNetworkCallback nsdNetworkCallback) {
-            this.mCapabilities = nsdNetworkCapabilities;
-            this.mCallback = nsdNetworkCallback;
+        public NetworkCallbackWrapper(NsdNetworkCapabilities capabilities, NsdNetworkCallback callback) {
+            this.mCapabilities = capabilities;
+            this.mCallback = callback;
         }
 
         public NsdNetworkCapabilities getCapabilities() {
@@ -233,111 +237,113 @@ public class CmcNsdManager {
     }
 
     /* JADX WARNING: Code restructure failed: missing block: B:12:0x0040, code lost:
-        r4 = r3.TAG;
-        android.util.Log.d(r4, "registerNetworkCallback() NsdNetworkCallbackList=" + r3.mNsdNetworkCallbackList);
+        r0 = r5.TAG;
+        android.util.Log.d(r0, "registerNetworkCallback() NsdNetworkCallbackList=" + r5.mNsdNetworkCallbackList);
+        r0 = 0;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:14:0x005a, code lost:
-        if (r0 > 1) goto L_0x0073;
+    /* JADX WARNING: Code restructure failed: missing block: B:14:0x005b, code lost:
+        if (r0 > 1) goto L_0x0074;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:15:0x005c, code lost:
-        r4 = r3.mLastNetworks.get(1 << r0);
+    /* JADX WARNING: Code restructure failed: missing block: B:15:0x005d, code lost:
+        r1 = r5.mLastNetworks.get(1 << r0);
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:16:0x0065, code lost:
-        if (r4 == null) goto L_0x0070;
+    /* JADX WARNING: Code restructure failed: missing block: B:16:0x0066, code lost:
+        if (r1 == null) goto L_0x0071;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:17:0x0067, code lost:
-        if (r0 != 0) goto L_0x006d;
+    /* JADX WARNING: Code restructure failed: missing block: B:17:0x0068, code lost:
+        if (r0 != 0) goto L_0x006e;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:18:0x0069, code lost:
-        notifyWifiApConnectionChanged(r4);
+    /* JADX WARNING: Code restructure failed: missing block: B:18:0x006a, code lost:
+        notifyWifiApConnectionChanged(r1);
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:19:0x006d, code lost:
-        notifyWifiDirectConnectionChanged(r4);
+    /* JADX WARNING: Code restructure failed: missing block: B:19:0x006e, code lost:
+        notifyWifiDirectConnectionChanged(r1);
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:20:0x0070, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:20:0x0071, code lost:
         r0 = r0 + 1;
      */
-    /* JADX WARNING: Code restructure failed: missing block: B:21:0x0073, code lost:
+    /* JADX WARNING: Code restructure failed: missing block: B:21:0x0074, code lost:
         return true;
      */
     /* Code decompiled incorrectly, please refer to instructions dump. */
-    public boolean registerNetworkCallback(com.samsung.android.cmcnsd.network.NsdNetworkCapabilities r4, com.samsung.android.cmcnsd.network.NsdNetworkCallback r5) {
+    public boolean registerNetworkCallback(com.samsung.android.cmcnsd.network.NsdNetworkCapabilities r6, com.samsung.android.cmcnsd.network.NsdNetworkCallback r7) {
         /*
-            r3 = this;
-            java.lang.String r0 = r3.TAG
+            r5 = this;
+            java.lang.String r0 = r5.TAG
             java.lang.StringBuilder r1 = new java.lang.StringBuilder
             r1.<init>()
             java.lang.String r2 = "registerNetworkCallback() cap="
             r1.append(r2)
-            r1.append(r4)
+            r1.append(r6)
             java.lang.String r2 = " callback="
             r1.append(r2)
-            r1.append(r5)
+            r1.append(r7)
             java.lang.String r1 = r1.toString()
             android.util.Log.i(r0, r1)
             r0 = 0
-            if (r4 == 0) goto L_0x0077
-            if (r5 != 0) goto L_0x0025
-            goto L_0x0077
+            if (r6 == 0) goto L_0x0078
+            if (r7 != 0) goto L_0x0025
+            goto L_0x0078
         L_0x0025:
-            java.util.List<com.samsung.android.cmcnsd.CmcNsdManager$NetworkCallbackWrapper> r1 = r3.mNsdNetworkCallbackList
+            java.util.List<com.samsung.android.cmcnsd.CmcNsdManager$NetworkCallbackWrapper> r1 = r5.mNsdNetworkCallbackList
             monitor-enter(r1)
-            com.samsung.android.cmcnsd.CmcNsdManager$NetworkCallbackWrapper r2 = new com.samsung.android.cmcnsd.CmcNsdManager$NetworkCallbackWrapper     // Catch:{ all -> 0x0074 }
-            r2.<init>(r4, r5)     // Catch:{ all -> 0x0074 }
-            java.util.List<com.samsung.android.cmcnsd.CmcNsdManager$NetworkCallbackWrapper> r4 = r3.mNsdNetworkCallbackList     // Catch:{ all -> 0x0074 }
-            boolean r4 = r4.add(r2)     // Catch:{ all -> 0x0074 }
-            if (r4 != 0) goto L_0x003f
-            java.lang.String r4 = r3.TAG     // Catch:{ all -> 0x0074 }
-            java.lang.String r5 = "registerNetworkCallback() failed to add callback"
-            android.util.Log.e(r4, r5)     // Catch:{ all -> 0x0074 }
-            monitor-exit(r1)     // Catch:{ all -> 0x0074 }
+            com.samsung.android.cmcnsd.CmcNsdManager$NetworkCallbackWrapper r2 = new com.samsung.android.cmcnsd.CmcNsdManager$NetworkCallbackWrapper     // Catch:{ all -> 0x0075 }
+            r2.<init>(r6, r7)     // Catch:{ all -> 0x0075 }
+            java.util.List<com.samsung.android.cmcnsd.CmcNsdManager$NetworkCallbackWrapper> r3 = r5.mNsdNetworkCallbackList     // Catch:{ all -> 0x0075 }
+            boolean r3 = r3.add(r2)     // Catch:{ all -> 0x0075 }
+            if (r3 != 0) goto L_0x003f
+            java.lang.String r3 = r5.TAG     // Catch:{ all -> 0x0075 }
+            java.lang.String r4 = "registerNetworkCallback() failed to add callback"
+            android.util.Log.e(r3, r4)     // Catch:{ all -> 0x0075 }
+            monitor-exit(r1)     // Catch:{ all -> 0x0075 }
             return r0
         L_0x003f:
-            monitor-exit(r1)     // Catch:{ all -> 0x0074 }
-            java.lang.String r4 = r3.TAG
-            java.lang.StringBuilder r5 = new java.lang.StringBuilder
-            r5.<init>()
-            java.lang.String r1 = "registerNetworkCallback() NsdNetworkCallbackList="
-            r5.append(r1)
-            java.util.List<com.samsung.android.cmcnsd.CmcNsdManager$NetworkCallbackWrapper> r1 = r3.mNsdNetworkCallbackList
-            r5.append(r1)
-            java.lang.String r5 = r5.toString()
-            android.util.Log.d(r4, r5)
-        L_0x0059:
-            r4 = 1
-            if (r0 > r4) goto L_0x0073
-            android.util.SparseArray<com.samsung.android.cmcnsd.network.NsdNetwork> r5 = r3.mLastNetworks
-            int r4 = r4 << r0
-            java.lang.Object r4 = r5.get(r4)
-            com.samsung.android.cmcnsd.network.NsdNetwork r4 = (com.samsung.android.cmcnsd.network.NsdNetwork) r4
-            if (r4 == 0) goto L_0x0070
-            if (r0 != 0) goto L_0x006d
-            r3.notifyWifiApConnectionChanged(r4)
-            goto L_0x0070
-        L_0x006d:
-            r3.notifyWifiDirectConnectionChanged(r4)
-        L_0x0070:
+            monitor-exit(r1)     // Catch:{ all -> 0x0075 }
+            java.lang.String r0 = r5.TAG
+            java.lang.StringBuilder r1 = new java.lang.StringBuilder
+            r1.<init>()
+            java.lang.String r2 = "registerNetworkCallback() NsdNetworkCallbackList="
+            r1.append(r2)
+            java.util.List<com.samsung.android.cmcnsd.CmcNsdManager$NetworkCallbackWrapper> r2 = r5.mNsdNetworkCallbackList
+            r1.append(r2)
+            java.lang.String r1 = r1.toString()
+            android.util.Log.d(r0, r1)
+            r0 = 0
+        L_0x005a:
+            r1 = 1
+            if (r0 > r1) goto L_0x0074
+            android.util.SparseArray<com.samsung.android.cmcnsd.network.NsdNetwork> r2 = r5.mLastNetworks
+            int r1 = r1 << r0
+            java.lang.Object r1 = r2.get(r1)
+            com.samsung.android.cmcnsd.network.NsdNetwork r1 = (com.samsung.android.cmcnsd.network.NsdNetwork) r1
+            if (r1 == 0) goto L_0x0071
+            if (r0 != 0) goto L_0x006e
+            r5.notifyWifiApConnectionChanged(r1)
+            goto L_0x0071
+        L_0x006e:
+            r5.notifyWifiDirectConnectionChanged(r1)
+        L_0x0071:
             int r0 = r0 + 1
-            goto L_0x0059
-        L_0x0073:
-            return r4
+            goto L_0x005a
         L_0x0074:
-            r4 = move-exception
-            monitor-exit(r1)     // Catch:{ all -> 0x0074 }
-            throw r4
-        L_0x0077:
+            return r1
+        L_0x0075:
+            r0 = move-exception
+            monitor-exit(r1)     // Catch:{ all -> 0x0075 }
+            throw r0
+        L_0x0078:
             return r0
         */
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.cmcnsd.CmcNsdManager.registerNetworkCallback(com.samsung.android.cmcnsd.network.NsdNetworkCapabilities, com.samsung.android.cmcnsd.network.NsdNetworkCallback):boolean");
     }
 
-    public void unregisterNetworkCallback(NsdNetworkCallback nsdNetworkCallback) {
+    public void unregisterNetworkCallback(NsdNetworkCallback callback) {
         String str = this.TAG;
-        Log.i(str, "unregisterNetworkCallback() callback=" + nsdNetworkCallback);
+        Log.i(str, "unregisterNetworkCallback() callback=" + callback);
         synchronized (this.mNsdNetworkCallbackList) {
             Iterator<NetworkCallbackWrapper> it = this.mNsdNetworkCallbackList.iterator();
             while (it.hasNext()) {
-                if (it.next().getCallback() == nsdNetworkCallback) {
+                if (it.next().getCallback() == callback) {
                     it.remove();
                 }
             }
@@ -346,7 +352,7 @@ public class CmcNsdManager {
         Log.d(str2, "unregisterNetworkCallback() NsdNetworkCallbackList=" + this.mNsdNetworkCallbackList);
     }
 
-    public boolean acquireNetwork(NsdNetworkCapabilities nsdNetworkCapabilities) {
+    public boolean acquireNetwork(NsdNetworkCapabilities capabilities) {
         Log.e(this.TAG, "acquireNetwork() NOT SUPPORTED");
         return false;
     }
@@ -355,17 +361,17 @@ public class CmcNsdManager {
         Log.e(this.TAG, "releaseNetwork() NOT SUPPORTED");
     }
 
-    public boolean sendNetworkMessage(String str, NsdNetworkCapabilities nsdNetworkCapabilities, NsdNetworkMessage nsdNetworkMessage) {
-        String str2 = this.TAG;
-        Log.i(str2, "sendNetworkMessage() cap=" + nsdNetworkCapabilities + " msg=" + nsdNetworkMessage);
+    public boolean sendNetworkMessage(String deviceId, NsdNetworkCapabilities capabilities, NsdNetworkMessage message) {
+        String str = this.TAG;
+        Log.i(str, "sendNetworkMessage() cap=" + capabilities + " msg=" + message);
         if (!isBound()) {
             return false;
         }
         try {
-            return this.mService.sendNetworkMessage(hashCode(), str, nsdNetworkCapabilities, nsdNetworkMessage);
+            return this.mService.sendNetworkMessage(hashCode(), deviceId, capabilities, message);
         } catch (RemoteException e) {
-            String str3 = this.TAG;
-            Log.e(str3, "failed to sendNetworkMessage()=" + e.getMessage());
+            String str2 = this.TAG;
+            Log.e(str2, "failed to sendNetworkMessage()=" + e.getMessage());
             return false;
         }
     }

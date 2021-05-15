@@ -309,8 +309,8 @@ public class ConfigTrigger {
         IMSLog.i(str, phoneId, "startConfig: cmd: " + cmd);
         if (cmd == 1 || cmd == 2) {
             String rcsAs = ConfigUtil.getAcsServerType(this.mContext, phoneId);
-            Mno simMno = SimUtil.getSimMno(phoneId);
-            if (ImsConstants.RCS_AS.JIBE.equals(rcsAs) || ImsConstants.RCS_AS.SEC.equals(rcsAs)) {
+            Mno mno = SimUtil.getSimMno(phoneId);
+            if (mno == Mno.SPRINT || mno == Mno.TCE || mno == Mno.CLARO_ARGENTINA || ImsConstants.RCS_AS.JIBE.equals(rcsAs) || ImsConstants.RCS_AS.SEC.equals(rcsAs)) {
                 Log.i(LOG_TAG, "sendBroadcast com.android.ims.RCS_AUTOCONFIG_START");
                 Intent intent = new Intent();
                 intent.setAction(INTENT_ACTION_RCS_AUTOCONFIG_START);

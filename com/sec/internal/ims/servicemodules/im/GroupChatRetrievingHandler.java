@@ -113,7 +113,7 @@ public class GroupChatRetrievingHandler extends Handler {
                 return;
             }
             this.mImCache.removeImCacheActionListener(this.mImTranslation);
-            ImSession imSession = this.mImCache.getImSessionByConversationId(this.mOwnImsi, entry.pConvID, true);
+            ImSession imSession = this.mImCache.getImSessionByConversationId(entry.pConvID, true);
             if (imSession == null) {
                 HashSet hashSet = new HashSet();
                 for (ImConferenceParticipantInfo info : event.mParticipantsInfo) {

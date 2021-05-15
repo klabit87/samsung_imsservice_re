@@ -296,7 +296,7 @@ public class ImsCallSessionEventListener extends IImsCallSessionEventListener.St
         CallProfile cp = this.mIcsi.mSession.getCallProfile();
         if (cp != null && cp.isMTCall()) {
             ImsCallSessionImpl imsCallSessionImpl = this.mIcsi;
-            if (!imsCallSessionImpl.isCmcSecondaryType(imsCallSessionImpl.mSession.getCmcType()) || !cp.isPullCall()) {
+            if (!imsCallSessionImpl.isCmcSecondaryType(imsCallSessionImpl.mSession.getCmcType()) || cp == null || !cp.isPullCall()) {
                 this.mIcsi.mListener.callSessionTerminated(new ImsReasonInfo(this.mIcsi.convertErrorReasonToFw(error), error));
             } else {
                 ImsCallSessionImpl imsCallSessionImpl2 = this.mIcsi;
@@ -360,8 +360,10 @@ public class ImsCallSessionEventListener extends IImsCallSessionEventListener.St
             this.mIcsi.mListener.callSessionInitiatedFailed(reasonInfo2);
         }
         this.mIcsi.mState = 8;
-        this.mIcsi.mVolteServiceModule.unregisterRttEventListener(this.mIcsi.mSession.getPhoneId(), this.mIcsi.mRttEventListener);
-        this.mIcsi.mSession = null;
+        if (this.mIcsi.mSession != null) {
+            this.mIcsi.mVolteServiceModule.unregisterRttEventListener(this.mIcsi.mSession.getPhoneId(), this.mIcsi.mRttEventListener);
+            this.mIcsi.mSession = null;
+        }
         return false;
     }
 
@@ -381,19 +383,19 @@ public class ImsCallSessionEventListener extends IImsCallSessionEventListener.St
             r1.<init>(r2, r7, r8)
             r2 = 1105(0x451, float:1.548E-42)
             r3 = 1
-            if (r7 == r2) goto L_0x0118
+            if (r7 == r2) goto L_0x011e
             r2 = 1106(0x452, float:1.55E-42)
-            if (r7 == r2) goto L_0x0117
+            if (r7 == r2) goto L_0x011d
             r2 = 1111(0x457, float:1.557E-42)
             r3 = 0
-            if (r7 == r2) goto L_0x010e
+            if (r7 == r2) goto L_0x0114
             r2 = 1112(0x458, float:1.558E-42)
-            if (r7 == r2) goto L_0x0106
+            if (r7 == r2) goto L_0x010c
             switch(r7) {
-                case 1118: goto L_0x00fe;
-                case 1119: goto L_0x00f6;
-                case 1120: goto L_0x00ee;
-                case 1121: goto L_0x00e6;
+                case 1118: goto L_0x0104;
+                case 1119: goto L_0x00fc;
+                case 1120: goto L_0x00f4;
+                case 1121: goto L_0x00ec;
                 default: goto L_0x0028;
             }
         L_0x0028:
@@ -476,6 +478,9 @@ public class ImsCallSessionEventListener extends IImsCallSessionEventListener.St
             r2.mIsEcbmSupport = r3
         L_0x00cd:
             com.sec.internal.google.ImsCallSessionImpl r2 = r6.mIcsi
+            com.sec.ims.volte2.IImsCallSession r2 = r2.mSession
+            if (r2 == 0) goto L_0x011c
+            com.sec.internal.google.ImsCallSessionImpl r2 = r6.mIcsi
             com.sec.internal.interfaces.ims.servicemodules.volte2.IVolteServiceModule r2 = r2.mVolteServiceModule
             com.sec.internal.google.ImsCallSessionImpl r4 = r6.mIcsi
             com.sec.ims.volte2.IImsCallSession r4 = r4.mSession
@@ -486,41 +491,41 @@ public class ImsCallSessionEventListener extends IImsCallSessionEventListener.St
             com.sec.internal.google.ImsCallSessionImpl r2 = r6.mIcsi
             r4 = 0
             r2.mSession = r4
-            goto L_0x0116
-        L_0x00e6:
+            goto L_0x011c
+        L_0x00ec:
             com.sec.internal.google.ImsCallSessionImpl r2 = r6.mIcsi
             android.telephony.ims.aidl.IImsCallSessionListener r2 = r2.mListener
             r2.callSessionCancelTransferFailed(r1)
-            goto L_0x0116
-        L_0x00ee:
+            goto L_0x011c
+        L_0x00f4:
             com.sec.internal.google.ImsCallSessionImpl r2 = r6.mIcsi
             android.telephony.ims.aidl.IImsCallSessionListener r2 = r2.mListener
             r2.callSessionCancelTransferred()
-            goto L_0x0116
-        L_0x00f6:
+            goto L_0x011c
+        L_0x00fc:
             com.sec.internal.google.ImsCallSessionImpl r2 = r6.mIcsi
             android.telephony.ims.aidl.IImsCallSessionListener r2 = r2.mListener
             r2.callSessionTransferFailed(r1)
-            goto L_0x0116
-        L_0x00fe:
+            goto L_0x011c
+        L_0x0104:
             com.sec.internal.google.ImsCallSessionImpl r2 = r6.mIcsi
             android.telephony.ims.aidl.IImsCallSessionListener r2 = r2.mListener
             r2.callSessionTransferred()
-            goto L_0x0116
-        L_0x0106:
+            goto L_0x011c
+        L_0x010c:
             com.sec.internal.google.ImsCallSessionImpl r2 = r6.mIcsi
             android.telephony.ims.aidl.IImsCallSessionListener r2 = r2.mListener
             r2.callSessionResumeFailed(r1)
-            goto L_0x0116
-        L_0x010e:
+            goto L_0x011c
+        L_0x0114:
             com.sec.internal.google.ImsCallSessionImpl r2 = r6.mIcsi
             android.telephony.ims.aidl.IImsCallSessionListener r2 = r2.mListener
             r2.callSessionHoldFailed(r1)
-        L_0x0116:
+        L_0x011c:
             return r3
-        L_0x0117:
+        L_0x011d:
             return r3
-        L_0x0118:
+        L_0x011e:
             com.sec.internal.google.ImsCallSessionImpl r2 = r6.mIcsi
             android.telephony.ims.aidl.IImsCallSessionListener r2 = r2.mListener
             r2.callSessionMergeFailed(r1)

@@ -373,9 +373,9 @@ public class HttpRequestParams {
         sb.append("HttpRequestParams[\r\n    mMethod: ");
         sb.append(this.mMethod.name());
         sb.append("\r\n    mNafUrl: ");
-        sb.append(IMSLog.numberChecker(this.mNafUrl));
+        sb.append(IMSLog.numberChecker(this.mNafUrl, 5));
         sb.append("\r\n    mBsfUrl: ");
-        sb.append(IMSLog.numberChecker(this.mBsfUrl));
+        sb.append(IMSLog.numberChecker(this.mBsfUrl, 5));
         sb.append("\r\n    mQueryParams: ");
         HttpQueryParams httpQueryParams = this.mQueryParams;
         String str = "";

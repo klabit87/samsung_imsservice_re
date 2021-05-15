@@ -39,45 +39,37 @@ public class CloudMessageCreateLongPolling extends NotificationList {
                     result.setStatusCode(200);
                 }
                 if (result.getStatusCode() == 200) {
-                    try {
-                        OMAApiResponseParam response = (OMAApiResponseParam) new Gson().fromJson(result.getDataString(), OMAApiResponseParam.class);
-                        if (response == null || response.notificationList == null) {
-                            Log.i(CloudMessageCreateLongPolling.TAG, "response or notificationList is null, polling failed");
-                            CloudMessageCreateLongPolling.this.mIAPICallFlowListener.onFailedCall(this);
-                            return;
-                        }
-                        com.sec.internal.omanetapi.nc.data.NotificationList[] notificationList = response.notificationList;
-                        boolean isMissingNotification = false;
-                        if (notificationList.length > 0) {
-                            if (MailBoxHelper.isMailBoxReset(result.getDataString())) {
-                                Log.i(CloudMessageCreateLongPolling.TAG, "MailBoxReset true");
-                                CloudMessageCreateLongPolling.this.mIAPICallFlowListener.onSuccessfulEvent(this, OMASyncEventType.MAILBOX_RESET.getId(), (Object) null);
-                                return;
-                            } else if (notificationList[0].nmsEventList != null) {
-                                long savedindex = CloudMessageCreateLongPolling.this.mICloudMessageManagerHelper.getOMASubscriptionIndex();
-                                long curindex = notificationList[0].nmsEventList.index.longValue();
-                                String access$100 = CloudMessageCreateLongPolling.TAG;
-                                Log.i(access$100, "savedindex: " + savedindex + " curindex: " + curindex);
-                                if (savedindex != 0 && curindex > 1 + savedindex) {
-                                    isMissingNotification = true;
-                                }
-                                String restartToken = notificationList[0].nmsEventList.restartToken;
-                                CloudMessageCreateLongPolling.this.mICloudMessageManagerHelper.saveOMASubscriptionIndex(curindex);
-                                CloudMessageCreateLongPolling.this.mICloudMessageManagerHelper.saveOMASubscriptionRestartToken(restartToken);
-                            }
-                        }
-                        ParamOMAresponseforBufDB.Builder builder = new ParamOMAresponseforBufDB.Builder().setActionType(ParamOMAresponseforBufDB.ActionType.RECEIVE_NOTIFICATION).setNotificationList(notificationList);
-                        if (isMissingNotification) {
-                            CloudMessageCreateLongPolling.this.mIAPICallFlowListener.onGoToEvent(OMASyncEventType.UPDATE_SUBSCRIPTION_CHANNEL.getId(), (Object) null);
-                        }
-                        CloudMessageCreateLongPolling.this.mIAPICallFlowListener.onGoToEvent(OMASyncEventType.CLOUD_UPDATE.getId(), builder.build());
-                    } catch (Exception e) {
-                        String access$1002 = CloudMessageCreateLongPolling.TAG;
-                        Log.e(access$1002, "exception occurred " + e.getMessage());
-                        e.printStackTrace();
+                    OMAApiResponseParam response = (OMAApiResponseParam) new Gson().fromJson(result.getDataString(), OMAApiResponseParam.class);
+                    if (response == null || response.notificationList == null) {
+                        Log.i(CloudMessageCreateLongPolling.TAG, "response or notificationList is null, polling failed");
                         CloudMessageCreateLongPolling.this.mIAPICallFlowListener.onFailedCall(this);
                         return;
                     }
+                    com.sec.internal.omanetapi.nc.data.NotificationList[] notificationList = response.notificationList;
+                    boolean isMissingNotification = false;
+                    if (notificationList.length > 0) {
+                        if (MailBoxHelper.isMailBoxReset(result.getDataString())) {
+                            Log.i(CloudMessageCreateLongPolling.TAG, "MailBoxReset true");
+                            CloudMessageCreateLongPolling.this.mIAPICallFlowListener.onSuccessfulEvent(this, OMASyncEventType.MAILBOX_RESET.getId(), (Object) null);
+                            return;
+                        } else if (notificationList[0].nmsEventList != null) {
+                            long savedindex = CloudMessageCreateLongPolling.this.mICloudMessageManagerHelper.getOMASubscriptionIndex();
+                            long curindex = notificationList[0].nmsEventList.index.longValue();
+                            String access$100 = CloudMessageCreateLongPolling.TAG;
+                            Log.i(access$100, "savedindex: " + savedindex + " curindex: " + curindex);
+                            if (savedindex != 0 && curindex > 1 + savedindex) {
+                                isMissingNotification = true;
+                            }
+                            String restartToken = notificationList[0].nmsEventList.restartToken;
+                            CloudMessageCreateLongPolling.this.mICloudMessageManagerHelper.saveOMASubscriptionIndex(curindex);
+                            CloudMessageCreateLongPolling.this.mICloudMessageManagerHelper.saveOMASubscriptionRestartToken(restartToken);
+                        }
+                    }
+                    ParamOMAresponseforBufDB.Builder builder = new ParamOMAresponseforBufDB.Builder().setActionType(ParamOMAresponseforBufDB.ActionType.RECEIVE_NOTIFICATION).setNotificationList(notificationList);
+                    if (isMissingNotification) {
+                        CloudMessageCreateLongPolling.this.mIAPICallFlowListener.onGoToEvent(OMASyncEventType.UPDATE_SUBSCRIPTION_CHANNEL.getId(), (Object) null);
+                    }
+                    CloudMessageCreateLongPolling.this.mIAPICallFlowListener.onGoToEvent(OMASyncEventType.CLOUD_UPDATE.getId(), builder.build());
                 }
                 if (CloudMessageCreateLongPolling.this.shouldCareAfterResponsePreProcess(callFlowListener, result, (Object) null, (BufferDBChangeParam) null, Integer.MIN_VALUE)) {
                     callFlowListener.onFailedCall(CloudMessageCreateLongPolling.this);

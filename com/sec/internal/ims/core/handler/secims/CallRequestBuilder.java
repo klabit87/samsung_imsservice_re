@@ -456,9 +456,9 @@ public class CallRequestBuilder {
         }
         RequestMakeCall.addEcscfPort(builder, port);
         int i5 = ecscfOffset;
-        int ecscfOffset2 = cliOffset;
-        if (ecscfOffset2 != -1) {
-            RequestMakeCall.addCli(builder, ecscfOffset2);
+        int cliOffset2 = cliOffset;
+        if (cliOffset2 != -1) {
+            RequestMakeCall.addCli(builder, cliOffset2);
         }
         if (dispNameOffset != -1) {
             RequestMakeCall.addDispName(builder, dispNameOffset);
@@ -467,7 +467,7 @@ public class CallRequestBuilder {
             RequestMakeCall.addAlertInfo(builder, alertInfoOffset);
         }
         RequestMakeCall.addCmcBoundSessionId(builder, cmcBoundSessionId);
-        int i6 = ecscfOffset2;
+        int i6 = cliOffset2;
         if (p2pListOffset != -1) {
             RequestMakeCall.addP2pList(builder, p2pListOffset);
         }
@@ -719,11 +719,11 @@ public class CallRequestBuilder {
             RequestMakeConfCall.addExtraHeaders(builder, extraHeaderOffset);
         }
         int i2 = extraHeaderOffset;
-        int useAnonymousUpdateOffset2 = useAnonymousUpdateOffset;
-        if (useAnonymousUpdateOffset2 != -1) {
-            RequestMakeConfCall.addUseAnonymousUpdate(builder, useAnonymousUpdateOffset2);
+        int extraHeaderOffset2 = useAnonymousUpdateOffset;
+        if (extraHeaderOffset2 != -1) {
+            RequestMakeConfCall.addUseAnonymousUpdate(builder, extraHeaderOffset2);
         }
-        int i3 = useAnonymousUpdateOffset2;
+        int i3 = extraHeaderOffset2;
         int referUriAssertedOffset2 = referUriAssertedOffset;
         if (referUriAssertedOffset2 != -1) {
             RequestMakeConfCall.addReferuriAsserted(builder, referUriAssertedOffset2);
@@ -917,7 +917,7 @@ public class CallRequestBuilder {
             i++;
             String str9 = dialogType;
         }
-        int i2 = RequestMakeConfCall.createParticipantsVector(builder, participantOffsetArray);
+        int participantsOffset = RequestMakeConfCall.createParticipantsVector(builder, participantOffsetArray);
         int[] iArr = participantOffsetArray;
         int sessionIdOffset = RequestMakeConfCall.createSessionIdVector(builder, new int[]{sessId});
         RequestMakeConfCall.startRequestMakeConfCall(builder);
@@ -925,7 +925,7 @@ public class CallRequestBuilder {
         if (useAnonymousUpdateOffset2 != -1) {
             RequestMakeConfCall.addUseAnonymousUpdate(builder, useAnonymousUpdateOffset2);
         }
-        int i3 = useAnonymousUpdateOffset2;
+        int i2 = useAnonymousUpdateOffset2;
         int referUriAssertedOffset2 = referUriAssertedOffset;
         if (referUriAssertedOffset2 != -1) {
             RequestMakeConfCall.addReferuriAsserted(builder, referUriAssertedOffset2);
@@ -933,7 +933,7 @@ public class CallRequestBuilder {
         if (referUriTypeOffset != -1) {
             RequestMakeConfCall.addReferuriType(builder, referUriTypeOffset);
         }
-        int i4 = referUriAssertedOffset2;
+        int i3 = referUriAssertedOffset2;
         int removeReferUriTypeOffset2 = removeReferUriTypeOffset;
         if (removeReferUriTypeOffset2 != -1) {
             RequestMakeConfCall.addRemoveReferuriType(builder, removeReferUriTypeOffset2);
@@ -941,7 +941,7 @@ public class CallRequestBuilder {
         if (origUriOffset != -1) {
             RequestMakeConfCall.addOrigUri(builder, origUriOffset);
         }
-        RequestMakeConfCall.addParticipants(builder, i2);
+        RequestMakeConfCall.addParticipants(builder, participantsOffset);
         RequestMakeConfCall.addSessionId(builder, sessionIdOffset);
         if (dialogTypeOffset != -1) {
             RequestMakeConfCall.addDialogType(builder, dialogTypeOffset);
@@ -951,12 +951,12 @@ public class CallRequestBuilder {
         }
         RequestMakeConfCall.addConfType(builder, 1);
         RequestMakeConfCall.addCallType(builder, callType);
-        int i5 = sessionIdOffset;
+        int i4 = sessionIdOffset;
         RequestMakeConfCall.addSupportPrematureEnd(builder, supportPrematureEnd);
         if (confUriOffset != -1) {
             RequestMakeConfCall.addConfuri(builder, confUriOffset);
         }
-        int i6 = i2;
+        int i5 = participantsOffset;
         RequestMakeConfCall.addHandle(builder, (long) handle);
         int makeConfCallOffset = RequestMakeConfCall.endRequestMakeConfCall(builder);
         Request.startRequest(builder);

@@ -438,10 +438,8 @@ public class NSDSModule extends NSDSModuleBase {
                             }
                         }
                     } else if (NSDSNamespaces.NSDSActions.ENTITLEMENT_CHECK_COMPLETED.equals(intent.getAction())) {
-                        int response = intent.getIntExtra(NSDSNamespaces.NSDSExtras.ORIG_ERROR_CODE, -1);
                         SimpleEventLog access$2400 = NSDSModule.this.mEventLog;
-                        int simSlotIndex = NSDSModule.this.mSimManager.getSimSlotIndex();
-                        access$2400.logAndAdd(simSlotIndex, "ENTITLEMENT_CHECK_COMPLETED: Response[" + response + "], VoLTE[" + intent.getBooleanExtra(NSDSNamespaces.NSDSExtras.SERVICE_VOLTE, false) + "], VoWiFi[" + intent.getBooleanExtra(NSDSNamespaces.NSDSExtras.SERVICE_VOWIFI, false) + "]");
+                        access$2400.add("ENTITLEMENT_CHECK_COMPLETED Success[" + intent.getBooleanExtra(NSDSNamespaces.NSDSExtras.REQUEST_STATUS, false) + "], Response[" + intent.getIntExtra(NSDSNamespaces.NSDSExtras.ORIG_ERROR_CODE, -1) + "], VoLTE[" + intent.getBooleanExtra(NSDSNamespaces.NSDSExtras.SERVICE_VOLTE, false) + "], VoWiFi[" + intent.getBooleanExtra(NSDSNamespaces.NSDSExtras.SERVICE_VOWIFI, false) + "]");
                         NSDSModule.this.handlePollIntervalAfterEntitlementCheck(intent);
                         NSDSModule.this.handleEntitlementCheckCompleted(intent);
                         NSDSModule.this.removeMessages(24);
@@ -1066,8 +1064,7 @@ public class NSDSModule extends NSDSModuleBase {
         }
         if (this.mEntitlementCheckFlow != null) {
             SimpleEventLog simpleEventLog = this.mEventLog;
-            int simSlotIndex = this.mSimManager.getSimSlotIndex();
-            simpleEventLog.logAndAdd(simSlotIndex, "performEntitlementCheck: deviceEventType[" + deviceEventType + "], retryCount[" + retryCount + "]");
+            simpleEventLog.add("performEntitlementCheck: " + deviceEventType + ", retryCount " + retryCount);
             this.mEntitlementCheckFlow.performEntitlementCheck(deviceEventType, retryCount);
             return;
         }
@@ -1191,6 +1188,11 @@ public class NSDSModule extends NSDSModuleBase {
             if (SemSystemProperties.getInt(ImsConstants.SystemProperties.FIRST_API_VERSION, 0) >= 28) {
                 prefName = "imsswitch";
                 lastVolteSwitch = "last_volte_switch_" + imsi.substring(5);
+            }
+            int temp = ImsSharedPrefHelper.getInt(phoneId, this.mContext, prefName, "LAST_VOLTE_SETTING", -1);
+            if (temp != -1) {
+                ImsSharedPrefHelper.save(phoneId, this.mContext, prefName, lastVolteSwitch, temp);
+                ImsSharedPrefHelper.save(phoneId, this.mContext, prefName, "LAST_VOLTE_SETTING", -1);
             }
             int lastVoLTESwitch = ImsSharedPrefHelper.getInt(phoneId, this.mContext, prefName, lastVolteSwitch, -1);
             IMSLog.i(this.LOG_TAG, "get lastVoLTESwitch: " + lastVoLTESwitch);
@@ -1465,18 +1467,17 @@ public class NSDSModule extends NSDSModuleBase {
         IntentUtil.sendBroadcast(this.mContext, intent, ContextExt.CURRENT_OR_SELF);
     }
 
-    private void broadcastStoredEntitlement() {
-        int slotIdx = this.mSimManager.getSimSlotIndex();
+    private void broadcastLastEntitlementCheck() {
+        IMSLog.i(this.LOG_TAG, "broadcastLastEntitlementCheck: failed Entitlement check . Re-use the last known settings");
         Intent intent = new Intent(NSDSNamespaces.NSDSActions.ENTITLEMENT_CHECK_COMPLETED);
         intent.putExtra(NSDSNamespaces.NSDSExtras.REQUEST_STATUS, true);
-        intent.putExtra(NSDSNamespaces.NSDSExtras.SERVICE_VOWIFI, NSDSSharedPrefHelper.getVoWiFiEntitlement(this.mContext, slotIdx));
-        intent.putExtra(NSDSNamespaces.NSDSExtras.SERVICE_VOLTE, NSDSSharedPrefHelper.getVoLteEntitlement(this.mContext, slotIdx));
+        intent.putExtra(NSDSNamespaces.NSDSExtras.SERVICE_VOWIFI, NSDSSharedPrefHelper.getEntitlementCompleted(this.mContext, NSDSNamespaces.NSDSExtras.SERVICE_VOWIFI, this.mBaseFlowImpl.getDeviceId()));
+        intent.putExtra(NSDSNamespaces.NSDSExtras.SERVICE_VOLTE, NSDSSharedPrefHelper.getEntitlementCompleted(this.mContext, NSDSNamespaces.NSDSExtras.SERVICE_VOLTE, this.mBaseFlowImpl.getDeviceId()));
         intent.putExtra(NSDSNamespaces.NSDSExtras.POLL_INTERVAL, 24);
-        intent.putExtra(NSDSNamespaces.NSDSExtras.SIM_SLOT_IDX, slotIdx);
-        intent.putExtra("phoneId", slotIdx);
-        SimpleEventLog simpleEventLog = this.mEventLog;
-        simpleEventLog.logAndAdd(slotIdx, "broadcastStoredEntitlement: " + intent.getExtras().toString());
-        IntentUtil.sendBroadcast(this.mContext, intent, ContextExt.CURRENT_OR_SELF);
+        intent.putExtra(NSDSNamespaces.NSDSExtras.SIM_SLOT_IDX, this.mSimManager.getSimSlotIndex());
+        intent.putExtra("phoneId", this.mSimManager.getSimSlotIndex());
+        intent.setFlags(Extensions.Intent.FLAG_RECEIVER_INCLUDE_BACKGROUND);
+        this.mContext.sendStickyBroadcast(intent);
     }
 
     private void onDeregistration(ImsRegistration reg) {
@@ -1543,8 +1544,8 @@ public class NSDSModule extends NSDSModuleBase {
             if (retryCount > 4) {
                 String str2 = this.LOG_TAG;
                 IMSLog.i(str2, "shouldRetry: exceeded max retry " + retryCount);
-                if (mnoStrategy.shouldRecoverStoredEntitlement()) {
-                    broadcastStoredEntitlement();
+                if (deviceEventType == 1) {
+                    broadcastLastEntitlementCheck();
                 }
                 return false;
             } else if (errorCode == -1 || errorCode >= 1001) {
