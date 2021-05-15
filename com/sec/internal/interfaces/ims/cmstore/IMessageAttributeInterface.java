@@ -1,0 +1,40 @@
+package com.sec.internal.interfaces.ims.cmstore;
+
+public interface IMessageAttributeInterface {
+    public static final String BCC = "$BCC";
+    public static final String CALL_DISPOSITION = "$CALL$DISPOSTITION";
+    public static final String CALL_DURATION = "$CALL$DURATION";
+    public static final String CALL_STARTTIMESTAMP = "$CALL$STARTTIMESTAMP";
+    public static final String CALL_TYPE = "$CALL$TYPE";
+    public static final String CC = "$CC";
+    public static final String CLIENT_CORRELATOR = "$CLIENT$CORRELATOR";
+    public static final String CONTENT_DURATION = "$CONTENT$DURATION";
+    public static final String CONTENT_TYPE = "$CONTENT$TYPE";
+    public static final String CONTRIBUTION_ID = "$CONTRIBUTION$ID";
+    public static final String CONVERSATION_ID = "$CONVERSATION$ID";
+    public static final String DATE = "$DATE";
+    public static final String DIRECTION = "$DIRECTION";
+    public static final String DISPOSITION_ORIGINAL_MESSAGEID = "$DISPOSITION$ORIGINAL$MESSAGEID";
+    public static final String DISPOSITION_ORIGINAL_TO = "$DISPOSITION$ORIGINAL$TO";
+    public static final String DISPOSITION_STATUS = "$DISPOSITION$STATUS";
+    public static final String DISPOSITION_TYPE = "$DISPOSITION$TYPE";
+    public static final String EMAILADDRESS = "$EMAILADDRESS";
+    public static final String FROM = "$FROM";
+    public static final String IN_REPLY_TO_CONTRIBUTION_ID = "$IN$REPLY$TO$CONTRIBUTION$ID";
+    public static final String IS_CPM_GROUP = "$IS$CPM$GROUP";
+    public static final String IS_OPEN_GROUP = "$IS$OPEN$GROUP";
+    public static final String MESSAGE_CONTEXT = "$MESSAGE$CONTEXT";
+    public static final String MESSAGE_ID = "$MESSAGE$ID";
+    public static final String MIME_VERSION = "$MIME$VERSION";
+    public static final String MULTIPARTCONTENTTYPE = "$MULTIPARTCONTENTTYPE";
+    public static final String OLD_PWD = "$OLD$PWD";
+    public static final String PARTICIPATING_DEVICE = "$PARTICIPATING$DEVICE";
+    public static final String PWD = "$PWD";
+    public static final String REPORT_REQUESTED = "$REPORT$REQUESTED";
+    public static final String SUBJECT = "$SUBJECT";
+    public static final String TEXT_CONTENT = "$TEXT$CONTENT";
+    public static final String TO = "$TO";
+    public static final String UDH = "$UDH";
+    public static final String VVMOn = "$VVMOn";
+    public static final String X_CNS_GREETING_TYPE = "$X$CNS$GREETING$TYPE";
+}
